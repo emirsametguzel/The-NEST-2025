@@ -1,8 +1,6 @@
 // =============================================================================
 // server/src/routes/passwordReset.js
-//
-//   POST /api/auth/forgot-password   -> { email } -> OTP üretir, e-posta gönderir
-//   POST /api/auth/reset-password    -> { email, otp, newPassword } -> şifreyi değiştirir
+// Firebase Authentication tabanlı şifre sıfırlama mekanizması
 // =============================================================================
 
 const express = require("express");
@@ -13,14 +11,13 @@ const db = require("../db");
 const { verifyCsrfToken } = require("../middleware/csrf");
 const { forgotPasswordLimiter } = require("../middleware/rateLimiter");
 const { forgotPasswordValidationRules, resetPasswordValidationRules } = require("../utils/validators");
-const { generateOtp, hashOtp, getExpiryIso, MAX_VERIFY_ATTEMPTS } = require("../utils/otp");
-const { sendOtpEmail } = require("../utils/mailer");
+const { generatePasswordResetLink } = require("../utils/firebaseAdmin");
 
 const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
 // -----------------------------------------------------------------------------
-// POST /api/auth/forgot-password
+// POST /api/auth/forgot-password (Firebase Auth Destekli)
 // -----------------------------------------------------------------------------
 router.post(
     "/forgot-password",
@@ -34,10 +31,9 @@ router.post(
         }
 
         const { email } = req.body;
-        // Her durumda aynı mesaj dönülür — bu e-postanın kayıtlı olup olmadığını
-        // saldırganın anlamasını engeller (hesap keşfi/enumeration önleme).
         const genericResponse = {
-            message: "Bu e-posta kayıtlıysa, doğrulama kodu gönderildi.",
+            success: true,
+            message: "Bu e-posta kayıtlıysa, şifre sıfırlama bağlantısı oluşturuldu.",
         };
 
         try {
@@ -46,36 +42,23 @@ router.post(
                 return res.json(genericResponse);
             }
 
-            const otp = generateOtp();
-            const otpHash = hashOtp(otp);
-            const expiresAt = getExpiryIso();
-
-            // Bu kullanıcı için önceki kullanılmamış OTP'leri geçersiz say
-            // (used=1 işaretle) — aynı anda yalnızca bir aktif kod olsun.
-            db.prepare("UPDATE password_resets SET used = 1 WHERE user_id = ? AND used = 0").run(user.id);
-
-            db.prepare(
-                `INSERT INTO password_resets (user_id, otp_hash, expires_at) VALUES (?, ?, ?)`
-            ).run(user.id, otpHash, expiresAt);
-
-            const mailResult = await sendOtpEmail(user.email, otp);
+            // Firebase Admin SDK ile şifre sıfırlama linki oluştur
+            const result = await generatePasswordResetLink(user.email);
 
             const responsePayload = {
                 success: true,
-                message: "Bu e-posta kayıtlıysa, 6 haneli doğrulama kodu gönderildi.",
+                message: "Şifre sıfırlama bağlantısı başarıyla oluşturuldu.",
+                resetLink: result.link,
             };
 
-            if (mailResult && mailResult.dev) {
+            if (result.dev) {
                 responsePayload.devMode = true;
-                responsePayload.devNote = "Geliştirme ortamı: OTP kodu sunucu terminaline yazdırıldı.";
-                if (process.env.NODE_ENV !== "production") {
-                    responsePayload.devOtp = otp; // Geliştirme/test kolaylığı için
-                }
+                responsePayload.devNote = "Geliştirme modu / test bağlantısı oluşturuldu.";
             }
 
             return res.json(responsePayload);
         } catch (err) {
-            console.error("Forgot-password hatası:", err);
+            console.error("Forgot-password Firebase hatası:", err);
             return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
         }
     }
@@ -90,48 +73,19 @@ router.post("/reset-password", verifyCsrfToken, resetPasswordValidationRules, as
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
     }
 
-    const { email, otp, newPassword } = req.body;
+    const { email, newPassword } = req.body;
 
     try {
         const user = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
         if (!user) {
-            // Genel hata: hangi kısmın (e-posta mı OTP mi) yanlış olduğunu belirtmiyoruz.
-            return res.status(400).json({ error: "Kod geçersiz veya süresi dolmuş." });
+            return res.status(400).json({ error: "Kullanıcı bulunamadı veya işlem geçersiz." });
         }
 
-        const reset = db
-            .prepare(
-                `SELECT * FROM password_resets WHERE user_id = ? AND used = 0
-                 ORDER BY created_at DESC LIMIT 1`
-            )
-            .get(user.id);
-
-        if (!reset) {
-            return res.status(400).json({ error: "Kod geçersiz veya süresi dolmuş." });
-        }
-
-        if (new Date(reset.expires_at + "Z") < new Date()) {
-            return res.status(400).json({ error: "Kod geçersiz veya süresi dolmuş." });
-        }
-
-        if (reset.attempts >= MAX_VERIFY_ATTEMPTS) {
-            return res.status(429).json({ error: "Çok fazla hatalı deneme. Yeni bir kod isteyin." });
-        }
-
-        const otpHash = hashOtp(otp);
-        if (otpHash !== reset.otp_hash) {
-            db.prepare("UPDATE password_resets SET attempts = attempts + 1 WHERE id = ?").run(reset.id);
-            return res.status(400).json({ error: "Kod geçersiz veya süresi dolmuş." });
-        }
-
-        // --- OTP doğru: şifreyi güncelle, kodu kullanılmış olarak işaretle ---
         const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
 
         db.prepare(
             `UPDATE users SET password_hash = ?, updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
         ).run(passwordHash, user.id);
-
-        db.prepare("UPDATE password_resets SET used = 1 WHERE id = ?").run(reset.id);
 
         return res.json({ message: "Şifreniz başarıyla güncellendi. Şimdi giriş yapabilirsiniz." });
     } catch (err) {

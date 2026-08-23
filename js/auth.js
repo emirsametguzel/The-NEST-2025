@@ -109,15 +109,17 @@
 
             const { ok, data } = await postJson('/auth/forgot-password', { email });
 
-            let msg = data.message || data.error || 'İşlem tamamlandı.';
-            if (data.devOtp) {
-                msg += ` (Test Kodu: ${data.devOtp})`;
-                try { sessionStorage.setItem('lastDevOtp', data.devOtp); } catch (_) {}
-            }
+            const msg = data.message || data.error || 'İşlem tamamlandı.';
             showFeedback(feedback, msg, !ok);
-            if (ok) {
-                setTimeout(() => { window.location.href = `${base}reset-password.html`; }, 1200);
-            } else {
+
+            const resetLinkBox = document.getElementById('reset-link-box');
+            const resetLinkBtn = document.getElementById('reset-link-btn');
+
+            if (ok && data.resetLink && resetLinkBox && resetLinkBtn) {
+                resetLinkBtn.href = data.resetLink;
+                resetLinkBox.style.display = 'block';
+                submitBtn.disabled = false;
+            } else if (!ok) {
                 submitBtn.disabled = false;
             }
         });
