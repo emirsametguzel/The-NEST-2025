@@ -1,22 +1,16 @@
 // =============================================================================
 // server/src/utils/mailer.js
-// Brevo (Sendinblue) HTTP API & Fallback E-Posta Gönderim Modülü
-// Brevo v3 REST API (Port 443 HTTPS) kullanır, alan adı doğrulama zorunluluğu
-// olmadan doğrudan Gmail/özel e-posta gönderici adresiyle sorunsuz çalışır.
+// Nodemailer SMTP E-Posta Gönderim Modülü (Brevo SMTP Relay veya Özel SMTP)
 // =============================================================================
 
-const {
-    BREVO_API_KEY,
-    BREVO_FROM_EMAIL,
-    BREVO_FROM_NAME,
-    RESEND_API_KEY,
-    RESEND_FROM,
-    SMTP_HOST,
-    SMTP_PORT,
-    SMTP_USER,
-    SMTP_PASS,
-    SMTP_FROM,
-} = process.env;
+const nodemailer = require("nodemailer");
+
+const SMTP_HOST = process.env.SMTP_HOST || "smtp-relay.brevo.com";
+const SMTP_PORT = parseInt(process.env.SMTP_PORT, 10) || 587;
+const SMTP_SECURE = process.env.SMTP_SECURE === "true";
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
+const SMTP_FROM = process.env.SMTP_FROM || "The Nest <parolasifirlamanest@gmail.com>";
 
 // Güvenli Maskeleme Yardımcıları
 function maskSecret(str) {
@@ -31,64 +25,38 @@ function maskEmail(email) {
     return name.slice(0, 2) + "***@" + domain;
 }
 
-const HAS_BREVO = Boolean(BREVO_API_KEY && BREVO_API_KEY.trim().length > 0);
-const SENDER_EMAIL = (BREVO_FROM_EMAIL || "parolasifirlamanest@gmail.com").trim();
-const SENDER_NAME = (BREVO_FROM_NAME || "The Nest").trim();
+const HAS_AUTH = Boolean(SMTP_USER && SMTP_PASS);
 
-if (HAS_BREVO) {
-    console.log("┌────────────────────────────────────────────────────────┐");
-    console.log("│ 📬 [BREVO API] E-POSTA SERVİSİ AKTİF EDİLDİ            │");
-    console.log(`│ API Key : ${maskSecret(BREVO_API_KEY).padEnd(45)}│`);
-    console.log(`│ Gönderen: ${(SENDER_NAME + " <" + SENDER_EMAIL + ">").padEnd(45)}│`);
-    console.log("│ İletişim: HTTPS Port 443 (api.brevo.com/v3/smtp/email) │");
-    console.log("└────────────────────────────────────────────────────────┘");
-} else {
-    console.log("⚠️ [BREVO API]: BREVO_API_KEY tanımlanmamış.");
-    console.log("   Şifre sıfırlama OTP kodları sunucu terminaline yazdırılacaktır.");
-}
-
-/**
- * Brevo HTTP API v3 üzerinden e-posta gönderir
- */
-async function sendViaBrevo(toEmail, subject, text, html) {
-    const endpoint = "https://api.brevo.com/v3/smtp/email";
-    const apiKey = BREVO_API_KEY.trim();
-
-    const payload = {
-        sender: {
-            name: SENDER_NAME,
-            email: SENDER_EMAIL,
+let transporter = null;
+try {
+    transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_SECURE,
+        auth: HAS_AUTH
+            ? {
+                  user: SMTP_USER,
+                  pass: SMTP_PASS,
+              }
+            : undefined,
+        connectionTimeout: 10000,
+        greetingTimeout: 5000,
+        tls: {
+            rejectUnauthorized: false,
         },
-        to: [
-            {
-                email: toEmail,
-            },
-        ],
-        subject: subject,
-        htmlContent: html,
-        textContent: text,
-    };
-
-    console.log(`🚀 [Brevo API] ${toEmail} adresine e-posta gönderiliyor (Gönderici: ${SENDER_EMAIL})...`);
-
-    const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-            "accept": "application/json",
-            "api-key": apiKey,
-            "content-type": "application/json",
-        },
-        body: JSON.stringify(payload),
     });
 
-    const responseData = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-        const errMsg = responseData.message || responseData.error || `HTTP ${response.status} Hatası`;
-        throw new Error(`Brevo API Hatası (${response.status}): ${errMsg}`);
-    }
-
-    return responseData; // { messageId: "<...>" }
+    console.log("┌────────────────────────────────────────────────────────┐");
+    console.log("│ 📧 [SMTP TRANSPORTER] YAPILANDIRILDI                   │");
+    console.log(`│ Host    : ${SMTP_HOST.padEnd(45)}│`);
+    console.log(`│ Port    : ${String(SMTP_PORT).padEnd(45)}│`);
+    console.log(`│ Secure  : ${String(SMTP_SECURE).padEnd(45)}│`);
+    console.log(`│ User    : ${maskEmail(SMTP_USER).padEnd(45)}│`);
+    console.log(`│ From    : ${SMTP_FROM.padEnd(45)}│`);
+    console.log("└────────────────────────────────────────────────────────┘");
+} catch (initErr) {
+    console.error("❌ [SMTP BAŞLATMA HATASI]:", initErr.message);
+    transporter = null;
 }
 
 /**
@@ -121,33 +89,39 @@ async function sendOtpEmail(toEmail, otp) {
         </div>
     `;
 
-    // 1. ÖNCELİK: Brevo HTTP REST API
-    if (HAS_BREVO) {
+    if (transporter && HAS_AUTH) {
         try {
-            const data = await sendViaBrevo(toEmail, subject, text, html);
+            console.log(`📤 [SMTP] ${toEmail} adresine e-posta iletiliyor (From: ${SMTP_FROM})...`);
+            const info = await transporter.sendMail({
+                from: SMTP_FROM,
+                to: toEmail,
+                subject,
+                text,
+                html,
+            });
 
             console.log("╔══════════════════════════════════════════════════════╗");
-            console.log("║ ✅ [BREVO TESLİMATI BAŞARILI]                         ║");
+            console.log("║ ✅ [SMTP TESLİMATI BAŞARILI]                         ║");
             console.log(`║ Alıcı     : ${toEmail.padEnd(41)}║`);
-            console.log(`║ MessageId : ${(data?.messageId || "Gönderildi").slice(0, 41).padEnd(41)}║`);
+            console.log(`║ MessageId : ${(info?.messageId || "").slice(0, 41).padEnd(41)}║`);
             console.log("╚══════════════════════════════════════════════════════╝");
 
-            return { delivered: true, dev: false, messageId: data?.messageId };
-        } catch (err) {
-            console.error("❌ [Brevo Gönderim Hatası]:", err.message);
-            logFallbackOtp(toEmail, otp, "Brevo Hatası");
-            return { delivered: false, dev: true, error: err.message, otp };
+            return { delivered: true, dev: false, messageId: info?.messageId };
+        } catch (sendError) {
+            console.error("❌ [SMTP Gönderim Hatası]:", sendError.message);
+            logFallbackOtp(toEmail, otp, "SMTP Hatası: " + sendError.message);
+            return { delivered: false, dev: true, error: sendError.message, otp };
         }
     }
 
-    // 2. YEREL / GELİŞTİRME FALLBACK MODU
-    logFallbackOtp(toEmail, otp, "Yerel Geliştirme / Test Modu");
+    // SMTP auth bilgisi yoksa veya transporter başlatılamadıysa fallback modu
+    logFallbackOtp(toEmail, otp, "SMTP Kullanıcı/Şifre Tanımsız");
     return { delivered: false, dev: true, otp };
 }
 
 function logFallbackOtp(toEmail, otp, reason) {
     console.log("╔══════════════════════════════════════════════════════╗");
-    console.log(`║ 🔑 [OTP KODU] (${reason.slice(0, 30).padEnd(30)}) ║`);
+    console.log(`║ 🔑 [OTP KODU] (${(reason || "Fallback").slice(0, 30).padEnd(30)}) ║`);
     console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
     console.log(`║ OTP  : ${otp.padEnd(46)}║`);
     console.log("║ Süre : 10 Dakika                                     ║");
@@ -155,8 +129,9 @@ function logFallbackOtp(toEmail, otp, reason) {
 }
 
 module.exports = {
+    transporter,
     sendOtpEmail,
     sendOTP: sendOtpEmail,
     sendMail: sendOtpEmail,
-    HAS_BREVO,
+    HAS_SMTP: Boolean(transporter && HAS_AUTH),
 };
