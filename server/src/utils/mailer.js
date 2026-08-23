@@ -33,24 +33,36 @@ async function sendOtpEmail(toEmail, otp) {
         <p>Bu kod <strong>10 dakika</strong> boyunca geçerlidir. Bu isteği siz yapmadıysanız bu e-postayı görmezden gelebilirsiniz.</p>
     `;
 
-    if (!SMTP_CONFIGURED) {
-        // --- Geliştirme ortamı fallback'i ---
-        console.log("─────────────────────────────────────────────");
-        console.log("📧 [DEV] SMTP tanımlı değil — e-posta gönderilmedi.");
-        console.log(`   Alıcı : ${toEmail}`);
-        console.log(`   OTP   : ${otp}`);
-        console.log("─────────────────────────────────────────────");
-        return { delivered: false, dev: true };
+    if (!SMTP_CONFIGURED || !transporter) {
+        // --- Geliştirme / Test ortamı fallback'i ---
+        console.log("╔══════════════════════════════════════════════════════╗");
+        console.log("║ 📧 [DEV/FALLBACK] ŞİFRE SIFIRLAMA OTP KODU ÜRETİLDİ   ║");
+        console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+        console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+        console.log("║ Süre : 10 Dakika                                     ║");
+        console.log("╚══════════════════════════════════════════════════════╝");
+        return { delivered: false, dev: true, otp };
     }
 
-    await transporter.sendMail({
-        from: SMTP_FROM || SMTP_USER,
-        to: toEmail,
-        subject,
-        text,
-        html,
-    });
-    return { delivered: true, dev: false };
+    try {
+        await transporter.sendMail({
+            from: SMTP_FROM || SMTP_USER,
+            to: toEmail,
+            subject,
+            text,
+            html,
+        });
+        console.log(`✅ [SMTP] OTP e-postası başarıyla gönderildi: ${toEmail}`);
+        return { delivered: true, dev: false };
+    } catch (mailError) {
+        console.error("⚠️ [SMTP Gönderim Hatası]:", mailError.message);
+        console.log("╔══════════════════════════════════════════════════════╗");
+        console.log("║ 🔑 [FALLBACK OTP KODU (SMTP Hatası Nedeniyle)]        ║");
+        console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+        console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+        console.log("╚══════════════════════════════════════════════════════╝");
+        return { delivered: false, dev: true, error: mailError.message, otp };
+    }
 }
 
 module.exports = { sendOtpEmail, SMTP_CONFIGURED };

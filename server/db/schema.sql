@@ -60,18 +60,18 @@ CREATE TABLE IF NOT EXISTS password_resets (
 CREATE INDEX IF NOT EXISTS idx_password_resets_user ON password_resets (user_id, expires_at);
 
 -- =============================================================================
--- content_items: Makaleler, Dersler ve Duyurular için birleşik içerik tablosu.
--- Tek bir tablo + `type` alanı tercih edildi (üç ayrı şema yerine): CRUD API'si
--- tek set rota ile hepsini kapsar, ileride yeni bir içerik türü eklemek yalnızca
--- CHECK kısıtına bir değer eklemek kadar basit olur.
+-- content_items: Makaleler, Dersler, Duyurular, Sunumlar, Objeler için tablo
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS content_items (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    type         TEXT NOT NULL CHECK (type IN ('makale', 'ders', 'duyuru')),
+    type         TEXT NOT NULL CHECK (type IN ('makale', 'ders', 'duyuru', 'sunum', 'obje', 'haber')),
+    category     TEXT DEFAULT 'Mekanik',
     title        TEXT NOT NULL,
     slug         TEXT NOT NULL UNIQUE,
     summary      TEXT,
     body         TEXT,
+    image_url    TEXT,
+    file_url     TEXT,
     author_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
     is_published INTEGER NOT NULL DEFAULT 1 CHECK (is_published IN (0, 1)),
     created_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
@@ -79,6 +79,35 @@ CREATE TABLE IF NOT EXISTS content_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_content_type ON content_items (type, created_at);
+CREATE INDEX IF NOT EXISTS idx_content_cat  ON content_items (category);
+
+-- =============================================================================
+-- team_applications: Takım başvuru formları tablosu
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS team_applications (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    name         TEXT NOT NULL,
+    class_name   TEXT NOT NULL,
+    email        TEXT NOT NULL,
+    phone        TEXT NOT NULL,
+    experience   TEXT,
+    department   TEXT NOT NULL,
+    tools        TEXT,
+    motivation   TEXT NOT NULL,
+    status       TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    created_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_team_app_status ON team_applications (status, created_at);
+
+-- =============================================================================
+-- site_settings: Dinamik site ve duyuru ayarları
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS site_settings (
+    key          TEXT PRIMARY KEY,
+    value        TEXT NOT NULL,
+    updated_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
 
 -- sessions tablosu connect-sqlite3 store'u tarafından otomatik oluşturulur (referans amaçlı):
 -- CREATE TABLE sessions (sid TEXT PRIMARY KEY, expired INTEGER NOT NULL, sess TEXT NOT NULL);

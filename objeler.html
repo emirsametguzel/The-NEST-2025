@@ -1,77 +1,119 @@
 <!DOCTYPE html>
 <html lang="tr" data-base-path="">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Tasarımlar</title>
+    <title>The Nest | Tasarımlar & 3D Objeler</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/pages.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bevan&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- navbar -->
+    <!-- Navbar -->
     <div id="app-header" data-component="header"></div>
 
-<section>
+    <section>
         <div id="nav-bar">
             <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header"><a id="nav-title" href="https://codepen.io/" target="_blank">Egitimler</a>
+            <div id="nav-header">
+                <a id="nav-title" href="#a1">Tasarımlar</a>
                 <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
                 <hr />
             </div>
             <div id="nav-content">
-                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"> </i><span>Mekanik </span></a>
-                </div>
-                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"> </i><span>Yazılım </span></a>
-                </div>
-                <div class="nav-button"><a href="#a3"><i
-                            class="fas fa-solid fa-person-chalkboard"></i><span>SunumBecerileri</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"> </i><span>Tasarım </span></a>
-                </div>
-                <div class="nav-button"><a href="#a5"><i class="fas fa-chart-line"> </i><span>Sponsorluk </span></a>
-                </div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"> </i><span>Elektronik </span></a>
-                </div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"> </i><span>FRC </span></a></div>
-                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"> </i><span>FYF </span></a></div>
-
+                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span>Mekanik CAD</span></a></div>
+                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span>3D Parçalar</span></a></div>
+                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span>Elektronik Montaj</span></a></div>
+                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span>FRC Şasi</span></a></div>
                 <div id="nav-content-highlight"></div>
             </div>
             <input id="nav-footer-toggle" type="checkbox" />
-
         </div>
     </section>
 
     <section>
-        <!-- ögretici kısımlar -->
-        <div class="mother-1-1">
+        <!-- 3D Objeler ve CAD Tasarımları -->
+        <div class="mother-1-1" data-content-type="obje">
             <div class="mother-1-2">
 
+                <!-- 1. MEKANİK CAD TASARIMLARI -->
+                <div class="wrapper" id="a1">
+                    <h1><i class="fa-solid fa-cube" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik CAD & 3D Modeller</h1>
+                    <div class="cols">
+
+                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
+                            <div class="container">
+                                <div class="front" style="background-image: url('images/mk/1.jpg');">
+                                    <div class="inner">
+                                        <span class="card-badge">STEP / Onshape</span>
+                                        <p>Swerve Modülü Montaj Modeli</p>
+                                    </div>
+                                </div>
+                                <div class="back">
+                                    <div class="inner">
+                                        <span class="card-badge">Model Detayı</span>
+                                        <p>MK4i L2 Dişli oranlı Swerve modülü CAD çizimi ve parça listesi (BOM).</p>
+                                        <span class="card-btn"><i class="fa-solid fa-download"></i> CAD İndir</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
+                            <div class="container">
+                                <div class="front" style="background-image: url('images/mk/2.jpg');">
+                                    <div class="inner">
+                                        <span class="card-badge">STL / 3D Baskı</span>
+                                        <p>RoboRIO ve PDH Montaj Braketleri</p>
+                                    </div>
+                                </div>
+                                <div class="back">
+                                    <div class="inner">
+                                        <span class="card-badge">Model Detayı</span>
+                                        <p>Titreşim sönümleyici TPU ve PETG baskı profilleri.</p>
+                                        <span class="card-btn"><i class="fa-solid fa-download"></i> STL İndir</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="accordion-wrapper">
+                        <div class="accordion-item">
+                            <button class="accordion-header" type="button">
+                                <div class="accordion-title-group">
+                                    <div class="accordion-icon"><i class="fa-solid fa-cube"></i></div>
+                                    <div class="accordion-title-text">
+                                        <h3 class="accordion-title">FRC Açık Kaynak 3D Baskı Parça Kütüphanesi (The Nest CAD)</h3>
+                                        <span class="accordion-category-badge">3D Tasarım • Açık Kaynak</span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="accordion-content">
+                                    <p>Takımlarımızın sezon boyunca tasarlayıp test ettiği tüm 3D baskı parçaları (kablo düzenleyiciler, sensör tutucular, Limelight koruyucu kılıfları) STEP ve STL formatlarında ücretsiz olarak sunulmaktadır.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-
-
-
         </div>
-
-
-
     </section>
 
-
-
-
+    <!-- Footer -->
     <div id="app-footer" data-component="footer"></div>
 
     <script src="js/components.js"></script>

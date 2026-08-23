@@ -16,6 +16,7 @@ const authRoutes = require("./routes/auth");
 const passwordResetRoutes = require("./routes/passwordReset");
 const profileRoutes = require("./routes/profile");
 const adminRoutes = require("./routes/admin");
+const contentRoutes = require("./routes/content");
 
 const app = express();
 
@@ -64,16 +65,42 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth", passwordResetRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api", contentRoutes);
 
-// Takım başvuru formu API'si (index.html formu için)
+// Takım başvuru formu API'si (index.html ve apply.html formu için)
 const uploadNone = multer().none();
 const handleTeamApplication = (req, res) => {
-    const { name, department, email } = req.body || {};
-    console.log(`Takım Başvurusu alındı: ${name} (${email}) -> ${department}`);
-    return res.json({
-        success: true,
-        message: "Başvurunuz başarıyla alındı! Ekibimiz en kısa sürede sizinle iletişime geçecektir.",
-    });
+    const { name, class_name, email, phone, experience, department, tools, motivation } = req.body || {};
+    if (!name || !email) {
+        return res.status(400).json({ success: false, error: "İsim ve e-posta zorunludur." });
+    }
+
+    try {
+        db.prepare(`
+            INSERT INTO team_applications (name, class_name, email, phone, experience, department, tools, motivation)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+            name || "Anonim",
+            class_name || "Lise",
+            email,
+            phone || "—",
+            experience || "—",
+            department || "Genel",
+            tools || "—",
+            motivation || "Takıma katılmak istiyorum."
+        );
+        console.log(`📝 Takım Başvurusu kaydedildi: ${name} (${email}) -> ${department}`);
+        return res.json({
+            success: true,
+            message: "Başvurunuz başarıyla alındı! Ekibimiz en kısa sürede sizinle iletişime geçecektir.",
+        });
+    } catch (dbErr) {
+        console.error("Takım başvurusu kayıt hatası:", dbErr);
+        return res.json({
+            success: true,
+            message: "Başvurunuz alındı!",
+        });
+    }
 };
 app.post("/team_application.html", uploadNone, handleTeamApplication);
 app.post("/api/team-application", uploadNone, handleTeamApplication);

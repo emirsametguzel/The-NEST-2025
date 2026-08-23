@@ -87,11 +87,31 @@ const adminUpdateRoleValidationRules = [
 ];
 
 const contentValidationRules = [
-    body("type").isIn(["makale", "ders", "duyuru"]).withMessage("Geçersiz içerik türü."),
-    body("title").trim().isLength({ min: 3, max: 200 }).withMessage("Başlık 3-200 karakter arasında olmalı.").escape(),
-    body("summary").optional({ checkFalsy: true }).trim().isLength({ max: 500 }).escape(),
-    body("body").optional({ checkFalsy: true }).trim().isLength({ max: 20000 }).escape(),
+    body("type").isIn(["makale", "ders", "duyuru", "sunum", "obje", "haber"]).withMessage("Geçersiz içerik türü."),
+    body("category").optional({ checkFalsy: true }).trim().isLength({ max: 100 }).escape(),
+    body("title").trim().isLength({ min: 2, max: 255 }).withMessage("Başlık 2-255 karakter arasında olmalı.").escape(),
+    body("summary").optional({ checkFalsy: true }).trim().isLength({ max: 1000 }).escape(),
+    body("body").optional({ checkFalsy: true }).trim().isLength({ max: 50000 }),
+    body("imageUrl").optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body("fileUrl").optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body("isPublished").optional().isBoolean().withMessage("isPublished true/false olmalı."),
+];
+
+const adminResetPasswordValidationRules = [
+    body("newPassword")
+        .isLength({ min: 6, max: 128 })
+        .withMessage("Yeni şifre en az 6 karakter olmalıdır."),
+];
+
+const teamApplicationValidationRules = [
+    body("name").trim().isLength({ min: 2, max: 100 }).withMessage("İsim en az 2 karakter olmalıdır.").escape(),
+    body("className").trim().isLength({ min: 1, max: 50 }).withMessage("Sınıf bilgisi gereklidir.").escape(),
+    body("email").trim().isEmail().withMessage("Geçerli bir e-posta girin.").normalizeEmail(),
+    body("phone").trim().isLength({ min: 7, max: 20 }).withMessage("Geçerli bir telefon numarası girin.").escape(),
+    body("department").trim().isLength({ min: 2, max: 100 }).withMessage("Departman seçiniz.").escape(),
+    body("motivation").trim().isLength({ min: 5, max: 2000 }).withMessage("Motivasyon metni en az 5 karakter olmalıdır.").escape(),
+    body("experience").optional({ checkFalsy: true }).trim().isLength({ max: 1000 }).escape(),
+    body("tools").optional({ checkFalsy: true }).trim().isLength({ max: 1000 }).escape(),
 ];
 
 module.exports = {
@@ -101,5 +121,7 @@ module.exports = {
     forgotPasswordValidationRules,
     resetPasswordValidationRules,
     adminUpdateRoleValidationRules,
+    adminResetPasswordValidationRules,
     contentValidationRules,
+    teamApplicationValidationRules,
 };

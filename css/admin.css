@@ -1,53 +1,133 @@
 /* =============================================================================
-   ADMIN.CSS — Yönetim paneli (admin.html) stilleri
+   ADMIN.CSS — The Nest Yönetim Paneli (admin.html) Stilleri
    ============================================================================= */
 
 .admin-page {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 40px auto 80px;
-    padding: 0 20px;
-    font-family: 'Poppins', sans-serif;
-    color: #222;
+    padding: 0 24px;
+    font-family: 'Ubuntu', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1e293b;
 }
 
+/* --- 403 Yetkisiz Erişim Kartı --- */
+.admin-forbidden-card {
+    max-width: 540px;
+    margin: 60px auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(4, 44, 98, 0.15);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.admin-forbidden-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.admin-forbidden-card h2 {
+    font-size: 1.6rem;
+    color: #0f172a;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.admin-forbidden-card p {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.admin-forbidden-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* --- Header --- */
 .admin-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .admin-header h1 {
-    color: #042C62;
-    font-size: 1.8rem;
+    color: #ffffff;
+    font-size: 1.85rem;
     margin: 0;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
+.admin-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    margin-top: 4px;
+}
+
+.admin-user-tag {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* --- Sekmeler (Tabs) --- */
 .admin-tabs {
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
-    border-bottom: 2px solid #e5e9f0;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     flex-wrap: wrap;
 }
 
 .admin-tab {
-    background: none;
-    border: none;
-    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 20px;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #6b7688;
+    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.admin-tab:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
 }
 
 .admin-tab.active {
+    background: #ffffff;
     color: #042C62;
-    border-bottom-color: #042C62;
+    border-color: #ffffff;
 }
 
 .admin-panel {
@@ -58,69 +138,110 @@
     display: block;
 }
 
+/* --- Toolbar --- */
 .admin-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-toolbar-filters {
+    display: flex;
     gap: 10px;
-    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
 .admin-select {
-    padding: 8px 12px;
-    border: 1px solid #ccd3e0;
-    border-radius: 6px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
     font-size: 0.9rem;
+    background: #ffffff;
+    color: #1e293b;
+    font-weight: 500;
+    outline: none;
 }
 
+.admin-select:focus {
+    border-color: #007bff;
+}
+
+/* --- Butonlar --- */
 .admin-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: #042C62;
-    color: #fff;
+    justify-content: center;
+    gap: 8px;
+    background: #007bff;
+    color: #ffffff;
     border: none;
-    padding: 9px 16px;
-    border-radius: 6px;
+    padding: 10px 18px;
+    border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 .admin-btn:hover {
-    background: #06398a;
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.admin-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .admin-btn--danger {
-    background: #c0392b;
+    background: #dc2626;
 }
 
 .admin-btn--danger:hover {
-    background: #a5281b;
+    background: #b91c1c;
+}
+
+.admin-btn--warning {
+    background: #d97706;
+}
+
+.admin-btn--warning:hover {
+    background: #b45309;
+}
+
+.admin-btn--success {
+    background: #16a34a;
+}
+
+.admin-btn--success:hover {
+    background: #15803d;
 }
 
 .admin-btn--ghost {
     background: transparent;
     color: #042C62;
-    border: 1px solid #042C62;
+    border: 1px solid #cbd5e1;
 }
 
 .admin-btn--ghost:hover {
-    background: #eef2f8;
+    background: #f1f5f9;
 }
 
 .admin-btn--sm {
-    padding: 5px 10px;
+    padding: 6px 10px;
     font-size: 0.8rem;
+    border-radius: 6px;
 }
 
-/* --- Tablo: responsive kart-dönüşümlü --- */
+/* --- Tablo --- */
 .admin-table-wrap {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(4, 44, 98, 0.08);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
 }
 
@@ -133,88 +254,106 @@
 .admin-table th,
 .admin-table td {
     text-align: left;
-    padding: 12px 16px;
-    border-bottom: 1px solid #eef1f6;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9;
     white-space: nowrap;
 }
 
 .admin-table th {
-    background: #f7f9fc;
-    color: #4a5568;
-    font-weight: 600;
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
     font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+}
+
+.admin-table tr:hover {
+    background: #fcfdfe;
 }
 
 .admin-table tr:last-child td {
     border-bottom: none;
 }
 
-.role-badge {
-    display: inline-block;
-    padding: 3px 10px;
+/* --- Rozetler (Badges) --- */
+.role-badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
     border-radius: 100px;
     font-size: 0.75rem;
     font-weight: 700;
 }
 
 .role-badge--admin {
-    background: #e8f0ff;
-    color: #042C62;
+    background: #eff6ff;
+    color: #1d4ed8;
 }
 
 .role-badge--member {
-    background: #eef2f6;
-    color: #556;
+    background: #f1f5f9;
+    color: #475569;
 }
 
-.status-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 700;
+.status-badge--published,
+.status-badge--approved {
+    background: #dcfce7;
+    color: #15803d;
 }
 
-.status-badge--published {
-    background: #e7f6ec;
-    color: #146c2e;
+.status-badge--draft,
+.status-badge--pending {
+    background: #fef3c7;
+    color: #b45309;
 }
 
-.status-badge--draft {
-    background: #fff4e0;
-    color: #a15c00;
+.status-badge--rejected,
+.status-badge--frozen {
+    background: #fee2e2;
+    color: #b91c1c;
 }
 
 .admin-empty {
     text-align: center;
-    padding: 40px;
-    color: #8a93a6;
+    padding: 50px 20px;
+    color: #ffffff;
+    font-size: 1.1rem;
 }
 
+.admin-table .admin-empty {
+    color: #64748b;
+}
+
+/* --- Feedback Mesajı --- */
 .admin-feedback {
-    margin: 0 0 16px;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    margin-bottom: 20px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .admin-feedback.is-error {
-    background: #fde8e8;
-    color: #8b1e1e;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
 }
 
 .admin-feedback.is-success {
-    background: #e7f6ec;
-    color: #146c2e;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
 }
 
-/* --- Modal (içerik ekle/düzenle) --- */
+/* --- Modal Stilleri --- */
 .admin-modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(4, 44, 98, 0.45);
+    background: rgba(4, 44, 98, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,65 +362,145 @@
 }
 
 .admin-modal {
-    background: #fff;
-    border-radius: 10px;
-    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
     width: 100%;
-    max-width: 560px;
+    max-width: 680px;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
-.admin-modal h2 {
-    color: #042C62;
-    margin: 0 0 16px;
-    font-size: 1.3rem;
+.admin-modal--sm {
+    max-width: 440px;
 }
 
+.admin-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-modal-header h2 {
+    color: #0f172a;
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.admin-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.admin-modal-close:hover {
+    color: #0f172a;
+}
+
+/* --- Form Stilleri --- */
 .admin-form label {
     display: block;
     margin: 14px 0 6px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #333;
+    color: #334155;
 }
 
 .admin-form input[type="text"],
+.admin-form input[type="email"],
 .admin-form select,
 .admin-form textarea {
     width: 100%;
-    padding: 9px 12px;
-    border: 1px solid #ccd3e0;
-    border-radius: 6px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
     font-size: 0.9rem;
     box-sizing: border-box;
     font-family: inherit;
+    color: #0f172a;
 }
 
-.admin-form textarea {
-    resize: vertical;
-    min-height: 120px;
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
-.admin-form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .admin-checkbox-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: 16px;
 }
 
-/* --- Responsive: dar ekranlarda tablo yerine kart görünümü --- */
-@media only screen and (max-width: 700px) {
+.admin-checkbox-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.admin-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* --- Site Ayarları Kartı --- */
+.admin-settings-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.admin-settings-card h2 {
+    color: #042C62;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* --- Başvuru Detay Görünümü --- */
+.admin-app-detail-box {
+    line-height: 1.6;
+    color: #334155;
+}
+
+.admin-app-detail-box p {
+    margin-bottom: 12px;
+}
+
+.admin-app-detail-box strong {
+    color: #0f172a;
+}
+
+/* --- Responsive Tablo --- */
+@media only screen and (max-width: 800px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+
     .admin-table thead {
         display: none;
     }
+
     .admin-table,
     .admin-table tbody,
     .admin-table tr,
@@ -289,22 +508,25 @@
         display: block;
         width: 100%;
     }
+
     .admin-table tr {
-        padding: 12px 16px;
-        border-bottom: 1px solid #eef1f6;
+        padding: 16px;
+        border-bottom: 1px solid #e2e8f0;
     }
+
     .admin-table td {
         border: none;
-        padding: 4px 0;
+        padding: 6px 0;
         white-space: normal;
     }
+
     .admin-table td::before {
         content: attr(data-label);
         display: block;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         font-weight: 700;
-        color: #8a93a6;
+        color: #64748b;
         text-transform: uppercase;
-        letter-spacing: 0.03em;
+        margin-bottom: 2px;
     }
 }

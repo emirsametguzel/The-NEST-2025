@@ -58,9 +58,22 @@ router.post(
                 `INSERT INTO password_resets (user_id, otp_hash, expires_at) VALUES (?, ?, ?)`
             ).run(user.id, otpHash, expiresAt);
 
-            await sendOtpEmail(user.email, otp);
+            const mailResult = await sendOtpEmail(user.email, otp);
 
-            return res.json(genericResponse);
+            const responsePayload = {
+                success: true,
+                message: "Bu e-posta kayıtlıysa, 6 haneli doğrulama kodu gönderildi.",
+            };
+
+            if (mailResult && mailResult.dev) {
+                responsePayload.devMode = true;
+                responsePayload.devNote = "Geliştirme ortamı: OTP kodu sunucu terminaline yazdırıldı.";
+                if (process.env.NODE_ENV !== "production") {
+                    responsePayload.devOtp = otp; // Geliştirme/test kolaylığı için
+                }
+            }
+
+            return res.json(responsePayload);
         } catch (err) {
             console.error("Forgot-password hatası:", err);
             return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });

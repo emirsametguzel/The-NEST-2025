@@ -102,11 +102,19 @@
             const submitBtn = document.getElementById('forgot-password-submit');
             submitBtn.disabled = true;
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
+            if (email) {
+                try { sessionStorage.setItem('resetEmail', email); } catch (_) {}
+            }
+
             const { ok, data } = await postJson('/auth/forgot-password', { email });
 
-            // Sunucu her durumda aynı genel mesajı döner (e-posta keşfini önlemek için).
-            showFeedback(feedback, data.message || data.error || 'İşlem tamamlandı.', !ok);
+            let msg = data.message || data.error || 'İşlem tamamlandı.';
+            if (data.devOtp) {
+                msg += ` (Test Kodu: ${data.devOtp})`;
+                try { sessionStorage.setItem('lastDevOtp', data.devOtp); } catch (_) {}
+            }
+            showFeedback(feedback, msg, !ok);
             if (ok) {
                 setTimeout(() => { window.location.href = `${base}reset-password.html`; }, 1200);
             } else {
@@ -120,20 +128,37 @@
     // -------------------------------------------------------------------------
     const resetForm = document.getElementById('reset-password-form');
     if (resetForm) {
+        try {
+            const savedEmail = sessionStorage.getItem('resetEmail');
+            if (savedEmail) {
+                const emailInput = document.getElementById('email');
+                if (emailInput && !emailInput.value) emailInput.value = savedEmail;
+            }
+            const savedOtp = sessionStorage.getItem('lastDevOtp');
+            if (savedOtp) {
+                const otpInput = document.getElementById('otp');
+                if (otpInput && !otpInput.value) otpInput.value = savedOtp;
+            }
+        } catch (_) {}
+
         resetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const feedback = document.getElementById('auth-feedback');
             const submitBtn = document.getElementById('reset-password-submit');
             submitBtn.disabled = true;
 
-            const email = document.getElementById('email').value;
-            const otp = document.getElementById('otp').value;
+            const email = document.getElementById('email').value.trim();
+            const otp = document.getElementById('otp').value.trim();
             const newPassword = document.getElementById('newPassword').value;
 
             const { ok, data } = await postJson('/auth/reset-password', { email, otp, newPassword });
 
             if (ok) {
-                showFeedback(feedback, data.message || 'Şifre güncellendi.', false);
+                try {
+                    sessionStorage.removeItem('resetEmail');
+                    sessionStorage.removeItem('lastDevOtp');
+                } catch (_) {}
+                showFeedback(feedback, data.message || 'Şifre güncellendi. Giriş sayfasına yönlendiriliyorsunuz...', false);
                 setTimeout(() => { window.location.href = `${base}login.html`; }, 1500);
             } else {
                 const detail = data.details?.[0]?.msg;

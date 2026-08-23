@@ -1,501 +1,173 @@
 <!DOCTYPE html>
 <html lang="tr" data-base-path="">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Nest | Sunumlar</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/pages.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bevan&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- navbar -->
+    <!-- Navbar -->
     <div id="app-header" data-component="header"></div>
 
-<section>
+    <section>
         <div id="nav-bar">
             <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header"><a id="nav-title" href="https://codepen.io/" target="_blank">Egitimler</a>
+            <div id="nav-header">
+                <a id="nav-title" href="#a1">Sunumlar</a>
                 <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
                 <hr />
             </div>
             <div id="nav-content">
-                <div   class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"> </i><span id="l1">Mekanik 
-
-                </span></a>
-                </div>
-                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"> </i><span id="l2" >Yazılım </span></a>
-                </div>
-                <div class="nav-button"><a href="#a3"><i
-                            class="fas fa-solid fa-person-chalkboard"></i><span id="l3" >PR</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"> </i><span id="l4" >Tasarım </span></a>
-                </div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"> </i><span id="l5" >Elektronik </span></a>
-                </div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"> </i><span id="l6" >FRC </span></a></div>
-                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"> </i><span id="l7" >FYF </span></a></div>
-
+                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span id="l1">Mekanik</span></a></div>
+                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"></i><span id="l2">Yazılım</span></a></div>
+                <div class="nav-button"><a href="#a3"><i class="fas fa-solid fa-person-chalkboard"></i><span id="l3">Sunum & Jüri</span></a></div>
+                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span id="l4">Tasarım</span></a></div>
+                <div class="nav-button"><a href="#a5"><i class="fas fa-chart-line"></i><span id="l5">Sponsorluk</span></a></div>
+                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span id="l6">Elektronik</span></a></div>
+                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span id="l7">FRC</span></a></div>
+                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"></i><span id="l8">FYF</span></a></div>
                 <div id="nav-content-highlight"></div>
             </div>
             <input id="nav-footer-toggle" type="checkbox" />
-
         </div>
     </section>
 
     <section>
-        <!-- ögretici kısımlar -->
-        <div class="mother-1-1">
+        <!-- Sunum İçerikleri -->
+        <div class="mother-1-1" data-content-type="sunum">
             <div class="mother-1-2">
 
-                <div class="wrapper">
-                    <h1>Mekanik</h1>
-                    <div class="cols" id="a1">
+                <!-- 1. MEKANİK SUNUMLARI -->
+                <div class="wrapper" id="a1">
+                    <h1><i class="fa-solid fa-gear" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik Sunumları</h1>
+                    <div class="cols">
 
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
+                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
+                            <div class="container">
+                                <div class="front" style="background-image: url('images/mk/1.jpg');">
+                                    <div class="inner">
+                                        <span class="card-badge">Sunum Slaytı</span>
+                                        <p>Mekanik Sistem Optimizasyonu & Testleri</p>
                                     </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Mekanik Sistem Optimizasyonu Nasıl Yapılmalı</p>
-                                        </div>
+                                </div>
+                                <div class="back">
+                                    <div class="inner">
+                                        <span class="card-badge">Slayt Özeti</span>
+                                        <p>Sürtünme analizi, redüksiyon oranları ve tolerans kontrol yöntemleri.</p>
+                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
 
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
+                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
+                            <div class="container">
+                                <div class="front" style="background-image: url('images/mk/2.jpg');">
+                                    <div class="inner">
+                                        <span class="card-badge">Sunum Slaytı</span>
+                                        <p>FRC Robot Şasilerinde Malzeme Seçimi</p>
                                     </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Malzeme Seçiminde Ne Önemlidir</p>
-                                        </div>
+                                </div>
+                                <div class="back">
+                                    <div class="inner">
+                                        <span class="card-badge">Slayt Özeti</span>
+                                        <p>Metal alaşımları ve polimerlerin mukavemet / ağırlık oranı analizleri.</p>
+                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
 
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
+                    </div>
 
-
-                                        </div>
+                    <div class="accordion-wrapper">
+                        <div class="accordion-item">
+                            <button class="accordion-header" type="button">
+                                <div class="accordion-title-group">
+                                    <div class="accordion-icon"><i class="fa-solid fa-file-powerpoint"></i></div>
+                                    <div class="accordion-title-text">
+                                        <h3 class="accordion-title">Mekanik Alt Takımı Sezon İçi Çalışma Sunumu (42 Slayt)</h3>
+                                        <span class="accordion-category-badge">Mekanik Sunum • PDF / PPTX</span>
                                     </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Mekanik Parçaların Montajı nasıl yapılır ve Güvenlik Nasıl Saglanmalıdır
-                                            </p>
-                                        </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="accordion-content">
+                                    <p>Bu sunumda robot mekanik alt ekibinin prototipleme, üretim ve saha testleri aşamalarında kullandığı metotlar ve jüri sunum şablonları yer almaktadır.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. YAZILIM SUNUMLARI -->
+                <div class="wrapper" id="a2">
+                    <h1><i class="fa-solid fa-laptop" style="color: #60a5fa; margin-right: 8px;"></i> Yazılım Sunumları</h1>
+                    <div class="cols">
+
+                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
+                            <div class="container">
+                                <div class="front" style="background-image: url('images/yazilim.jpg');">
+                                    <div class="inner">
+                                        <span class="card-badge">Yazılım Sunumu</span>
+                                        <p>FRC Otonom Stratejileri ve Path Generation</p>
+                                    </div>
+                                </div>
+                                <div class="back">
+                                    <div class="inner">
+                                        <span class="card-badge">Slayt Özeti</span>
+                                        <p>Otonom 15 saniyelik dönemde maksimum puan optimizasyonu algoritması.</p>
+                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
                                     </div>
                                 </div>
                             </div>
-                        </a>
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Elektrik kullanımında test yapmanın önemi ve güvenlik önlemleri</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Parçaları Onarmanın Önemi</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        </div>
 
                     </div>
                 </div>
 
-                <div class="wrapper">
-                    <h1>Yazılım</h1>
-                    <div class="cols" id="a2">
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/yazilim.jpg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Nasıl sponsor Kazanılır</p>
-                                        </div>
+                <!-- 3. JÜRİ & IMPACT SUNUMLARI -->
+                <div class="wrapper" id="a3">
+                    <h1><i class="fa-solid fa-person-chalkboard" style="color: #60a5fa; margin-right: 8px;"></i> Jüri & Impact Sunumları</h1>
+                    <div class="accordion-wrapper">
+                        <div class="accordion-item">
+                            <button class="accordion-header" type="button">
+                                <div class="accordion-title-group">
+                                    <div class="accordion-icon"><i class="fa-solid fa-award"></i></div>
+                                    <div class="accordion-title-text">
+                                        <h3 class="accordion-title">FIRST Impact Award Şampiyonluk Sunumu Şablonu</h3>
+                                        <span class="accordion-category-badge">Impact • Sunum Becerileri</span>
                                     </div>
                                 </div>
+                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="accordion-content">
+                                    <p>Impact jürisinin dikkat ettiği 7 temel metrik: Sürdürülebilirlik, Genişleme, STEM Mentorluğu, Kapsayıcılık, Ölçülebilir Etki, Kültürel Değişim ve FIRST Değerleri.</p>
+                                </div>
                             </div>
-                        </a>
-
-
-
+                        </div>
                     </div>
                 </div>
 
-                <div class="wrapper">
-                    <h1>PR</h1>
-                    <div class="cols" id="a3">
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Nasıl sponsor Kazanılır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Nasıl sponsor Kazanılır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <h1>Tasarım</h1>
-                    <div class="cols" id="a4">
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Nasıl sponsor Kazanılır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-                    </div>
-                </div>
-
-
-
-
-
-
-
-                <div class="wrapper">
-                    <h1>Elektronik</h1>
-                    <div class="cols" id="a6">
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Elektrik kullanımında test yapmanın önemi ve güvenlik önlemleri</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class=" inner">
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>kablo Yönetimi ve Montajı nasıl yapılır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Sensöyler ve Algılayıcılar Nasıl çalışır ve Nasıl kullanılmalıdır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain; background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Veri İletişimi ve IOT(Nesnelerin İntarneti) Nedir</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Elektrik Dagıtımı ve Güç Yönetimi Nasıl Yapılır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Elektrik Sistemlerinde Kontrol Sistemleri Nasıl Olmalıdır</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-
-
-
-
-
-                <div class="wrapper">
-                    <h1>FRC</h1>
-                    <div class="cols" id="a7">
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/frc-comp.jpg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>FRC Hakkında Herşey</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/first.jpg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>First yarışması nedir</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/ftc.jpg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>FTC Hakkında Herşey</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/fll.jpg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>FLL Hakkında Herşey</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <h1>Fikret Yüksel Vakfı</h1>
-                    <div class="cols" id="a8">
-                        <a href="#" title="Yakında eklenecek">
-                            <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                <div class="container">
-                                    <div class="front"
-                                        style="background-image: url(images/placeholders/sunum-thumb-placeholder.svg); background-size: contain ;background-repeat: no-repeat; ">
-                                        <div class="inner">
-
-
-                                        </div>
-                                    </div>
-                                    <div class="back">
-                                        <div class="inner">
-                                            <p>Fikret Yüksel Vahkfı Hakkında Herşey</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-                    </div>
-                </div>
             </div>
+        </div>
     </section>
+
+    <!-- Footer -->
     <div id="app-footer" data-component="footer"></div>
 
     <script src="js/components.js"></script>
