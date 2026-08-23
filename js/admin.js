@@ -1,5 +1,6 @@
 // =============================================================================
 // js/admin.js — The Nest Özel Yönetim Paneli ve Dashboard Mantığı
+// (Güvenli Template Tabanlı Dinamik Mount & Inline Form Mimarisi)
 // =============================================================================
 
 (function () {
@@ -9,6 +10,7 @@
     let cachedItems = [];
     let cachedApps = [];
     let currentAdminUser = null;
+    let isDashboardMounted = false;
 
     async function getCsrfToken() {
         try {
@@ -42,7 +44,7 @@
         el.textContent = message;
         el.className = `admin-alert ${isError ? 'admin-alert--danger' : 'admin-alert--success'}`;
         setTimeout(() => {
-            if (!isError) el.hidden = true;
+            if (!isError && el) el.hidden = true;
         }, 5000);
     }
 
@@ -69,13 +71,12 @@
     }
 
     // =============================================================================
-    // 1. GÜVENLİK & YETKİ GUARD (OTURUM YOKSA GİRİŞ EKRANINI GÖSTERİR)
+    // 1. GÜVENLİK & YETKİ GUARD (OTURUM YOKSA DASHBOARD DOM'DA OLUŞTURULMAZ)
     // =============================================================================
     async function guardAdmin() {
         const loadingEl = document.getElementById('admin-guard-loading');
         const loginScreen = document.getElementById('admin-login-screen');
-        const appEl = document.getElementById('admin-dashboard-app');
-        const userDisplay = document.getElementById('admin-user-display');
+        const mountContainer = document.getElementById('admin-dashboard-mount');
 
         try {
             const res = await fetch(`${API}/admin/me`, { credentials: 'same-origin' });
@@ -86,24 +87,73 @@
                 currentAdminUser = data.user;
                 if (loadingEl) loadingEl.hidden = true;
                 if (loginScreen) loginScreen.hidden = true;
-                if (appEl) appEl.hidden = false;
+
+                // Dashboard henüz DOM'a eklenmemişse şablondan dinamik olarak ekle
+                if (!isDashboardMounted) {
+                    mountDashboard();
+                }
+
+                const userDisplay = document.getElementById('admin-user-display');
                 if (userDisplay) {
                     userDisplay.textContent = currentAdminUser.display_name || currentAdminUser.username || currentAdminUser.email;
                 }
+
                 loadActiveTabContent();
                 return true;
             }
             throw new Error('not authorized');
         } catch (_) {
+            unmountDashboard();
             if (loadingEl) loadingEl.hidden = true;
-            if (appEl) appEl.hidden = true;
             if (loginScreen) loginScreen.hidden = false;
             return false;
         }
     }
 
     // =============================================================================
-    // 2. ÖZEL ADMİN GİRİŞİ (Yalnızca emirsametguzel@gmail.com & emir2011)
+    // 2. DASHBOARD MOUNT / UNMOUNT (HTML/DOM BYPASS KORUMASI)
+    // =============================================================================
+    function mountDashboard() {
+        const mountContainer = document.getElementById('admin-dashboard-mount');
+        const template = document.getElementById('admin-dashboard-template');
+        if (!mountContainer || !template) return;
+
+        mountContainer.innerHTML = '';
+        const clone = document.importNode(template.content, true);
+        mountContainer.appendChild(clone);
+        isDashboardMounted = true;
+
+        // Dashboard bileşen olaylarını başlat
+        initTabs();
+        initUserInlinePwdPanel();
+        initContentInlinePanel();
+        initAppDetailInlinePanel();
+        initSettingsForm();
+        initLogoutButton();
+    }
+
+    function unmountDashboard() {
+        const mountContainer = document.getElementById('admin-dashboard-mount');
+        if (mountContainer) {
+            mountContainer.innerHTML = '';
+        }
+        isDashboardMounted = false;
+        currentAdminUser = null;
+    }
+
+    function initLogoutButton() {
+        const logoutBtn = document.getElementById('admin-logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await apiRequest('POST', '/admin/logout');
+                unmountDashboard();
+                guardAdmin();
+            });
+        }
+    }
+
+    // =============================================================================
+    // 3. ÖZEL ADMİN GİRİŞİ (Yalnızca emirsametguzel@gmail.com & emir2011)
     // =============================================================================
     function initAdminLogin() {
         const form = document.getElementById('admin-login-form');
@@ -130,20 +180,10 @@
             }
             if (submitBtn) submitBtn.disabled = false;
         });
-
-        // Çıkış Butonu
-        const logoutBtn = document.getElementById('admin-logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-                await apiRequest('POST', '/admin/logout');
-                currentAdminUser = null;
-                guardAdmin();
-            });
-        }
     }
 
     // =============================================================================
-    // 3. DASHBOARD SEKME YÖNETİMİ
+    // 4. DASHBOARD SEKME YÖNETİMİ
     // =============================================================================
     function initTabs() {
         document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
@@ -171,7 +211,7 @@
     }
 
     // =============================================================================
-    // 4. KULLANICI YÖNETİMİ & INLINE ŞİFRE PANELİ
+    // 5. KULLANICI YÖNETİMİ & INLINE ŞİFRE PANELİ
     // =============================================================================
     async function loadUsers() {
         const tbody = document.getElementById('users-tbody');
@@ -311,7 +351,7 @@
     }
 
     // =============================================================================
-    // 5. İÇERİK YÖNETİMİ & INLINE PANEL (MODAL'SIZ)
+    // 6. İÇERİK YÖNETİMİ & INLINE PANEL (MODAL'SIZ)
     // =============================================================================
     const typeLabels = {
         ders: 'Ders / Eğitim',
@@ -478,7 +518,7 @@
     }
 
     // =============================================================================
-    // 6. TAKIM BAŞVURULARI & INLINE DETAY PANELİ
+    // 7. TAKIM BAŞVURULARI & INLINE DETAY PANELİ
     // =============================================================================
     async function loadApplications() {
         const tbody = document.getElementById('applications-tbody');
@@ -617,7 +657,7 @@
     }
 
     // =============================================================================
-    // 7. SİTE AYARLARI
+    // 8. SİTE AYARLARI
     // =============================================================================
     async function loadSettings() {
         const { ok, data } = await apiRequest('GET', '/admin/settings');
@@ -660,12 +700,6 @@
     // =============================================================================
     document.addEventListener('DOMContentLoaded', () => {
         initAdminLogin();
-        initTabs();
-        initUserInlinePwdPanel();
-        initContentInlinePanel();
-        initAppDetailInlinePanel();
-        initSettingsForm();
-
         guardAdmin();
     });
 

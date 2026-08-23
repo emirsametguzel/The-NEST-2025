@@ -17,7 +17,7 @@
 </head>
 
 <body class="admin-body">
-    <!-- Üst Header Bileşeni (Opsiyonel) -->
+    <!-- Üst Header Bileşeni -->
     <div id="app-header" data-component="header"></div>
 
     <main class="admin-main-container">
@@ -27,7 +27,7 @@
             <p>Yönetici oturumu kontrol ediliyor...</p>
         </div>
 
-        <!-- 2. BAĞIMSIZ ÖZEL ADMİN GİRİŞ FORMU EKRANI -->
+        <!-- 2. BAĞIMSIZ ÖZEL ADMİN GİRİŞ FORMU EKRANI (Varsayılan olarak sadece bu görünür) -->
         <div id="admin-login-screen" class="admin-login-screen" hidden>
             <div class="admin-login-card">
                 <div class="admin-login-header">
@@ -35,7 +35,7 @@
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <h2>The Nest Yönetici Girişi</h2>
-                    <p>Bu alan yalnızca yetkili sistem yöneticileri içindir. Lütfen özel yönetici kimlik bilgilerinizi giriniz.</p>
+                    <p>Bu alan yalnızca yetkili sistem yöneticileri içindir. Lütfen yönetici kimlik bilgilerinizi giriniz.</p>
                 </div>
 
                 <form id="admin-login-form" class="admin-login-form" novalidate>
@@ -62,8 +62,13 @@
             </div>
         </div>
 
-        <!-- 3. TAM SAYFA DASHBOARD (ADMİN OTURUMU AÇIKKEN) -->
-        <div id="admin-dashboard-app" class="admin-dashboard-app" hidden>
+        <!-- 3. DASHBOARD MOUNT ALANI (Giriş yapılmadan önce içi KESİNLİKLE BOŞTUR) -->
+        <div id="admin-dashboard-mount"></div>
+    </main>
+
+    <!-- 4. GÜVENLİ TEMPLATE: Yalnızca yetkili Admin doğrulaması sonrası JS ile mount edilir -->
+    <template id="admin-dashboard-template">
+        <div id="admin-dashboard-app" class="admin-dashboard-app">
             <!-- Dashboard Üst Barı -->
             <header class="admin-dashboard-header">
                 <div class="admin-dashboard-title-area">
@@ -79,7 +84,7 @@
                 <div class="admin-dashboard-user-area">
                     <div class="admin-user-info-pill">
                         <i class="fa-solid fa-user-shield"></i>
-                        <span id="admin-user-display">Emir Samet Güzel</span>
+                        <span id="admin-user-display">Yönetici</span>
                         <span class="admin-role-tag">Admin</span>
                     </div>
                     <a href="index.html" class="admin-btn admin-btn--ghost admin-btn--sm" title="Site Önizleme">
@@ -423,7 +428,7 @@
                 </div>
             </section>
         </div>
-    </main>
+    </template>
 
     <!-- Footer Bileşeni -->
     <div id="app-footer" data-component="footer"></div>
