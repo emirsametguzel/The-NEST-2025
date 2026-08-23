@@ -2,21 +2,6 @@
 
 Bu doküman, code review geri bildirimlerine göre yapılan refactor'ü ve projeyi
 nasıl çalıştırıp deploy edeceğinizi anlatır.
-
-## 🔴 Acil: Yapmanız Gereken 2 Şey
-
-1. **Eski InfinityFree veritabanı şifresini değiştirin.** `config/config.php`
-   (artık silindi) içinde düz metin bir üretim şifresi bulundu
-   (`if0_42708197` kullanıcısı). Proje herhangi bir yerde paylaşıldıysa bu
-   kimlik bilgisi sızmış sayılır — InfinityFree panelinden hemen değiştirin.
-2. **Eski `nestadmin` hesabı taşınmadı.** Eski `data/the-nest.sqlite`
-   içinde gerçek bir kullanıcı (`nestadmin`, gerçek e-posta) vardı, şifresi
-   **Argon2id** ile hashlenmişti. Yeni backend **bcrypt** kullanıyor (bkz.
-   aşağıdaki "Neden bcrypt?"), bu iki hash formatı birbirini doğrulayamaz.
-   Bu hesap yeni sistemde otomatik oluşmadı — o kişi `register.html`'den
-   tekrar kayıt olmalı. (İsterseniz Argon2id doğrulama desteği de eklenebilir,
-   söylemeniz yeterli.)
-
 ---
 
 ## 1) Header & Footer — Artık Dinamik ve Tek Kaynaklı
