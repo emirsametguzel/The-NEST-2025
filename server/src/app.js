@@ -63,12 +63,13 @@ app.use("/api", generalLimiter);
 // API Rotaları (v4 Rotaları Dahil)
 app.get("/api/config/firebase", (req, res) => {
     res.json({
-        apiKey: process.env.FIREBASE_API_KEY || "",
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN || (process.env.FIREBASE_PROJECT_ID ? `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com` : "the-nest-2025.firebaseapp.com"),
-        projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-2025",
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || (process.env.FIREBASE_PROJECT_ID ? `${process.env.FIREBASE_PROJECT_ID}.appspot.com` : "the-nest-2025.appspot.com"),
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
-        appId: process.env.FIREBASE_APP_ID || "",
+        apiKey: process.env.FIREBASE_API_KEY || "AIzaSyDeeISJIL3SHLj35cJpvfTBWG5c0J3JQLE",
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN || "the-nest-c38fc.firebaseapp.com",
+        projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-c38fc",
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "the-nest-c38fc.firebasestorage.app",
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "193072967668",
+        appId: process.env.FIREBASE_APP_ID || "1:193072967668:web:89127b808338a81b5713a1",
+        measurementId: "G-45M53EMXWV",
     });
 });
 
