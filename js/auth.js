@@ -54,7 +54,11 @@
             const { ok, data } = await postJson('/auth/login', { identifier, password });
 
             if (ok) {
-                window.location.href = `${base}profile.html`;
+                if (data.user && data.user.role === 'admin') {
+                    window.location.href = `${base}admin.html`;
+                } else {
+                    window.location.href = `${base}profile.html`;
+                }
             } else {
                 showFeedback(feedback, data.error || 'Giriş başarısız.', true);
                 submitBtn.disabled = false;

@@ -17,56 +17,16 @@
 </head>
 
 <body class="admin-body">
-    <!-- Üst Header Bileşeni -->
-    <div id="app-header" data-component="header"></div>
-
-    <main class="admin-main-container">
-        <!-- 1. Yükleme Ekranı -->
-        <div id="admin-guard-loading" class="admin-loading-state">
-            <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
-            <p>Yönetici oturumu kontrol ediliyor...</p>
-        </div>
-
-        <!-- 2. BAĞIMSIZ ÖZEL ADMİN GİRİŞ FORMU EKRANI (Varsayılan olarak sadece bu görünür) -->
-        <div id="admin-login-screen" class="admin-login-screen" hidden>
-            <div class="admin-login-card">
-                <div class="admin-login-header">
-                    <div class="admin-login-shield">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <h2>The Nest Yönetici Girişi</h2>
-                    <p>Bu alan yalnızca yetkili sistem yöneticileri içindir. Lütfen yönetici kimlik bilgilerinizi giriniz.</p>
-                </div>
-
-                <form id="admin-login-form" class="admin-login-form" novalidate>
-                    <div class="admin-input-group">
-                        <label for="admin-email"><i class="fa-solid fa-envelope"></i> Yönetici E-Posta</label>
-                        <input type="email" id="admin-email" name="email" required placeholder="emirsametguzel@gmail.com" autocomplete="username">
-                    </div>
-
-                    <div class="admin-input-group">
-                        <label for="admin-password"><i class="fa-solid fa-lock"></i> Yönetici Şifresi</label>
-                        <input type="password" id="admin-password" name="password" required placeholder="••••••••" autocomplete="current-password">
-                    </div>
-
-                    <div id="admin-login-feedback" class="admin-alert admin-alert--danger" role="alert" hidden></div>
-
-                    <button type="submit" id="admin-login-submit-btn" class="admin-btn admin-btn--primary admin-btn--block">
-                        <i class="fa-solid fa-right-to-bracket"></i> Yönetim Paneline Giriş Yap
-                    </button>
-                </form>
-
-                <div class="admin-login-footer">
-                    <a href="index.html" class="admin-link-home"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. DASHBOARD MOUNT ALANI (Giriş yapılmadan önce içi KESİNLİKLE BOŞTUR) -->
+    <script>
+        // Sayfa içeriğini auth işlemi tamamlanana kadar tamamen gizle.
+        document.body.style.display = 'none';
+    </script>
+    <main class="admin-main-container" id="admin-main-container">
+        <!-- DASHBOARD MOUNT ALANI -->
         <div id="admin-dashboard-mount"></div>
     </main>
 
-    <!-- 4. GÜVENLİ TEMPLATE: Yalnızca yetkili Admin doğrulaması sonrası JS ile mount edilir -->
+    <!-- GÜVENLİ TEMPLATE: Yalnızca yetkili Admin doğrulaması sonrası JS ile mount edilir -->
     <template id="admin-dashboard-template">
         <div id="admin-dashboard-app" class="admin-dashboard-app">
             <!-- Dashboard Üst Barı -->

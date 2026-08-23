@@ -74,10 +74,6 @@
     // 1. GÜVENLİK & YETKİ GUARD (OTURUM YOKSA DASHBOARD DOM'DA OLUŞTURULMAZ)
     // =============================================================================
     async function guardAdmin() {
-        const loadingEl = document.getElementById('admin-guard-loading');
-        const loginScreen = document.getElementById('admin-login-screen');
-        const mountContainer = document.getElementById('admin-dashboard-mount');
-
         try {
             const res = await fetch(`${API}/admin/me`, { credentials: 'same-origin' });
             if (!res.ok) throw new Error('not authenticated');
@@ -85,10 +81,8 @@
 
             if (data.authenticated && data.user && data.user.role === 'admin') {
                 currentAdminUser = data.user;
-                if (loadingEl) loadingEl.hidden = true;
-                if (loginScreen) loginScreen.hidden = true;
+                document.body.style.display = ''; // Reveal body after check
 
-                // Dashboard henüz DOM'a eklenmemişse şablondan dinamik olarak ekle
                 if (!isDashboardMounted) {
                     mountDashboard();
                 }
@@ -103,9 +97,7 @@
             }
             throw new Error('not authorized');
         } catch (_) {
-            unmountDashboard();
-            if (loadingEl) loadingEl.hidden = true;
-            if (loginScreen) loginScreen.hidden = false;
+            window.location.replace(`${base}login.html`);
             return false;
         }
     }
@@ -145,45 +137,15 @@
         const logoutBtn = document.getElementById('admin-logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', async () => {
-                await apiRequest('POST', '/admin/logout');
+                await apiRequest('POST', '/auth/logout');
                 unmountDashboard();
-                guardAdmin();
+                window.location.replace(`${base}`); // Ana sayfaya yönlendir
             });
         }
     }
 
     // =============================================================================
-    // 3. ÖZEL ADMİN GİRİŞİ (Yalnızca emirsametguzel@gmail.com & emir2011)
-    // =============================================================================
-    function initAdminLogin() {
-        const form = document.getElementById('admin-login-form');
-        const feedback = document.getElementById('admin-login-feedback');
-        const submitBtn = document.getElementById('admin-login-submit-btn');
-
-        if (!form) return;
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (submitBtn) submitBtn.disabled = true;
-            if (feedback) feedback.hidden = true;
-
-            const email = (document.getElementById('admin-email')?.value || '').trim();
-            const password = (document.getElementById('admin-password')?.value || '').trim();
-
-            const { ok, data } = await apiRequest('POST', '/admin/login', { email, password });
-
-            if (ok && data.success) {
-                form.reset();
-                await guardAdmin();
-            } else {
-                showFeedback(feedback, data.error || 'Geçersiz yönetici bilgileri.', true);
-            }
-            if (submitBtn) submitBtn.disabled = false;
-        });
-    }
-
-    // =============================================================================
-    // 4. DASHBOARD SEKME YÖNETİMİ
+    // 3. DASHBOARD SEKME YÖNETİMİ
     // =============================================================================
     function initTabs() {
         document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
@@ -699,7 +661,6 @@
     // BAŞLATMA
     // =============================================================================
     document.addEventListener('DOMContentLoaded', () => {
-        initAdminLogin();
         guardAdmin();
     });
 
