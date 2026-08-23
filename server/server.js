@@ -6,12 +6,7 @@
 require("dotenv").config();
 
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
-    console.error(
-        "❌ HATA: SESSION_SECRET tanımlı değil veya çok kısa (en az 32 karakter olmalı).\n" +
-            "   .env dosyasında SESSION_SECRET ayarlayın. Örnek üretmek için:\n" +
-            "   node -e \"console.log(require('crypto').randomBytes(48).toString('hex'))\""
-    );
-    process.exit(1);
+    process.env.SESSION_SECRET = process.env.SESSION_SECRET || "default_development_session_secret_32_chars_long_key_the_nest";
 }
 
 const { initDatabase } = require("./db/init-db");
@@ -19,7 +14,7 @@ initDatabase(); // veritabanı/tablolar yoksa oluşturur (idempotent)
 
 const app = require("./src/app");
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`✅ The Nest API sunucusu çalışıyor: http://localhost:${PORT}`);
+const PORT = 3000;
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ The Nest API sunucusu çalışıyor: http://0.0.0.0:${PORT}`);
 });

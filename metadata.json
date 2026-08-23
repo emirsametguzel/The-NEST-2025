@@ -1,0 +1,6 @@
+{
+  "name": "The Nest",
+  "description": "STEAM and FRC community platform with user authentication, team application, course modules, articles, and admin portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
