@@ -519,10 +519,11 @@ font{
 	flex-direction: column;
 	gap: 1rem;
 	padding-right: 2rem;
+	box-sizing: border-box;
 }
 
 .accordion-item {
-	background: #ffffff;
+	background: #ffffff !important;
 	border-radius: 12px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 	overflow: hidden;
@@ -531,14 +532,19 @@ font{
 }
 
 .accordion-item:hover {
-	box-shadow: 0 8px 24px rgba(4, 44, 98, 0.12);
+	box-shadow: 0 8px 24px rgba(4, 44, 98, 0.14);
 	border-color: #cbd5e1;
+}
+
+.accordion-item.is-open {
+	border-color: #93c5fd;
+	box-shadow: 0 8px 24px rgba(4, 44, 98, 0.16);
 }
 
 .accordion-header {
 	width: 100%;
 	padding: 1.25rem 1.5rem;
-	background: #ffffff;
+	background: #ffffff !important;
 	border: none;
 	text-align: left;
 	cursor: pointer;
@@ -551,7 +557,7 @@ font{
 }
 
 .accordion-header:hover {
-	background: #f8fafc;
+	background: #f8fafc !important;
 }
 
 .accordion-title-group {
@@ -581,10 +587,10 @@ font{
 }
 
 .accordion-title {
-	font-size: 1.1rem;
-	font-weight: 700;
-	color: #0f172a;
-	margin: 0;
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #0f172a !important;
+	margin: 0 !important;
 }
 
 .accordion-category-badge {
@@ -614,7 +620,7 @@ font{
 	max-height: 0;
 	overflow: hidden;
 	transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	background: #ffffff;
+	background: #ffffff !important;
 	border-top: 1px solid transparent;
 }
 
@@ -623,26 +629,30 @@ font{
 }
 
 .accordion-content {
-	padding: 1.5rem;
-	color: #334155;
-	font-size: 0.95rem;
-	line-height: 1.7;
+	padding: 1.5rem !important;
+	color: #1e293b !important;
+	font-size: 0.95rem !important;
+	line-height: 1.7 !important;
+	background: #ffffff !important;
 }
 
 .accordion-content p {
-	margin-bottom: 1rem;
-	color: #334155;
-	font-size: 0.95rem;
+	margin-bottom: 0.9rem !important;
+	color: #334155 !important;
+	font-size: 0.95rem !important;
+	line-height: 1.65 !important;
 }
 
 .accordion-content ul,
 .accordion-content ol {
-	margin: 0.75rem 0 1.25rem 1.5rem;
-	color: #334155;
+	margin: 0.75rem 0 1.25rem 1.5rem !important;
+	color: #334155 !important;
 }
 
 .accordion-content li {
-	margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem !important;
+	color: #334155 !important;
+	font-size: 0.92rem !important;
 }
 
 .accordion-actions {

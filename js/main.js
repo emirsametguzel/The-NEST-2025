@@ -75,14 +75,15 @@ document.addEventListener('nest:partials-loaded', function () {
         .catch(() => {});
 });
 
-// --- Katlanabilir Accordion Etkileşimi ---
+// --- Katlanabilir Accordion Etkileşimi (Pürüzsüz CSS Geçişi & Zengin İçerik) ---
 function initAccordions() {
     document.querySelectorAll('.accordion-header').forEach(header => {
         // Çift dinleyiciyi önle
-        if (header.dataset.accordionBound) return;
+        if (header.dataset.accordionBound === 'true') return;
         header.dataset.accordionBound = 'true';
 
-        header.addEventListener('click', function () {
+        header.addEventListener('click', function (e) {
+            e.preventDefault();
             const item = this.closest('.accordion-item');
             if (!item) return;
             const body = item.querySelector('.accordion-body');
@@ -91,20 +92,23 @@ function initAccordions() {
             const isOpen = item.classList.contains('is-open');
 
             if (isOpen) {
+                // Kapanma animasyonu: Önce tam yüksekliği sabitle, sonra 0'a çek
                 body.style.maxHeight = body.scrollHeight + 'px';
-                // Reflow tetikle
-                void body.offsetHeight;
+                void body.offsetHeight; // Zorunlu reflow
                 body.style.maxHeight = '0px';
                 item.classList.remove('is-open');
             } else {
+                // Açılma animasyonu: 0'dan gerçek scrollHeight'e akıcı animasyon
                 item.classList.add('is-open');
                 body.style.maxHeight = body.scrollHeight + 'px';
-                // Animasyon bitince auto yap
-                setTimeout(() => {
-                    if (item.classList.contains('is-open')) {
+
+                const onEnd = function (event) {
+                    if (event.propertyName === 'max-height' && item.classList.contains('is-open')) {
                         body.style.maxHeight = 'none';
+                        body.removeEventListener('transitionend', onEnd);
                     }
-                }, 400);
+                };
+                body.addEventListener('transitionend', onEnd);
             }
         });
     });

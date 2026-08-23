@@ -1,15 +1,23 @@
 // =============================================================================
-// js/admin.js — The Nest Yönetim Paneli Mantığı (admin.html)
+// js/admin.js — The Nest Özel Yönetim Paneli ve Dashboard Mantığı
 // =============================================================================
 
 (function () {
     const base = document.documentElement.getAttribute('data-base-path') || '';
     const API = `${base}api`;
 
+    let cachedItems = [];
+    let cachedApps = [];
+    let currentAdminUser = null;
+
     async function getCsrfToken() {
-        const res = await fetch(`${API}/auth/csrf-token`, { credentials: 'same-origin' });
-        const data = await res.json();
-        return data.csrfToken;
+        try {
+            const res = await fetch(`${API}/auth/csrf-token`, { credentials: 'same-origin' });
+            const data = await res.json();
+            return data.csrfToken;
+        } catch (_) {
+            return '';
+        }
     }
 
     async function apiRequest(method, path, body) {
@@ -32,8 +40,7 @@
         if (!el) return;
         el.hidden = false;
         el.textContent = message;
-        el.classList.toggle('is-error', !!isError);
-        el.classList.toggle('is-success', !isError);
+        el.className = `admin-alert ${isError ? 'admin-alert--danger' : 'admin-alert--success'}`;
         setTimeout(() => {
             if (!isError) el.hidden = true;
         }, 5000);
@@ -49,121 +56,183 @@
         if (!iso) return '—';
         try {
             const d = new Date(iso.endsWith('Z') ? iso : iso + 'Z');
-            return d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         } catch (_) {
             return iso;
         }
     }
 
-    // -------------------------------------------------------------------------
-    // YETKİ KONTROLÜ (403 Uyarısı ile)
-    // -------------------------------------------------------------------------
+    // =============================================================================
+    // 1. GÜVENLİK & YETKİ GUARD (OTURUM YOKSA GİRİŞ EKRANINI GÖSTERİR)
+    // =============================================================================
     async function guardAdmin() {
-        const guardLoading = document.getElementById('admin-guard-loading');
-        const card403 = document.getElementById('admin-403');
-        const card403Msg = document.getElementById('admin-403-message');
-        const appEl = document.getElementById('admin-app');
-        const userTag = document.getElementById('admin-user-tag');
+        const loadingEl = document.getElementById('admin-guard-loading');
+        const loginScreen = document.getElementById('admin-login-screen');
+        const appEl = document.getElementById('admin-dashboard-app');
+        const userDisplay = document.getElementById('admin-user-display');
 
         try {
-            const res = await fetch(`${API}/auth/me`, { credentials: 'same-origin' });
-            if (!res.ok) throw new Error('unauthenticated');
-            const { user } = await res.json();
+            const res = await fetch(`${API}/admin/me`, { credentials: 'same-origin' });
+            if (!res.ok) throw new Error('not authenticated');
+            const data = await res.json();
 
-            if (user.role !== 'admin') {
-                guardLoading.hidden = true;
-                card403Msg.textContent = `Giriş yaptığınız hesap ("${user.username}") yönetici yetkisine sahip değildir (403 Forbidden).`;
-                card403.hidden = false;
-                return false;
+            if (data.authenticated && data.user && data.user.role === 'admin') {
+                currentAdminUser = data.user;
+                if (loadingEl) loadingEl.hidden = true;
+                if (loginScreen) loginScreen.hidden = true;
+                if (appEl) appEl.hidden = false;
+                if (userDisplay) {
+                    userDisplay.textContent = currentAdminUser.display_name || currentAdminUser.username || currentAdminUser.email;
+                }
+                loadActiveTabContent();
+                return true;
             }
-
-            guardLoading.hidden = true;
-            card403.hidden = true;
-            appEl.hidden = false;
-            if (userTag) {
-                userTag.innerHTML = `<i class="fa-solid fa-user-shield"></i> ${escapeHtml(user.display_name || user.username)} (Yönetici)`;
-            }
-            return true;
+            throw new Error('not authorized');
         } catch (_) {
-            guardLoading.hidden = true;
-            card403Msg.textContent = 'Yönetim paneline erişmek için yönetici hesabınızla giriş yapmanız gerekmektedir (403 Forbidden).';
-            card403.hidden = false;
+            if (loadingEl) loadingEl.hidden = true;
+            if (appEl) appEl.hidden = true;
+            if (loginScreen) loginScreen.hidden = false;
             return false;
         }
     }
 
     // =============================================================================
-    // TABLAR
+    // 2. ÖZEL ADMİN GİRİŞİ (Yalnızca emirsametguzel@gmail.com & emir2011)
+    // =============================================================================
+    function initAdminLogin() {
+        const form = document.getElementById('admin-login-form');
+        const feedback = document.getElementById('admin-login-feedback');
+        const submitBtn = document.getElementById('admin-login-submit-btn');
+
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (submitBtn) submitBtn.disabled = true;
+            if (feedback) feedback.hidden = true;
+
+            const email = (document.getElementById('admin-email')?.value || '').trim();
+            const password = (document.getElementById('admin-password')?.value || '').trim();
+
+            const { ok, data } = await apiRequest('POST', '/admin/login', { email, password });
+
+            if (ok && data.success) {
+                form.reset();
+                await guardAdmin();
+            } else {
+                showFeedback(feedback, data.error || 'Geçersiz yönetici bilgileri.', true);
+            }
+            if (submitBtn) submitBtn.disabled = false;
+        });
+
+        // Çıkış Butonu
+        const logoutBtn = document.getElementById('admin-logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await apiRequest('POST', '/admin/logout');
+                currentAdminUser = null;
+                guardAdmin();
+            });
+        }
+    }
+
+    // =============================================================================
+    // 3. DASHBOARD SEKME YÖNETİMİ
     // =============================================================================
     function initTabs() {
-        document.querySelectorAll('.admin-tab').forEach((btn) => {
+        document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.admin-tab').forEach((b) => b.classList.remove('active'));
-                document.querySelectorAll('.admin-panel').forEach((p) => p.classList.remove('active'));
+                document.querySelectorAll('.admin-tab-btn').forEach((b) => b.classList.remove('active'));
+                document.querySelectorAll('.admin-tab-content').forEach((p) => p.classList.remove('active'));
+
                 btn.classList.add('active');
                 const target = document.getElementById(`tab-${btn.dataset.tab}`);
                 if (target) target.classList.add('active');
 
-                // Tab içeriğini yenile
-                if (btn.dataset.tab === 'users') loadUsers();
-                else if (btn.dataset.tab === 'content') loadContent();
-                else if (btn.dataset.tab === 'applications') loadApplications();
-                else if (btn.dataset.tab === 'settings') loadSettings();
+                loadActiveTabContent();
             });
         });
     }
 
+    function loadActiveTabContent() {
+        const activeBtn = document.querySelector('.admin-tab-btn.active');
+        const tab = activeBtn ? activeBtn.dataset.tab : 'users';
+
+        if (tab === 'users') loadUsers();
+        else if (tab === 'content') loadContent();
+        else if (tab === 'applications') loadApplications();
+        else if (tab === 'settings') loadSettings();
+    }
+
     // =============================================================================
-    // 1. KULLANICILAR
+    // 4. KULLANICI YÖNETİMİ & INLINE ŞİFRE PANELİ
     // =============================================================================
     async function loadUsers() {
         const tbody = document.getElementById('users-tbody');
         const feedback = document.getElementById('admin-feedback');
+        const countBadge = document.getElementById('user-count-badge');
+        if (!tbody) return;
+
         const { ok, data } = await apiRequest('GET', '/admin/users');
 
         if (!ok) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">${escapeHtml(data.error || 'Yüklenemedi.')}</td></tr>`;
-            return;
-        }
-        if (data.users.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">Hiç kullanıcı kaydı yok.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">${escapeHtml(data.error || 'Kullanıcılar yüklenemedi.')}</td></tr>`;
             return;
         }
 
-        tbody.innerHTML = data.users
+        const users = data.users || [];
+        if (countBadge) countBadge.textContent = `${users.length} Kullanıcı`;
+
+        if (users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">Henüz kayıtlı kullanıcı bulunmuyor.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = users
             .map((u) => `
                 <tr data-id="${u.id}">
                     <td data-label="Kullanıcı">
-                        <strong>${escapeHtml(u.username)}</strong>
-                        ${u.display_name ? `<br><small style="color:#64748b;">${escapeHtml(u.display_name)}</small>` : ''}
+                        <div class="admin-user-cell">
+                            <div class="admin-user-avatar"><i class="fa-solid fa-user"></i></div>
+                            <div>
+                                <strong class="admin-user-name">${escapeHtml(u.username)}</strong>
+                                ${u.display_name ? `<span class="admin-user-sub">${escapeHtml(u.display_name)}</span>` : ''}
+                            </div>
+                        </div>
                     </td>
-                    <td data-label="E-posta">${escapeHtml(u.email)}</td>
+                    <td data-label="E-Posta">${escapeHtml(u.email)}</td>
                     <td data-label="Rol">
-                        <select class="admin-select admin-select--role admin-btn--sm" data-user-id="${u.id}">
+                        <select class="admin-select admin-select--sm admin-select-role" data-user-id="${u.id}">
                             <option value="member" ${u.role === 'member' ? 'selected' : ''}>Üye</option>
                             <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Yönetici</option>
                         </select>
                     </td>
                     <td data-label="Durum">
-                        <button class="status-badge user-status-toggle ${u.is_active ? 'status-badge--published' : 'status-badge--frozen'}" data-user-id="${u.id}" data-active="${u.is_active ? '1' : '0'}" title="Durumu Değiştir">
+                        <button type="button" class="admin-badge-btn user-status-toggle ${u.is_active ? 'admin-badge-btn--active' : 'admin-badge-btn--frozen'}" data-user-id="${u.id}" data-active="${u.is_active ? '1' : '0'}" title="Tıklayarak durumu değiştirin">
                             <i class="fa-solid ${u.is_active ? 'fa-check' : 'fa-snowflake'}"></i> ${u.is_active ? 'Aktif' : 'Donduruldu'}
                         </button>
                     </td>
                     <td data-label="Kayıt Tarihi">${formatDate(u.created_at)}</td>
-                    <td data-label="İşlemler">
-                        <button class="admin-btn admin-btn--warning admin-btn--sm user-pwd-btn" data-user-id="${u.id}" data-username="${escapeHtml(u.username)}" title="Şifre Sıfırla">
-                            <i class="fa-solid fa-key"></i> Şifre
+                    <td data-label="İşlemler" class="text-right">
+                        <button type="button" class="admin-btn admin-btn--warning admin-btn--sm user-pwd-inline-btn" data-user-id="${u.id}" data-username="${escapeHtml(u.username)}">
+                            <i class="fa-solid fa-key"></i> Şifre Sıfırla
                         </button>
-                        <button class="admin-btn admin-btn--danger admin-btn--sm user-delete-btn" data-user-id="${u.id}" data-username="${escapeHtml(u.username)}" title="Sil">
-                            <i class="fa-solid fa-trash"></i> Sil
+                        <button type="button" class="admin-btn admin-btn--danger admin-btn--sm user-delete-btn" data-user-id="${u.id}" data-username="${escapeHtml(u.username)}" title="Kullanıcıyı Sil">
+                            <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `)
             .join('');
 
-        // Rol değiştirme
-        tbody.querySelectorAll('.admin-select--role').forEach((sel) => {
+        // Rol Değiştirme
+        tbody.querySelectorAll('.admin-select-role').forEach((sel) => {
             sel.addEventListener('change', async () => {
                 const userId = sel.dataset.userId;
                 const role = sel.value;
@@ -173,7 +242,7 @@
             });
         });
 
-        // Hesap dondur / aktifleştir
+        // Hesap Durumu Dondur / Aktifleştir
         tbody.querySelectorAll('.user-status-toggle').forEach((btn) => {
             btn.addEventListener('click', async () => {
                 const userId = btn.dataset.userId;
@@ -184,25 +253,29 @@
             });
         });
 
-        // Şifre sıfırlama modalı aç
-        tbody.querySelectorAll('.user-pwd-btn').forEach((btn) => {
+        // Sayfa İçi Inline Şifre Sıfırlama Formunu Aç
+        tbody.querySelectorAll('.user-pwd-inline-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
+                const panel = document.getElementById('user-pwd-inline-panel');
                 const userId = btn.dataset.userId;
                 const username = btn.dataset.username;
+
                 document.getElementById('pwd-user-id').value = userId;
-                document.getElementById('pwd-user-label').textContent = `Kullanıcı: ${username}`;
+                document.getElementById('pwd-user-label').textContent = `Seçilen Kullanıcı: ${username} (ID: ${userId})`;
                 document.getElementById('pwd-new-password').value = '';
                 document.getElementById('pwd-form-feedback').hidden = true;
-                document.getElementById('pwd-modal-backdrop').hidden = false;
+
+                panel.hidden = false;
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
         });
 
-        // Kullanıcı sil
+        // Kullanıcıyı Sil
         tbody.querySelectorAll('.user-delete-btn').forEach((btn) => {
             btn.addEventListener('click', async () => {
                 const userId = btn.dataset.userId;
                 const username = btn.dataset.username;
-                if (!confirm(`"${username}" kullanıcısını kalıcı olarak silmek istediğinize emin misiniz?`)) return;
+                if (!confirm(`"${username}" kullanıcısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) return;
 
                 const { ok, data } = await apiRequest('DELETE', `/admin/users/${userId}`);
                 showFeedback(feedback, data.message || data.error, !ok);
@@ -211,17 +284,15 @@
         });
     }
 
-    // Şifre Modal İşlemleri
-    function initPasswordModal() {
-        const modal = document.getElementById('pwd-modal-backdrop');
-        const closeBtn = document.getElementById('pwd-modal-close-btn');
+    function initUserInlinePwdPanel() {
+        const panel = document.getElementById('user-pwd-inline-panel');
+        const closeBtn = document.getElementById('user-pwd-close-btn');
         const cancelBtn = document.getElementById('pwd-cancel-btn');
-        const form = document.getElementById('pwd-reset-form');
+        const form = document.getElementById('user-pwd-form');
 
-        const close = () => { modal.hidden = true; };
+        const close = () => { if (panel) panel.hidden = true; };
         closeBtn?.addEventListener('click', close);
         cancelBtn?.addEventListener('click', close);
-        modal?.addEventListener('click', (e) => { if (e.target === modal) close(); });
 
         form?.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -240,7 +311,7 @@
     }
 
     // =============================================================================
-    // 2. İÇERİK YÖNETİMİ
+    // 5. İÇERİK YÖNETİMİ & INLINE PANEL (MODAL'SIZ)
     // =============================================================================
     const typeLabels = {
         ders: 'Ders / Eğitim',
@@ -251,12 +322,11 @@
         duyuru: 'Duyuru',
     };
 
-    let cachedItems = [];
-
     async function loadContent() {
         const tbody = document.getElementById('content-tbody');
-        const type = document.getElementById('content-type-filter').value;
-        const category = document.getElementById('content-cat-filter').value;
+        const type = document.getElementById('content-type-filter')?.value || '';
+        const category = document.getElementById('content-cat-filter')?.value || '';
+        if (!tbody) return;
 
         const params = new URLSearchParams();
         if (type) params.append('type', type);
@@ -266,39 +336,41 @@
         const { ok, data } = await apiRequest('GET', `/admin/content${qs}`);
 
         if (!ok) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">${escapeHtml(data.error || 'Yüklenemedi.')}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">${escapeHtml(data.error || 'İçerikler yüklenemedi.')}</td></tr>`;
             return;
         }
 
         cachedItems = data.items || [];
         if (cachedItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">Kriterlere uygun içerik bulunamadı.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">Seçilen filtrelere uygun içerik bulunamadı.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = cachedItems
             .map((item) => `
                 <tr data-id="${item.id}">
-                    <td data-label="Başlık">
-                        <strong>${escapeHtml(item.title)}</strong>
-                        ${item.summary ? `<br><small style="color:#64748b;">${escapeHtml(item.summary.slice(0, 70))}...</small>` : ''}
+                    <td data-label="Başlık & Özet">
+                        <div class="admin-content-title-cell">
+                            <strong>${escapeHtml(item.title)}</strong>
+                            ${item.summary ? `<span class="admin-content-summary-text">${escapeHtml(item.summary.slice(0, 90))}...</span>` : ''}
+                        </div>
                     </td>
-                    <td data-label="Tür / Kategori">
-                        <span class="role-badge role-badge--admin">${typeLabels[item.type] || item.type}</span>
-                        <span class="role-badge role-badge--member">${escapeHtml(item.category || 'Mekanik')}</span>
+                    <td data-label="Tür & Kategori">
+                        <span class="admin-tag admin-tag--primary">${typeLabels[item.type] || item.type}</span>
+                        <span class="admin-tag admin-tag--secondary">${escapeHtml(item.category || 'Mekanik')}</span>
                     </td>
-                    <td data-label="Durum">
-                        <span class="status-badge status-badge--${item.is_published ? 'published' : 'draft'}">
+                    <td data-label="Yayın Durumu">
+                        <span class="admin-badge ${item.is_published ? 'admin-badge--published' : 'admin-badge--draft'}">
                             <i class="fa-solid ${item.is_published ? 'fa-globe' : 'fa-pen-ruler'}"></i> ${item.is_published ? 'Yayında' : 'Taslak'}
                         </span>
                     </td>
                     <td data-label="Yazar">${escapeHtml(item.author_username || 'Yönetici')}</td>
-                    <td data-label="Güncellenme">${formatDate(item.updated_at)}</td>
-                    <td data-label="İşlemler">
-                        <button class="admin-btn admin-btn--ghost admin-btn--sm content-edit-btn" data-id="${item.id}" title="Düzenle">
+                    <td data-label="Son Güncelleme">${formatDate(item.updated_at)}</td>
+                    <td data-label="İşlemler" class="text-right">
+                        <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm content-edit-btn" data-id="${item.id}">
                             <i class="fa-solid fa-pen"></i> Düzenle
                         </button>
-                        <button class="admin-btn admin-btn--danger admin-btn--sm content-delete-btn" data-id="${item.id}" data-title="${escapeHtml(item.title)}" title="Sil">
+                        <button type="button" class="admin-btn admin-btn--danger admin-btn--sm content-delete-btn" data-id="${item.id}" data-title="${escapeHtml(item.title)}" title="Sil">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -306,15 +378,17 @@
             `)
             .join('');
 
+        // Düzenleme Butonları
         tbody.querySelectorAll('.content-edit-btn').forEach((btn) => {
-            btn.addEventListener('click', () => openContentModal(Number(btn.dataset.id)));
+            btn.addEventListener('click', () => openInlineContentForm(Number(btn.dataset.id)));
         });
 
+        // Silme Butonları
         tbody.querySelectorAll('.content-delete-btn').forEach((btn) => {
             btn.addEventListener('click', async () => {
                 const id = btn.dataset.id;
                 const title = btn.dataset.title;
-                if (!confirm(`"${title}" içeriğini silmek istediğinize emin misiniz?`)) return;
+                if (!confirm(`"${title}" başlıklı içeriği silmek istediğinize emin misiniz?`)) return;
 
                 const feedback = document.getElementById('admin-feedback');
                 const { ok, data } = await apiRequest('DELETE', `/admin/content/${id}`);
@@ -324,9 +398,9 @@
         });
     }
 
-    function openContentModal(id) {
-        const backdrop = document.getElementById('content-modal-backdrop');
-        const title = document.getElementById('content-modal-title');
+    function openInlineContentForm(id) {
+        const panel = document.getElementById('content-inline-panel');
+        const formTitle = document.getElementById('content-form-title');
         const form = document.getElementById('content-form');
         form.reset();
         document.getElementById('content-form-feedback').hidden = true;
@@ -334,7 +408,7 @@
         if (id) {
             const item = cachedItems.find((i) => i.id === id);
             if (item) {
-                title.textContent = 'İçeriği Düzenle';
+                formTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> İçeriği Düzenle: "${escapeHtml(item.title)}"`;
                 document.getElementById('content-id').value = item.id;
                 document.getElementById('content-type').value = item.type || 'ders';
                 document.getElementById('content-category').value = item.category || 'Mekanik';
@@ -343,34 +417,34 @@
                 document.getElementById('content-body').value = item.body || '';
                 document.getElementById('content-image-url').value = item.image_url || '';
                 document.getElementById('content-file-url').value = item.file_url || '';
-                document.getElementById('content-published').checked = !!item.is_published;
+                document.getElementById('content-published').checked = Boolean(item.is_published);
             }
         } else {
-            title.textContent = 'Yeni İçerik Ekle';
+            formTitle.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Yeni İçerik Ekle`;
             document.getElementById('content-id').value = '';
             document.getElementById('content-published').checked = true;
         }
 
-        backdrop.hidden = false;
+        panel.hidden = false;
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function initContentModal() {
-        const backdrop = document.getElementById('content-modal-backdrop');
-        const addBtn = document.getElementById('content-add-btn');
+    function initContentInlinePanel() {
+        const panel = document.getElementById('content-inline-panel');
+        const addBtn = document.getElementById('content-toggle-add-btn');
+        const closeBtn = document.getElementById('content-form-close-btn');
         const cancelBtn = document.getElementById('content-cancel-btn');
-        const closeBtn = document.getElementById('content-modal-close-btn');
 
-        const close = () => { backdrop.hidden = true; };
-        addBtn?.addEventListener('click', () => openContentModal(null));
-        cancelBtn?.addEventListener('click', close);
+        const close = () => { if (panel) panel.hidden = true; };
+        addBtn?.addEventListener('click', () => openInlineContentForm(null));
         closeBtn?.addEventListener('click', close);
-        backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+        cancelBtn?.addEventListener('click', close);
 
         document.getElementById('content-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const feedback = document.getElementById('content-form-feedback');
             const saveBtn = document.getElementById('content-save-btn');
-            saveBtn.disabled = true;
+            if (saveBtn) saveBtn.disabled = true;
 
             const id = document.getElementById('content-id').value;
             const payload = {
@@ -390,13 +464,13 @@
 
             if (ok) {
                 close();
-                showFeedback(document.getElementById('admin-feedback'), data.message || 'İçerik kaydedildi.', false);
+                showFeedback(document.getElementById('admin-feedback'), data.message || 'İçerik başarıyla kaydedildi.', false);
                 loadContent();
             } else {
                 const detail = data.details?.[0]?.msg;
-                showFeedback(feedback, detail || data.error || 'Kaydedilemedi.', true);
+                showFeedback(feedback, detail || data.error || 'İçerik kaydedilemedi.', true);
             }
-            saveBtn.disabled = false;
+            if (saveBtn) saveBtn.disabled = false;
         });
 
         document.getElementById('content-type-filter')?.addEventListener('change', loadContent);
@@ -404,59 +478,60 @@
     }
 
     // =============================================================================
-    // 3. TAKIM BAŞVURULARI
+    // 6. TAKIM BAŞVURULARI & INLINE DETAY PANELİ
     // =============================================================================
-    let cachedApps = [];
-
     async function loadApplications() {
         const tbody = document.getElementById('applications-tbody');
+        const badge = document.getElementById('pending-apps-count');
         const feedback = document.getElementById('admin-feedback');
+        if (!tbody) return;
+
         const { ok, data } = await apiRequest('GET', '/admin/applications');
 
         if (!ok) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">${escapeHtml(data.error || 'Yüklenemedi.')}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">${escapeHtml(data.error || 'Başvurular yüklenemedi.')}</td></tr>`;
             return;
         }
 
         cachedApps = data.applications || [];
-        if (cachedApps.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="admin-empty">Henüz takım başvurusu yapılmamış.</td></tr>`;
-            return;
+        const pendingCount = cachedApps.filter((a) => a.status === 'pending').length;
+        if (badge) {
+            badge.textContent = pendingCount;
+            badge.hidden = pendingCount === 0;
         }
 
-        const statusLabels = {
-            pending: 'Beklemede',
-            approved: 'Onaylandı',
-            rejected: 'Reddedildi',
-        };
+        if (cachedApps.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="admin-table-empty">Henüz yapılmış bir takım başvurusu bulunmuyor.</td></tr>`;
+            return;
+        }
 
         tbody.innerHTML = cachedApps
             .map((app) => `
                 <tr data-id="${app.id}">
                     <td data-label="Tarih">${formatDate(app.created_at)}</td>
-                    <td data-label="İsim & Sınıf">
+                    <td data-label="Aday & Sınıf">
                         <strong>${escapeHtml(app.name)}</strong>
-                        <br><small style="color:#64748b;">${escapeHtml(app.class_name || 'Lise')}</small>
+                        <span class="admin-user-sub">${escapeHtml(app.class_name || 'Lise')}</span>
                     </td>
                     <td data-label="Departman">
-                        <span class="role-badge role-badge--admin">${escapeHtml(app.department)}</span>
+                        <span class="admin-tag admin-tag--primary">${escapeHtml(app.department)}</span>
                     </td>
                     <td data-label="İletişim">
-                        <a href="mailto:${escapeHtml(app.email)}" style="color:#007bff; text-decoration:none;">${escapeHtml(app.email)}</a>
-                        <br><small>${escapeHtml(app.phone)}</small>
+                        <a href="mailto:${escapeHtml(app.email)}" class="admin-link-inline">${escapeHtml(app.email)}</a>
+                        <span class="admin-user-sub">${escapeHtml(app.phone)}</span>
                     </td>
                     <td data-label="Durum">
-                        <select class="admin-select admin-select--status admin-btn--sm" data-app-id="${app.id}">
+                        <select class="admin-select admin-select--sm admin-app-status-select" data-app-id="${app.id}">
                             <option value="pending" ${app.status === 'pending' ? 'selected' : ''}>Beklemede</option>
                             <option value="approved" ${app.status === 'approved' ? 'selected' : ''}>Onaylandı</option>
                             <option value="rejected" ${app.status === 'rejected' ? 'selected' : ''}>Reddedildi</option>
                         </select>
                     </td>
-                    <td data-label="İşlemler">
-                        <button class="admin-btn admin-btn--ghost admin-btn--sm app-detail-btn" data-id="${app.id}">
+                    <td data-label="İşlemler" class="text-right">
+                        <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm app-detail-inline-btn" data-id="${app.id}">
                             <i class="fa-solid fa-eye"></i> İncele
                         </button>
-                        <button class="admin-btn admin-btn--danger admin-btn--sm app-delete-btn" data-id="${app.id}">
+                        <button type="button" class="admin-btn admin-btn--danger admin-btn--sm app-delete-btn" data-id="${app.id}">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -464,7 +539,8 @@
             `)
             .join('');
 
-        tbody.querySelectorAll('.admin-select--status').forEach((sel) => {
+        // Başvuru Durumunu Değiştir
+        tbody.querySelectorAll('.admin-app-status-select').forEach((sel) => {
             sel.addEventListener('change', async () => {
                 const appId = sel.dataset.appId;
                 const status = sel.value;
@@ -473,29 +549,56 @@
             });
         });
 
-        tbody.querySelectorAll('.app-detail-btn').forEach((btn) => {
+        // Başvuru Detayını Aç (Inline)
+        tbody.querySelectorAll('.app-detail-inline-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
                 const app = cachedApps.find((a) => a.id === Number(btn.dataset.id));
                 if (!app) return;
 
-                const detailContent = document.getElementById('app-detail-content');
-                detailContent.innerHTML = `
-                    <p><strong>Aday İsmi:</strong> ${escapeHtml(app.name)} (${escapeHtml(app.class_name)})</p>
-                    <p><strong>E-posta:</strong> <a href="mailto:${escapeHtml(app.email)}">${escapeHtml(app.email)}</a> | <strong>Telefon:</strong> ${escapeHtml(app.phone)}</p>
-                    <p><strong>İlgilendiği Departman:</strong> <span class="role-badge role-badge--admin">${escapeHtml(app.department)}</span></p>
-                    <p><strong>Deneyim / Geçmiş Çalışmalar:</strong><br>${escapeHtml(app.experience || 'Belirtilmedi')}</p>
-                    <p><strong>Kullandığı Araçlar / Diller / Programlar:</strong><br>${escapeHtml(app.tools || 'Belirtilmedi')}</p>
-                    <p><strong>Motivasyon & Takıma Katılma Amacı:</strong><br>${escapeHtml(app.motivation || 'Belirtilmedi')}</p>
-                    <p><strong>Başvuru Tarihi:</strong> ${formatDate(app.created_at)}</p>
+                const panel = document.getElementById('app-detail-inline-panel');
+                const content = document.getElementById('app-detail-content');
+
+                content.innerHTML = `
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Aday Adı & Soyadı</span>
+                        <strong class="admin-detail-value">${escapeHtml(app.name)}</strong>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Sınıf & Okul</span>
+                        <strong class="admin-detail-value">${escapeHtml(app.class_name || 'Belirtilmedi')}</strong>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Tercih Edilen Departman</span>
+                        <strong class="admin-detail-value">${escapeHtml(app.department)}</strong>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">İletişim</span>
+                        <span class="admin-detail-value"><a href="mailto:${escapeHtml(app.email)}">${escapeHtml(app.email)}</a> • ${escapeHtml(app.phone)}</span>
+                    </div>
+                    <div class="admin-detail-item admin-detail-item--full">
+                        <span class="admin-detail-label">Daha Önceki Robotik / STEM Deneyimleri</span>
+                        <p class="admin-detail-text">${escapeHtml(app.experience || 'Belirtilmedi')}</p>
+                    </div>
+                    <div class="admin-detail-item admin-detail-item--full">
+                        <span class="admin-detail-label">Bildiği Diller / CAD / Yazılım / Araçlar</span>
+                        <p class="admin-detail-text">${escapeHtml(app.tools || 'Belirtilmedi')}</p>
+                    </div>
+                    <div class="admin-detail-item admin-detail-item--full">
+                        <span class="admin-detail-label">Takıma Katılma Motivasyonu & Hedefleri</span>
+                        <p class="admin-detail-text">${escapeHtml(app.motivation || 'Belirtilmedi')}</p>
+                    </div>
                 `;
-                document.getElementById('app-detail-modal-backdrop').hidden = false;
+
+                panel.hidden = false;
+                panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
+        // Başvuruyu Sil
         tbody.querySelectorAll('.app-delete-btn').forEach((btn) => {
             btn.addEventListener('click', async () => {
                 const id = btn.dataset.id;
-                if (!confirm('Bu başvuruyu silmek istediğinize emin misiniz?')) return;
+                if (!confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?')) return;
                 const { ok, data } = await apiRequest('DELETE', `/admin/applications/${id}`);
                 showFeedback(feedback, data.message || data.error, !ok);
                 if (ok) loadApplications();
@@ -503,18 +606,18 @@
         });
     }
 
-    function initApplicationModal() {
-        const modal = document.getElementById('app-detail-modal-backdrop');
-        const closeBtn = document.getElementById('app-modal-close-btn');
-        const closeBtn2 = document.getElementById('app-detail-close-btn');
-        const close = () => { modal.hidden = true; };
+    function initAppDetailInlinePanel() {
+        const panel = document.getElementById('app-detail-inline-panel');
+        const closeBtn = document.getElementById('app-detail-close-btn');
+        const hideBtn = document.getElementById('app-detail-hide-btn');
+
+        const close = () => { if (panel) panel.hidden = true; };
         closeBtn?.addEventListener('click', close);
-        closeBtn2?.addEventListener('click', close);
-        modal?.addEventListener('click', (e) => { if (e.target === modal) close(); });
+        hideBtn?.addEventListener('click', close);
     }
 
     // =============================================================================
-    // 4. SİTE AYARLARI
+    // 7. SİTE AYARLARI
     // =============================================================================
     async function loadSettings() {
         const { ok, data } = await apiRequest('GET', '/admin/settings');
@@ -535,7 +638,7 @@
             e.preventDefault();
             const feedback = document.getElementById('settings-feedback');
             const saveBtn = document.getElementById('settings-save-btn');
-            saveBtn.disabled = true;
+            if (saveBtn) saveBtn.disabled = true;
 
             const settings = {
                 site_title: document.getElementById('setting-site-title').value,
@@ -548,23 +651,25 @@
 
             const { ok, data } = await apiRequest('PUT', '/admin/settings', { settings });
             showFeedback(feedback, data.message || data.error, !ok);
-            saveBtn.disabled = false;
+            if (saveBtn) saveBtn.disabled = false;
         });
     }
 
     // =============================================================================
     // BAŞLATMA
     // =============================================================================
-    document.addEventListener('nest:partials-loaded', async () => {
-        const isAdmin = await guardAdmin();
-        if (!isAdmin) return;
-
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminLogin();
         initTabs();
-        initPasswordModal();
-        initContentModal();
-        initApplicationModal();
+        initUserInlinePwdPanel();
+        initContentInlinePanel();
+        initAppDetailInlinePanel();
         initSettingsForm();
 
-        loadUsers();
+        guardAdmin();
+    });
+
+    document.addEventListener('nest:partials-loaded', () => {
+        guardAdmin();
     });
 })();

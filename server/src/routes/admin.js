@@ -41,7 +41,100 @@ const {
 const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
-// Bu router'daki TÜM rotalar admin yetkisi gerektirir.
+// =============================================================================
+// ÖZEL VE BAĞIMSIZ ADMİN GİRİŞ / DURUM ROTALARI (Herkese Açık / Kimlik Doğrulamalı)
+// =============================================================================
+
+// GET /api/admin/me -> Admin oturum durumu kontrolü
+router.get("/me", (req, res) => {
+    if (req.session && req.session.userId && req.session.role === "admin") {
+        const user = db.prepare("SELECT id, username, email, display_name, role FROM users WHERE id = ?").get(req.session.userId);
+        if (user && user.role === "admin") {
+            return res.json({
+                authenticated: true,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    display_name: user.display_name,
+                    role: user.role
+                }
+            });
+        }
+    }
+    return res.status(401).json({ authenticated: false, error: "Yetkili yönetici oturumu bulunamadı." });
+});
+
+// POST /api/admin/login -> Yalnızca emirsametguzel@gmail.com ve emir2011 ile giriş
+router.post("/login", (req, res) => {
+    const { email, password } = req.body || {};
+    const cleanEmail = (email || "").trim().toLowerCase();
+    const cleanPass = (password || "").trim();
+
+    // Özel Güvenlik Kuralı: Yalnızca emirsametguzel@gmail.com ve emir2011
+    if (cleanEmail !== "emirsametguzel@gmail.com" || cleanPass !== "emir2011") {
+        return res.status(401).json({
+            success: false,
+            error: "Geçersiz yönetici kimlik bilgileri. Bu alana yalnızca yetkili sistem yöneticisi erişebilir."
+        });
+    }
+
+    // Kullanıcıyı veritabanında bul veya admin rolüyle oluştur
+    let user = db.prepare("SELECT id, username, email, display_name, role, is_active FROM users WHERE email = ?").get("emirsametguzel@gmail.com");
+    const adminPassHash = bcrypt.hashSync("emir2011", BCRYPT_ROUNDS);
+
+    if (!user) {
+        const insertRes = db.prepare(
+            `INSERT INTO users (username, email, password_hash, display_name, role, is_active)
+             VALUES ('emirsametguzel', 'emirsametguzel@gmail.com', ?, 'Emir Samet Güzel', 'admin', 1)`
+        ).run(adminPassHash);
+        user = db.prepare("SELECT id, username, email, display_name, role, is_active FROM users WHERE id = ?").get(insertRes.lastInsertRowid);
+    } else {
+        db.prepare(
+            `UPDATE users SET role = 'admin', is_active = 1, password_hash = ? WHERE id = ?`
+        ).run(adminPassHash, user.id);
+        user.role = "admin";
+        user.is_active = 1;
+    }
+
+    // Session oluştur
+    req.session.regenerate((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Oturum başlatılamadı." });
+        }
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        req.session.role = "admin";
+        req.session.isAdminAuth = true;
+
+        // Son giriş tarihini güncelle
+        try {
+            db.prepare(`UPDATE users SET last_login_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`).run(user.id);
+        } catch (_) {}
+
+        return res.json({
+            success: true,
+            message: "Yönetici girişi başarıyla gerçekleştirildi.",
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                display_name: user.display_name,
+                role: "admin"
+            }
+        });
+    });
+});
+
+// POST /api/admin/logout -> Admin oturumunu kapat
+router.post("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        res.clearCookie("nest.sid");
+        return res.json({ success: true, message: "Yönetici oturumu kapatıldı." });
+    });
+});
+
+// Aşağıdaki TÜM rotalar admin yetkisi gerektirir.
 router.use(requireAdmin);
 
 // -----------------------------------------------------------------------------

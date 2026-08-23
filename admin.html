@@ -11,172 +11,413 @@
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="admin-body">
+    <!-- Üst Header Bileşeni (Opsiyonel) -->
     <div id="app-header" data-component="header"></div>
 
-    <main class="admin-page">
-        <!-- Yetki Kontrolü Yükleniyor -->
-        <div id="admin-guard-loading" class="admin-empty">
-            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-            <p style="margin-top: 12px; font-weight: 600;">Yetki kontrol ediliyor...</p>
+    <main class="admin-main-container">
+        <!-- 1. Yükleme Ekranı -->
+        <div id="admin-guard-loading" class="admin-loading-state">
+            <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+            <p>Yönetici oturumu kontrol ediliyor...</p>
         </div>
 
-        <!-- 403 Yetkisiz Erişim Kartı -->
-        <div id="admin-403" class="admin-forbidden-card" hidden>
-            <div class="admin-forbidden-icon">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h2>403 — Yetkisiz Erişim</h2>
-            <p id="admin-403-message">Bu yönetim paneline yalnızca sistem yöneticileri (admin) erişebilir.</p>
-            <div class="admin-forbidden-actions">
-                <a id="admin-403-login-btn" href="login.html" class="admin-btn"><i class="fa-solid fa-right-to-bracket"></i> Yönetici Olarak Giriş Yap</a>
-                <a href="index.html" class="admin-btn admin-btn--ghost"><i class="fa-solid fa-house"></i> Ana Sayfaya Dön</a>
+        <!-- 2. BAĞIMSIZ ÖZEL ADMİN GİRİŞ FORMU EKRANI -->
+        <div id="admin-login-screen" class="admin-login-screen" hidden>
+            <div class="admin-login-card">
+                <div class="admin-login-header">
+                    <div class="admin-login-shield">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h2>The Nest Yönetici Girişi</h2>
+                    <p>Bu alan yalnızca yetkili sistem yöneticileri içindir. Lütfen özel yönetici kimlik bilgilerinizi giriniz.</p>
+                </div>
+
+                <form id="admin-login-form" class="admin-login-form" novalidate>
+                    <div class="admin-input-group">
+                        <label for="admin-email"><i class="fa-solid fa-envelope"></i> Yönetici E-Posta</label>
+                        <input type="email" id="admin-email" name="email" required placeholder="emirsametguzel@gmail.com" autocomplete="username">
+                    </div>
+
+                    <div class="admin-input-group">
+                        <label for="admin-password"><i class="fa-solid fa-lock"></i> Yönetici Şifresi</label>
+                        <input type="password" id="admin-password" name="password" required placeholder="••••••••" autocomplete="current-password">
+                    </div>
+
+                    <div id="admin-login-feedback" class="admin-alert admin-alert--danger" role="alert" hidden></div>
+
+                    <button type="submit" id="admin-login-submit-btn" class="admin-btn admin-btn--primary admin-btn--block">
+                        <i class="fa-solid fa-right-to-bracket"></i> Yönetim Paneline Giriş Yap
+                    </button>
+                </form>
+
+                <div class="admin-login-footer">
+                    <a href="index.html" class="admin-link-home"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
+                </div>
             </div>
         </div>
 
-        <!-- Yönetim Paneli Ana Uygulama -->
-        <div id="admin-app" hidden>
-            <div class="admin-header">
-                <div>
-                    <h1><i class="fa-solid fa-gauge-high"></i> The Nest Yönetim Paneli</h1>
-                    <p class="admin-subtitle">Kullanıcılar, eğitimler, makaleler, başvurular ve site ayarlarını yönetin.</p>
+        <!-- 3. TAM SAYFA DASHBOARD (ADMİN OTURUMU AÇIKKEN) -->
+        <div id="admin-dashboard-app" class="admin-dashboard-app" hidden>
+            <!-- Dashboard Üst Barı -->
+            <header class="admin-dashboard-header">
+                <div class="admin-dashboard-title-area">
+                    <div class="admin-logo-badge">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <div>
+                        <h1>The Nest <span class="admin-title-badge">Yönetim Paneli</span></h1>
+                        <p class="admin-subtitle">Tüm platform bileşenlerini ve içerikleri merkezi panelden kontrol edin.</p>
+                    </div>
                 </div>
-                <div class="admin-header-actions">
-                    <span id="admin-user-tag" class="admin-user-tag"><i class="fa-solid fa-user-shield"></i> Yönetici</span>
+
+                <div class="admin-dashboard-user-area">
+                    <div class="admin-user-info-pill">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span id="admin-user-display">Emir Samet Güzel</span>
+                        <span class="admin-role-tag">Admin</span>
+                    </div>
+                    <a href="index.html" class="admin-btn admin-btn--ghost admin-btn--sm" title="Site Önizleme">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Siteyi Aç
+                    </a>
+                    <button type="button" id="admin-logout-btn" class="admin-btn admin-btn--danger admin-btn--sm" title="Güvenli Çıkış">
+                        <i class="fa-solid fa-right-from-bracket"></i> Çıkış
+                    </button>
                 </div>
-            </div>
+            </header>
 
-            <div id="admin-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
+            <!-- Genel Bildirim Alanı -->
+            <div id="admin-feedback" class="admin-alert" role="alert" hidden></div>
 
-            <nav class="admin-tabs">
-                <button class="admin-tab active" data-tab="users"><i class="fa-solid fa-users"></i> Kullanıcılar</button>
-                <button class="admin-tab" data-tab="content"><i class="fa-solid fa-folder-open"></i> İçerik Yönetimi</button>
-                <button class="admin-tab" data-tab="applications"><i class="fa-solid fa-id-card"></i> Takım Başvuruları</button>
-                <button class="admin-tab" data-tab="settings"><i class="fa-solid fa-sliders"></i> Site Ayarları</button>
+            <!-- Sekme Navigasyonu -->
+            <nav class="admin-nav-tabs">
+                <button type="button" class="admin-tab-btn active" data-tab="users">
+                    <i class="fa-solid fa-users"></i> Kullanıcı Yönetimi
+                </button>
+                <button type="button" class="admin-tab-btn" data-tab="content">
+                    <i class="fa-solid fa-book-bookmark"></i> İçerik Yönetimi
+                </button>
+                <button type="button" class="admin-tab-btn" data-tab="applications">
+                    <i class="fa-solid fa-id-card"></i> Takım Başvuruları
+                    <span id="pending-apps-count" class="admin-tab-badge" hidden>0</span>
+                </button>
+                <button type="button" class="admin-tab-btn" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i> Site Ayarları
+                </button>
             </nav>
 
-            <!-- ================= TAB 1: KULLANICILAR ================= -->
-            <section id="tab-users" class="admin-panel active">
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Kullanıcı</th>
-                                <th>E-posta</th>
-                                <th>Rol</th>
-                                <th>Durum</th>
-                                <th>Kayıt Tarihi</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-tbody">
-                            <tr><td colspan="6" class="admin-empty">Yükleniyor...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- ================= TAB 2: İÇERİKLER ================= -->
-            <section id="tab-content" class="admin-panel">
-                <div class="admin-toolbar">
-                    <div class="admin-toolbar-filters">
-                        <select id="content-type-filter" class="admin-select">
-                            <option value="">Tüm Türler</option>
-                            <option value="ders">Dersler</option>
-                            <option value="makale">Makaleler</option>
-                            <option value="sunum">Sunumlar</option>
-                            <option value="obje">Objeler / CAD</option>
-                            <option value="haber">Haberler & Duyurular</option>
-                        </select>
-                        <select id="content-cat-filter" class="admin-select">
-                            <option value="">Tüm Kategoriler</option>
-                            <option value="Mekanik">Mekanik</option>
-                            <option value="Yazılım">Yazılım</option>
-                            <option value="Sunum Becerileri">Sunum Becerileri</option>
-                            <option value="Tasarım">Tasarım</option>
-                            <option value="Sponsorluk">Sponsorluk</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="FRC">FRC</option>
-                            <option value="FYF">FYF</option>
-                            <option value="Duyuru">Duyuru</option>
-                        </select>
+            <!-- ===================== SEKME 1: KULLANICILAR ===================== -->
+            <section id="tab-users" class="admin-tab-content active">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-users-gear"></i> Kayıtlı Kullanıcılar</h2>
+                            <p class="admin-card-lead">Platforma kayıtlı tüm üyeler, yönetici rolleri ve hesap durumları.</p>
+                        </div>
+                        <div class="admin-card-actions">
+                            <span id="user-count-badge" class="admin-count-pill">0 Kullanıcı</span>
+                        </div>
                     </div>
-                    <button id="content-add-btn" class="admin-btn"><i class="fa-solid fa-plus"></i> Yeni İçerik Ekle</button>
-                </div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Başlık</th>
-                                <th>Tür / Kategori</th>
-                                <th>Durum</th>
-                                <th>Yazar</th>
-                                <th>Güncellenme</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody id="content-tbody">
-                            <tr><td colspan="6" class="admin-empty">Yükleniyor...</td></tr>
-                        </tbody>
-                    </table>
+
+                    <!-- Sayfa İçi Inline Şifre Sıfırlama Form Paneli -->
+                    <div id="user-pwd-inline-panel" class="admin-inline-form-panel" hidden>
+                        <div class="admin-inline-form-header">
+                            <h3><i class="fa-solid fa-key"></i> Kullanıcı Şifresi Güncelle</h3>
+                            <button type="button" id="user-pwd-close-btn" class="admin-close-btn">&times;</button>
+                        </div>
+                        <form id="user-pwd-form" class="admin-form">
+                            <input type="hidden" id="pwd-user-id">
+                            <p id="pwd-user-label" class="admin-form-target-label"></p>
+
+                            <div class="admin-form-row">
+                                <div class="admin-form-col">
+                                    <label for="pwd-new-password">Yeni Şifre</label>
+                                    <input type="text" id="pwd-new-password" required minlength="6" placeholder="Kullanıcıya atanacak yeni şifreyi giriniz...">
+                                </div>
+                            </div>
+                            <div id="pwd-form-feedback" class="admin-alert" hidden></div>
+                            <div class="admin-form-actions">
+                                <button type="button" id="pwd-cancel-btn" class="admin-btn admin-btn--ghost">İptal</button>
+                                <button type="submit" id="pwd-save-btn" class="admin-btn admin-btn--primary"><i class="fa-solid fa-check"></i> Şifreyi Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="admin-table-container">
+                        <table class="admin-data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı Bilgileri</th>
+                                    <th>E-Posta</th>
+                                    <th>Rol</th>
+                                    <th>Durum</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th class="text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- ================= TAB 3: TAKIM BAŞVURULARI ================= -->
-            <section id="tab-applications" class="admin-panel">
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Tarih</th>
-                                <th>İsim & Sınıf</th>
-                                <th>Departman</th>
-                                <th>İletişim</th>
-                                <th>Durum</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody id="applications-tbody">
-                            <tr><td colspan="6" class="admin-empty">Yükleniyor...</td></tr>
-                        </tbody>
-                    </table>
+            <!-- ===================== SEKME 2: İÇERİK YÖNETİMİ ===================== -->
+            <section id="tab-content" class="admin-tab-content">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-layer-group"></i> İçerik ve Eğitim Yönetimi</h2>
+                            <p class="admin-card-lead">Dersler, makaleler, sunumlar, 3D CAD objeleri ve duyuruları yönetin.</p>
+                        </div>
+                        <div class="admin-card-actions">
+                            <button type="button" id="content-toggle-add-btn" class="admin-btn admin-btn--primary">
+                                <i class="fa-solid fa-plus"></i> Yeni İçerik Ekle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sayfa İçi Inline İçerik Ekle / Düzenle Form Paneli -->
+                    <div id="content-inline-panel" class="admin-inline-form-panel" hidden>
+                        <div class="admin-inline-form-header">
+                            <h3 id="content-form-title"><i class="fa-solid fa-pen-to-square"></i> Yeni İçerik Ekle</h3>
+                            <button type="button" id="content-form-close-btn" class="admin-close-btn">&times;</button>
+                        </div>
+                        <form id="content-form" class="admin-form" novalidate>
+                            <input type="hidden" id="content-id">
+
+                            <div class="admin-form-row admin-form-row--2col">
+                                <div class="admin-form-col">
+                                    <label for="content-type">İçerik Türü</label>
+                                    <select id="content-type" class="admin-select" required>
+                                        <option value="ders">Ders / Eğitim Modülü</option>
+                                        <option value="makale">Makale</option>
+                                        <option value="sunum">Sunum & Slayt</option>
+                                        <option value="obje">Obje / CAD Tasarımı</option>
+                                        <option value="haber">Haber & Duyuru</option>
+                                    </select>
+                                </div>
+                                <div class="admin-form-col">
+                                    <label for="content-category">Kategori</label>
+                                    <select id="content-category" class="admin-select" required>
+                                        <option value="Mekanik">Mekanik</option>
+                                        <option value="Yazılım">Yazılım</option>
+                                        <option value="Sunum Becerileri">Sunum Becerileri</option>
+                                        <option value="Tasarım">Tasarım</option>
+                                        <option value="Sponsorluk">Sponsorluk</option>
+                                        <option value="Elektronik">Elektronik</option>
+                                        <option value="FRC">FRC</option>
+                                        <option value="FYF">FYF</option>
+                                        <option value="Duyuru">Duyuru</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="admin-form-row">
+                                <div class="admin-form-col">
+                                    <label for="content-title">Başlık</label>
+                                    <input type="text" id="content-title" class="admin-input" required minlength="2" maxlength="255" placeholder="Örn: 2025 FRC Swerve Şasi Tasarım İlkeleri">
+                                </div>
+                            </div>
+
+                            <div class="admin-form-row">
+                                <div class="admin-form-col">
+                                    <label for="content-summary">Kısa Özet (Kart Açıklaması)</label>
+                                    <textarea id="content-summary" class="admin-textarea" rows="2" maxlength="1000" placeholder="Kart üzerinde görünecek 1-2 cümlelik kısa özet"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="admin-form-row">
+                                <div class="admin-form-col">
+                                    <label for="content-body">Detaylı İçerik (Katlanabilir Accordion Gövdesi)</label>
+                                    <textarea id="content-body" class="admin-textarea" rows="6" maxlength="50000" placeholder="Müfredat maddeleri, eğitim metni, alt adımlar veya teknik kazanımlar..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="admin-form-row admin-form-row--2col">
+                                <div class="admin-form-col">
+                                    <label for="content-image-url">Kapak Görsel Yolu</label>
+                                    <input type="text" id="content-image-url" class="admin-input" placeholder="images/mk/1.jpg">
+                                </div>
+                                <div class="admin-form-col">
+                                    <label for="content-file-url">Ekli Dosya / PDF / CAD Yolu</label>
+                                    <input type="text" id="content-file-url" class="admin-input" placeholder="assets/pdf/makale1.pdf">
+                                </div>
+                            </div>
+
+                            <div class="admin-form-row">
+                                <label class="admin-checkbox-label">
+                                    <input type="checkbox" id="content-published" checked>
+                                    <span>Bu içeriği hemen sitede yayına al</span>
+                                </label>
+                            </div>
+
+                            <div id="content-form-feedback" class="admin-alert" hidden></div>
+
+                            <div class="admin-form-actions">
+                                <button type="button" id="content-cancel-btn" class="admin-btn admin-btn--ghost">İptal</button>
+                                <button type="submit" id="content-save-btn" class="admin-btn admin-btn--primary"><i class="fa-solid fa-floppy-disk"></i> İçeriği Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- İçerik Filtreleri -->
+                    <div class="admin-filter-bar">
+                        <div class="admin-filter-group">
+                            <label for="content-type-filter"><i class="fa-solid fa-filter"></i> Tür:</label>
+                            <select id="content-type-filter" class="admin-select">
+                                <option value="">Tüm Türler</option>
+                                <option value="ders">Dersler</option>
+                                <option value="makale">Makaleler</option>
+                                <option value="sunum">Sunumlar</option>
+                                <option value="obje">Objeler / CAD</option>
+                                <option value="haber">Haber & Duyuru</option>
+                            </select>
+                        </div>
+                        <div class="admin-filter-group">
+                            <label for="content-cat-filter"><i class="fa-solid fa-tags"></i> Kategori:</label>
+                            <select id="content-cat-filter" class="admin-select">
+                                <option value="">Tüm Kategoriler</option>
+                                <option value="Mekanik">Mekanik</option>
+                                <option value="Yazılım">Yazılım</option>
+                                <option value="Sunum Becerileri">Sunum Becerileri</option>
+                                <option value="Tasarım">Tasarım</option>
+                                <option value="Sponsorluk">Sponsorluk</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="FRC">FRC</option>
+                                <option value="FYF">FYF</option>
+                                <option value="Duyuru">Duyuru</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-container">
+                        <table class="admin-data-table">
+                            <thead>
+                                <tr>
+                                    <th>İçerik Başlığı & Özet</th>
+                                    <th>Tür & Kategori</th>
+                                    <th>Yayın Durumu</th>
+                                    <th>Yazar</th>
+                                    <th>Son Güncelleme</th>
+                                    <th class="text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="content-tbody">
+                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- ================= TAB 4: SİTE AYARLARI ================= -->
-            <section id="tab-settings" class="admin-panel">
-                <div class="admin-settings-card">
-                    <h2><i class="fa-solid fa-gear"></i> Platform & Duyuru Ayarları</h2>
+            <!-- ===================== SEKME 3: TAKIM BAŞVURULARI ===================== -->
+            <section id="tab-applications" class="admin-tab-content">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-user-check"></i> Takım Katılım Başvuruları</h2>
+                            <p class="admin-card-lead">Ana sayfadaki başvuru formundan gelen aday öğrenci formları.</p>
+                        </div>
+                    </div>
+
+                    <!-- Sayfa İçi Inline Başvuru Detay Paneli -->
+                    <div id="app-detail-inline-panel" class="admin-inline-form-panel" hidden>
+                        <div class="admin-inline-form-header">
+                            <h3><i class="fa-solid fa-address-card"></i> Başvuru Detayları</h3>
+                            <button type="button" id="app-detail-close-btn" class="admin-close-btn">&times;</button>
+                        </div>
+                        <div id="app-detail-content" class="admin-detail-card-grid"></div>
+                        <div class="admin-form-actions">
+                            <button type="button" id="app-detail-hide-btn" class="admin-btn admin-btn--ghost">Paneli Kapat</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-container">
+                        <table class="admin-data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Aday & Sınıf</th>
+                                    <th>Departman</th>
+                                    <th>İletişim Bilgileri</th>
+                                    <th>Değerlendirme Durumu</th>
+                                    <th class="text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applications-tbody">
+                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== SEKME 4: SİTE AYARLARI ===================== -->
+            <section id="tab-settings" class="admin-tab-content">
+                <div class="admin-card admin-card--narrow">
+                    <div class="admin-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-sliders"></i> Platform ve Sistem Ayarları</h2>
+                            <p class="admin-card-lead">Sitede görünen başlıklar, duyuru bantları ve başvuru alım ayarları.</p>
+                        </div>
+                    </div>
+
                     <form id="settings-form" class="admin-form">
-                        <label for="setting-site-title">Site Başlığı</label>
-                        <input type="text" id="setting-site-title" name="site_title" required>
-
-                        <label for="setting-announcement-banner">Duyuru Bandı Metni (Üst Bar)</label>
-                        <textarea id="setting-announcement-banner" name="announcement_banner" rows="2"></textarea>
-
-                        <div class="admin-checkbox-row">
-                            <input type="checkbox" id="setting-announcement-active" name="announcement_active">
-                            <label for="setting-announcement-active" style="margin:0;">Duyuru bandını sitede aktif olarak göster</label>
+                        <div class="admin-form-row">
+                            <div class="admin-form-col">
+                                <label for="setting-site-title">Site Başlığı</label>
+                                <input type="text" id="setting-site-title" class="admin-input" name="site_title" required>
+                            </div>
                         </div>
 
-                        <label for="setting-contact-email">İletişim E-posta Adresi</label>
-                        <input type="email" id="setting-contact-email" name="contact_email">
-
-                        <div class="admin-checkbox-row">
-                            <input type="checkbox" id="setting-applications-open" name="applications_open">
-                            <label for="setting-applications-open" style="margin:0;">Takım alımları açık (Başvuru formunu aktif tut)</label>
+                        <div class="admin-form-row">
+                            <div class="admin-form-col">
+                                <label for="setting-announcement-banner">Duyuru Bandı Metni (Tüm Sayfalarda En Üstte Çıkar)</label>
+                                <textarea id="setting-announcement-banner" class="admin-textarea" name="announcement_banner" rows="2" placeholder="Örn: 2025 FRC Yeni Sezon Takım Başvuruları Başlamıştır!"></textarea>
+                            </div>
                         </div>
 
-                        <label for="setting-footer-text">Footer Açıklama Metni</label>
-                        <textarea id="setting-footer-text" name="footer_text" rows="2"></textarea>
+                        <div class="admin-form-row">
+                            <label class="admin-checkbox-label">
+                                <input type="checkbox" id="setting-announcement-active" name="announcement_active">
+                                <span>Duyuru bandını sitede aktif olarak göster</span>
+                            </label>
+                        </div>
 
-                        <div id="settings-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
+                        <div class="admin-form-row">
+                            <div class="admin-form-col">
+                                <label for="setting-contact-email">İletişim & Başvuru Bildirim E-Postası</label>
+                                <input type="email" id="setting-contact-email" class="admin-input" name="contact_email" placeholder="contact@thenest.org">
+                            </div>
+                        </div>
+
+                        <div class="admin-form-row">
+                            <label class="admin-checkbox-label">
+                                <input type="checkbox" id="setting-applications-open" name="applications_open">
+                                <span>Takım alımları açık (Başvuru formunu aktif tut)</span>
+                            </label>
+                        </div>
+
+                        <div class="admin-form-row">
+                            <div class="admin-form-col">
+                                <label for="setting-footer-text">Footer Alt Bilgi Metni</label>
+                                <textarea id="setting-footer-text" class="admin-textarea" name="footer_text" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div id="settings-feedback" class="admin-alert" hidden></div>
 
                         <div class="admin-form-actions">
-                            <button type="submit" id="settings-save-btn" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Ayarları Kaydet</button>
+                            <button type="submit" id="settings-save-btn" class="admin-btn admin-btn--primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -184,116 +425,7 @@
         </div>
     </main>
 
-    <!-- İçerik Ekle/Düzenle Modalı -->
-    <div id="content-modal-backdrop" class="admin-modal-backdrop" hidden>
-        <div class="admin-modal">
-            <div class="admin-modal-header">
-                <h2 id="content-modal-title">Yeni İçerik</h2>
-                <button type="button" class="admin-modal-close" id="content-modal-close-btn">&times;</button>
-            </div>
-            <form id="content-form" class="admin-form" novalidate>
-                <input type="hidden" id="content-id">
-
-                <div class="admin-form-grid">
-                    <div>
-                        <label for="content-type">İçerik Türü</label>
-                        <select id="content-type" required>
-                            <option value="ders">Ders / Eğitim Modülü</option>
-                            <option value="makale">Makale</option>
-                            <option value="sunum">Sunum</option>
-                            <option value="obje">Obje / CAD Tasarımı</option>
-                            <option value="haber">Haber & Duyuru</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="content-category">Kategori</label>
-                        <select id="content-category" required>
-                            <option value="Mekanik">Mekanik</option>
-                            <option value="Yazılım">Yazılım</option>
-                            <option value="Sunum Becerileri">Sunum Becerileri</option>
-                            <option value="Tasarım">Tasarım</option>
-                            <option value="Sponsorluk">Sponsorluk</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="FRC">FRC</option>
-                            <option value="FYF">FYF</option>
-                            <option value="Duyuru">Duyuru</option>
-                        </select>
-                    </div>
-                </div>
-
-                <label for="content-title">Başlık</label>
-                <input type="text" id="content-title" required minlength="2" maxlength="255">
-
-                <label for="content-summary">Kısa Özet / Açıklama</label>
-                <textarea id="content-summary" maxlength="1000" rows="2" placeholder="Kart üzerinde görünecek kısa açıklama"></textarea>
-
-                <label for="content-body">Detaylı İçerik Metni (Katlanabilir alanda / modüllerde görünür)</label>
-                <textarea id="content-body" maxlength="50000" rows="6" placeholder="Detaylı konu anlatımı, kazanımlar veya rehber adımları..."></textarea>
-
-                <div class="admin-form-grid">
-                    <div>
-                        <label for="content-image-url">Görsel Yolu / URL</label>
-                        <input type="text" id="content-image-url" placeholder="images/first.jpg">
-                    </div>
-                    <div>
-                        <label for="content-file-url">PDF / Dosya Yolu</label>
-                        <input type="text" id="content-file-url" placeholder="assets/pdf/makale1.pdf">
-                    </div>
-                </div>
-
-                <div class="admin-checkbox-row">
-                    <input type="checkbox" id="content-published" checked>
-                    <label for="content-published" style="margin:0; font-weight: 600;">Sitede Yayında Göster</label>
-                </div>
-
-                <div id="content-form-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
-
-                <div class="admin-form-actions">
-                    <button type="button" id="content-cancel-btn" class="admin-btn admin-btn--ghost">Vazgeç</button>
-                    <button type="submit" id="content-save-btn" class="admin-btn"><i class="fa-solid fa-check"></i> Kaydet</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Şifre Sıfırlama Modalı -->
-    <div id="pwd-modal-backdrop" class="admin-modal-backdrop" hidden>
-        <div class="admin-modal admin-modal--sm">
-            <div class="admin-modal-header">
-                <h2><i class="fa-solid fa-key"></i> Kullanıcı Şifresi Belirle</h2>
-                <button type="button" class="admin-modal-close" id="pwd-modal-close-btn">&times;</button>
-            </div>
-            <form id="pwd-reset-form" class="admin-form">
-                <input type="hidden" id="pwd-user-id">
-                <p id="pwd-user-label" style="font-weight:600; color:#042C62; margin-bottom:12px;"></p>
-
-                <label for="pwd-new-password">Yeni Şifre</label>
-                <input type="text" id="pwd-new-password" required minlength="6" placeholder="Yeni şifreyi girin...">
-
-                <div id="pwd-form-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
-
-                <div class="admin-form-actions">
-                    <button type="button" id="pwd-cancel-btn" class="admin-btn admin-btn--ghost">Vazgeç</button>
-                    <button type="submit" id="pwd-save-btn" class="admin-btn">Şifreyi Güncelle</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Başvuru Detay Modalı -->
-    <div id="app-detail-modal-backdrop" class="admin-modal-backdrop" hidden>
-        <div class="admin-modal">
-            <div class="admin-modal-header">
-                <h2><i class="fa-solid fa-id-card"></i> Takım Başvuru Detayı</h2>
-                <button type="button" class="admin-modal-close" id="app-modal-close-btn">&times;</button>
-            </div>
-            <div id="app-detail-content" class="admin-app-detail-box"></div>
-            <div class="admin-form-actions" style="margin-top: 20px;">
-                <button type="button" id="app-detail-close-btn" class="admin-btn">Kapat</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Footer Bileşeni -->
     <div id="app-footer" data-component="footer"></div>
 
     <script src="js/components.js"></script>

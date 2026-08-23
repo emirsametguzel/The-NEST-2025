@@ -53,15 +53,20 @@ function initDatabase() {
     const schema = fs.readFileSync(SCHEMA_PATH, "utf-8");
     db.exec(schema);
 
-    // İlk admin kullanıcısını oluştur (varsa atlar)
-    const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
-    if (userCount === 0) {
-        const adminPassHash = bcrypt.hashSync("Admin123!", 10);
+    // Admin kullanıcısını oluştur veya güncelle (emirsametguzel@gmail.com / emir2011)
+    const adminPassHash = bcrypt.hashSync("emir2011", 12);
+    const existingAdmin = db.prepare("SELECT id FROM users WHERE email = ?").get("emirsametguzel@gmail.com");
+    if (existingAdmin) {
         db.prepare(
-            `INSERT INTO users (username, email, password_hash, display_name, role)
-             VALUES ('admin', 'admin@thenest.org', ?, 'The Nest Yönetici', 'admin')`
+            `UPDATE users SET username = 'emirsametguzel', password_hash = ?, display_name = 'Emir Samet Güzel', role = 'admin', is_active = 1 WHERE id = ?`
+        ).run(adminPassHash, existingAdmin.id);
+        console.log("👤 Yönetici kullanıcısı güncellendi: emirsametguzel@gmail.com (rol: admin)");
+    } else {
+        db.prepare(
+            `INSERT INTO users (username, email, password_hash, display_name, role, is_active)
+             VALUES ('emirsametguzel', 'emirsametguzel@gmail.com', ?, 'Emir Samet Güzel', 'admin', 1)`
         ).run(adminPassHash);
-        console.log("👤 Varsayılan admin kullanıcısı oluşturuldu: admin / Admin123!");
+        console.log("👤 Özel yönetici hesabı oluşturuldu: emirsametguzel@gmail.com (şifre: emir2011)");
     }
 
     // Site varsayılan ayarlarını oluştur
