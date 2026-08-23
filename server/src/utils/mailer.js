@@ -1,18 +1,30 @@
 // =============================================================================
 // server/src/utils/mailer.js
-// Nodemailer sarmalayıcısı. SMTP ayarları .env'de tanımlı ise güvenli şekilde
-// e-posta gönderir, açılışta bağlantıyı doğrular (verify) ve hataları detaylı loglar.
+// E-posta gönderim modülü: Resend HTTP API ve Nodemailer SMTP desteği.
+// Resend HTTP (Port 443) kullandığı için tüm bulut ve sunucu ortamlarında
+// port bloklamasına takılmadan anında e-posta iletir.
 // =============================================================================
 
+const { Resend } = require("resend");
 const nodemailer = require("nodemailer");
 
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM } = process.env;
-const SMTP_CONFIGURED = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+const {
+    RESEND_API_KEY,
+    RESEND_FROM,
+    SMTP_HOST,
+    SMTP_PORT,
+    SMTP_USER,
+    SMTP_PASS,
+    SMTP_FROM,
+} = process.env;
+
+const HAS_RESEND = Boolean(RESEND_API_KEY && RESEND_API_KEY.trim().length > 0);
+const HAS_SMTP = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
 
 function maskSecret(str) {
     if (!str) return "(tanımsız)";
-    if (str.length <= 4) return str.slice(0, 1) + "***";
-    return str.slice(0, 2) + "*".repeat(Math.min(str.length - 2, 8));
+    if (str.length <= 6) return str.slice(0, 2) + "***";
+    return str.slice(0, 4) + "*".repeat(Math.min(str.length - 4, 10)) + str.slice(-2);
 }
 
 function maskEmail(email) {
@@ -21,53 +33,34 @@ function maskEmail(email) {
     return name.slice(0, 2) + "***@" + domain;
 }
 
-let transporter = null;
+let resendClient = null;
+let smtpTransporter = null;
 
-if (SMTP_CONFIGURED) {
-    const port = Number(SMTP_PORT) || 587;
-    const isSecure = port === 465;
-
+if (HAS_RESEND) {
+    resendClient = new Resend(RESEND_API_KEY.trim());
     console.log("┌────────────────────────────────────────────────────────┐");
-    console.log("│ 📧 SMTP YAPILANDIRMASI YÜKLENDİ                         │");
-    console.log(`│ Host : ${(SMTP_HOST || "").padEnd(47)}│`);
-    console.log(`│ Port : ${String(port).padEnd(47)}│`);
-    console.log(`│ User : ${maskEmail(SMTP_USER).padEnd(47)}│`);
-    console.log(`│ Pass : ${maskSecret(SMTP_PASS).padEnd(47)}│`);
-    console.log(`│ From : ${(SMTP_FROM || SMTP_USER || "").padEnd(47)}│`);
+    console.log("│ 🚀 [RESEND API] E-POSTA SERVİSİ AKTİF EDİLDİ           │");
+    console.log(`│ API Key : ${maskSecret(RESEND_API_KEY).padEnd(45)}│`);
+    console.log(`│ Gönderen: ${(RESEND_FROM || "The Nest <onboarding@resend.dev>").padEnd(45)}│`);
+    console.log("│ Durum   : HTTP Port 443 (Bloklamasız Güvenli Gönderim) │");
     console.log("└────────────────────────────────────────────────────────┘");
-
-    transporter = nodemailer.createTransport({
+} else if (HAS_SMTP) {
+    const port = Number(SMTP_PORT) || 587;
+    smtpTransporter = nodemailer.createTransport({
         host: SMTP_HOST,
         port: port,
-        secure: isSecure, // 465 SSL, 587 STARTTLS
-        auth: {
-            user: SMTP_USER,
-            pass: SMTP_PASS,
-        },
-        tls: {
-            rejectUnauthorized: false, // Sertifika uyumsuzluklarına karşı esnek
-        },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
+        secure: port === 465,
+        auth: { user: SMTP_USER, pass: SMTP_PASS },
+        tls: { rejectUnauthorized: false },
     });
-
-    // Sunucu açılışında SMTP sunucusuna ping / handshake doğrulaması
-    transporter.verify((error, success) => {
-        if (error) {
-            console.error("❌ [SMTP BAĞLANTI HATASI]: Sunucu SMTP sunucusuna bağlanamadı!");
-            console.error("   Hata Kodu   :", error.code || "Bilinmiyor");
-            console.error("   Hata Detayı :", error.message);
-            if (SMTP_HOST && SMTP_HOST.includes("gmail.com")) {
-                console.warn("💡 [GMAIL İPUCU]: Gmail için normal hesap şifresi değil, 'Google Hesabı -> Güvenlik -> 2 Adımlı Doğrulama -> Uygulama Şifreleri (App Password)' 16 haneli kodunu kullanmalısınız!");
-            }
-        } else {
-            console.log("✅ [SMTP BAĞLANTISI DOĞRULANDI]: E-posta gönderim servisi hazır.");
-        }
-    });
+    console.log("┌────────────────────────────────────────────────────────┐");
+    console.log("│ 📧 [SMTP FALLBACK] YAPILANDIRMASI YÜKLENDİ             │");
+    console.log(`│ Host    : ${(SMTP_HOST || "").padEnd(45)}│`);
+    console.log(`│ User    : ${maskEmail(SMTP_USER).padEnd(45)}│`);
+    console.log("└────────────────────────────────────────────────────────┘");
 } else {
-    console.log("⚠️ [SMTP YAPILANDIRILMAMIŞ]: SMTP_HOST / SMTP_USER / SMTP_PASS eksik.");
-    console.log("   OTP kodları yerel konsola yazdırılacak (Geliştirme / Test Modu).");
+    console.log("⚠️ [E-POSTA UYARISI]: RESEND_API_KEY veya SMTP tanımlanmamış.");
+    console.log("   Şifre sıfırlama OTP kodları sunucu terminaline yazdırılacaktır.");
 }
 
 /**
@@ -100,58 +93,81 @@ async function sendOtpEmail(toEmail, otp) {
         </div>
     `;
 
-    if (!SMTP_CONFIGURED || !transporter) {
-        // --- Geliştirme / Test ortamı fallback'i ---
-        console.log("╔══════════════════════════════════════════════════════╗");
-        console.log("║ 📧 [DEV/FALLBACK] ŞİFRE SIFIRLAMA OTP KODU ÜRETİLDİ   ║");
-        console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
-        console.log(`║ OTP  : ${otp.padEnd(46)}║`);
-        console.log("║ Süre : 10 Dakika                                     ║");
-        console.log("║ Durum: SMTP tanımlı değil, konsola basıldı.          ║");
-        console.log("╚══════════════════════════════════════════════════════╝");
-        return { delivered: false, dev: true, otp };
-    }
+    // 1. ÖNCELİK: Resend HTTP REST API ile Gönderim
+    if (resendClient) {
+        try {
+            const sender = RESEND_FROM || "The Nest <onboarding@resend.dev>";
+            console.log(`🚀 [Resend] ${toEmail} adresine e-posta gönderiliyor (Gönderen: ${sender})...`);
 
-    try {
-        console.log(`📤 [SMTP GÖNDERİLİYOR]: ${toEmail} adresine e-posta iletiliyor...`);
-        const info = await transporter.sendMail({
-            from: SMTP_FROM || SMTP_USER,
-            to: toEmail,
-            subject,
-            text,
-            html,
-        });
+            const { data, error } = await resendClient.emails.send({
+                from: sender,
+                to: [toEmail],
+                subject,
+                text,
+                html,
+            });
 
-        console.log("╔══════════════════════════════════════════════════════╗");
-        console.log("║ ✅ [SMTP TESLİMATI BAŞARILI]                          ║");
-        console.log(`║ Alıcı     : ${toEmail.padEnd(41)}║`);
-        console.log(`║ MessageId : ${(info.messageId || "").slice(0, 41).padEnd(41)}║`);
-        console.log(`║ Yanıt     : ${(info.response || "").slice(0, 41).padEnd(41)}║`);
-        console.log("╚══════════════════════════════════════════════════════╝");
+            if (error) {
+                console.error("❌ [Resend API Hatası]:", error);
+                console.log("╔══════════════════════════════════════════════════════╗");
+                console.log("║ 🔑 [FALLBACK OTP KODU (Resend Hatası Nedeniyle)]     ║");
+                console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+                console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+                console.log("╚══════════════════════════════════════════════════════╝");
+                return { delivered: false, dev: true, error: error.message || String(error), otp };
+            }
 
-        return { delivered: true, dev: false, messageId: info.messageId };
-    } catch (mailError) {
-        console.error("╔══════════════════════════════════════════════════════╗");
-        console.error("║ ❌ [SMTP GÖNDERİM HATASI]: E-POSTA İLETİLEMEDİ!       ║");
-        console.error(`║ Alıcı     : ${toEmail.padEnd(41)}║`);
-        console.error(`║ Hata Kodu : ${(mailError.code || "Bilinmiyor").padEnd(41)}║`);
-        console.error(`║ Hata Mesaj: ${(mailError.message || "").slice(0, 41).padEnd(41)}║`);
-        console.error("╠══════════════════════════════════════════════════════╣");
-        console.error(`║ 🔑 [FALLBACK OTP]: ${otp.padEnd(34)}║`);
-        console.error("╚══════════════════════════════════════════════════════╝");
+            console.log("╔══════════════════════════════════════════════════════╗");
+            console.log("║ ✅ [RESEND TESLİMATI BAŞARILI]                        ║");
+            console.log(`║ Alıcı  : ${toEmail.padEnd(44)}║`);
+            console.log(`║ Mail ID: ${(data?.id || "").padEnd(44)}║`);
+            console.log("╚══════════════════════════════════════════════════════╝");
 
-        if (mailError.response) {
-            console.error("   Sunucu Yanıtı:", mailError.response);
+            return { delivered: true, dev: false, messageId: data?.id };
+        } catch (apiErr) {
+            console.error("❌ [Resend İstek Hatası]:", apiErr.message);
+            console.log("╔══════════════════════════════════════════════════════╗");
+            console.log("║ 🔑 [FALLBACK OTP KODU]                               ║");
+            console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+            console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+            console.log("╚══════════════════════════════════════════════════════╝");
+            return { delivered: false, dev: true, error: apiErr.message, otp };
         }
-
-        return {
-            delivered: false,
-            dev: true,
-            error: mailError.message,
-            errorCode: mailError.code,
-            otp,
-        };
     }
+
+    // 2. İKİNCİ ÖNCELİK: SMTP Transporter (Eğer Resend yok ama SMTP varsa)
+    if (smtpTransporter) {
+        try {
+            console.log(`📤 [SMTP] ${toEmail} adresine e-posta iletiliyor...`);
+            const info = await smtpTransporter.sendMail({
+                from: SMTP_FROM || SMTP_USER,
+                to: toEmail,
+                subject,
+                text,
+                html,
+            });
+            console.log(`✅ [SMTP] E-posta başarıyla iletildi. MessageId: ${info.messageId}`);
+            return { delivered: true, dev: false, messageId: info.messageId };
+        } catch (mailError) {
+            console.error("❌ [SMTP Hatası]:", mailError.message);
+            console.log("╔══════════════════════════════════════════════════════╗");
+            console.log("║ 🔑 [FALLBACK OTP KODU (SMTP Hatası)]                 ║");
+            console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+            console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+            console.log("╚══════════════════════════════════════════════════════╝");
+            return { delivered: false, dev: true, error: mailError.message, otp };
+        }
+    }
+
+    // 3. YEREL / GELİŞTİRME FALLBACK MODU (API veya SMTP tanımlı değilse)
+    console.log("╔══════════════════════════════════════════════════════╗");
+    console.log("║ 📧 [DEV/LOCAL] ŞİFRE SIFIRLAMA OTP KODU ÜRETİLDİ     ║");
+    console.log(`║ Alıcı: ${toEmail.padEnd(46)}║`);
+    console.log(`║ OTP  : ${otp.padEnd(46)}║`);
+    console.log("║ Süre : 10 Dakika                                     ║");
+    console.log("║ Not  : RESEND_API_KEY tanımlayarak canlıya alın.     ║");
+    console.log("╚══════════════════════════════════════════════════════╝");
+    return { delivered: false, dev: true, otp };
 }
 
-module.exports = { sendOtpEmail, SMTP_CONFIGURED };
+module.exports = { sendOtpEmail, HAS_RESEND, HAS_SMTP };

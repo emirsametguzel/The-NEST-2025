@@ -1,5 +1,9 @@
-# Ortam değişkenleri (SESSION_SECRET vb.) — ASLA commit edilmemeli
+# Ortam değişkenleri (SESSION_SECRET, RESEND_API_KEY vb.) — ASLA commit edilmemeli
+.env
+.env.local
+.env.*.local
 server/.env
+server/.env.local
 
 # Veritabanı dosyaları
 data/*.sqlite
