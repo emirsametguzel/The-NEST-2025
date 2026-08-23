@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr" data-base-path="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nest | Yönetim Paneli</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
+    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app-header" data-component="header"></div>
+
+    <main class="admin-page">
+        <div id="admin-guard" class="admin-empty">
+            <i class="fa-solid fa-spinner fa-spin"></i> Yetki kontrol ediliyor...
+        </div>
+
+        <div id="admin-app" hidden>
+            <div class="admin-header">
+                <h1><i class="fa-solid fa-gauge"></i> Yönetim Paneli</h1>
+            </div>
+
+            <div id="admin-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
+
+            <nav class="admin-tabs">
+                <button class="admin-tab active" data-tab="users">Kullanıcılar</button>
+                <button class="admin-tab" data-tab="content">İçerikler</button>
+            </nav>
+
+            <!-- ================= KULLANICILAR ================= -->
+            <section id="tab-users" class="admin-panel active">
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı Adı</th>
+                                <th>E-posta</th>
+                                <th>Rol</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>Son Giriş</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr><td colspan="6" class="admin-empty">Yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ================= İÇERİKLER ================= -->
+            <section id="tab-content" class="admin-panel">
+                <div class="admin-toolbar">
+                    <select id="content-type-filter" class="admin-select">
+                        <option value="">Tüm türler</option>
+                        <option value="makale">Makaleler</option>
+                        <option value="ders">Dersler</option>
+                        <option value="duyuru">Duyurular</option>
+                    </select>
+                    <button id="content-add-btn" class="admin-btn"><i class="fa-solid fa-plus"></i> Yeni İçerik</button>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Tür</th>
+                                <th>Durum</th>
+                                <th>Yazar</th>
+                                <th>Güncellenme</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="content-tbody">
+                            <tr><td colspan="6" class="admin-empty">Yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- İçerik Ekle/Düzenle Modalı -->
+    <div id="content-modal-backdrop" class="admin-modal-backdrop" hidden>
+        <div class="admin-modal">
+            <h2 id="content-modal-title">Yeni İçerik</h2>
+            <form id="content-form" class="admin-form" novalidate>
+                <input type="hidden" id="content-id">
+
+                <label for="content-type">Tür</label>
+                <select id="content-type" required>
+                    <option value="makale">Makale</option>
+                    <option value="ders">Ders</option>
+                    <option value="duyuru">Duyuru</option>
+                </select>
+
+                <label for="content-title">Başlık</label>
+                <input type="text" id="content-title" required minlength="3" maxlength="200">
+
+                <label for="content-summary">Özet</label>
+                <textarea id="content-summary" maxlength="500" rows="2"></textarea>
+
+                <label for="content-body">İçerik</label>
+                <textarea id="content-body" maxlength="20000" rows="8"></textarea>
+
+                <div class="admin-checkbox-row">
+                    <input type="checkbox" id="content-published" checked>
+                    <label for="content-published" style="margin:0;">Yayında</label>
+                </div>
+
+                <div id="content-form-feedback" class="admin-feedback" role="alert" aria-live="polite" hidden></div>
+
+                <div class="admin-form-actions">
+                    <button type="button" id="content-cancel-btn" class="admin-btn admin-btn--ghost">Vazgeç</button>
+                    <button type="submit" id="content-save-btn" class="admin-btn">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-footer" data-component="footer"></div>
+
+    <script src="js/components.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

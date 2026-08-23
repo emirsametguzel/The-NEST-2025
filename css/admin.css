@@ -1,0 +1,310 @@
+/* =============================================================================
+   ADMIN.CSS — Yönetim paneli (admin.html) stilleri
+   ============================================================================= */
+
+.admin-page {
+    max-width: 1100px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+    font-family: 'Poppins', sans-serif;
+    color: #222;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.admin-header h1 {
+    color: #042C62;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #e5e9f0;
+    flex-wrap: wrap;
+}
+
+.admin-tab {
+    background: none;
+    border: none;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6b7688;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-tab.active {
+    color: #042C62;
+    border-bottom-color: #042C62;
+}
+
+.admin-panel {
+    display: none;
+}
+
+.admin-panel.active {
+    display: block;
+}
+
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.admin-select {
+    padding: 8px 12px;
+    border: 1px solid #ccd3e0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #042C62;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-btn:hover {
+    background: #06398a;
+}
+
+.admin-btn--danger {
+    background: #c0392b;
+}
+
+.admin-btn--danger:hover {
+    background: #a5281b;
+}
+
+.admin-btn--ghost {
+    background: transparent;
+    color: #042C62;
+    border: 1px solid #042C62;
+}
+
+.admin-btn--ghost:hover {
+    background: #eef2f8;
+}
+
+.admin-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+/* --- Tablo: responsive kart-dönüşümlü --- */
+.admin-table-wrap {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(4, 44, 98, 0.08);
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eef1f6;
+    white-space: nowrap;
+}
+
+.admin-table th {
+    background: #f7f9fc;
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.role-badge--admin {
+    background: #e8f0ff;
+    color: #042C62;
+}
+
+.role-badge--member {
+    background: #eef2f6;
+    color: #556;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-badge--published {
+    background: #e7f6ec;
+    color: #146c2e;
+}
+
+.status-badge--draft {
+    background: #fff4e0;
+    color: #a15c00;
+}
+
+.admin-empty {
+    text-align: center;
+    padding: 40px;
+    color: #8a93a6;
+}
+
+.admin-feedback {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.admin-feedback.is-error {
+    background: #fde8e8;
+    color: #8b1e1e;
+}
+
+.admin-feedback.is-success {
+    background: #e7f6ec;
+    color: #146c2e;
+}
+
+/* --- Modal (içerik ekle/düzenle) --- */
+.admin-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 44, 98, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.admin-modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-modal h2 {
+    color: #042C62;
+    margin: 0 0 16px;
+    font-size: 1.3rem;
+}
+
+.admin-form label {
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.admin-form input[type="text"],
+.admin-form select,
+.admin-form textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #ccd3e0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.admin-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.admin-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.admin-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+/* --- Responsive: dar ekranlarda tablo yerine kart görünümü --- */
+@media only screen and (max-width: 700px) {
+    .admin-table thead {
+        display: none;
+    }
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr,
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+    .admin-table tr {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eef1f6;
+    }
+    .admin-table td {
+        border: none;
+        padding: 4px 0;
+        white-space: normal;
+    }
+    .admin-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #8a93a6;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+}

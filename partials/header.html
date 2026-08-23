@@ -1,0 +1,48 @@
+<nav class="nav-a-00 navbar">
+    <div class="help">
+        <div class="logo">
+            <a href="{{base}}index.html"><img class="logo-img" src="{{base}}images/logo.png" alt="The Nest Logo"></a>
+        </div>
+        <div class="parent-1">
+            <ul class="liste">
+                <div class="held">
+                    <a href="{{base}}team.html" style="text-decoration: none;">
+                        <li class="liste-buton" id="he1" data-i18n="nav.team">Takımımız</li>
+                    </a>
+                </div>
+                <div class="held dropdown">
+                    <li class="liste-buton" id="he2" data-i18n="nav.content">İçerikler</li>
+                    <div class="dropdown-content">
+                        <a href="{{base}}dersler.html" id="he3" data-i18n="nav.courses">Eğitimler</a>
+                        <a href="{{base}}makaleler.html" id="he4" data-i18n="nav.articles">Makaleler</a>
+                        <a href="{{base}}sunumlar.html" id="he5" data-i18n="nav.presentations">Sunumlar</a>
+                        <a href="{{base}}objeler.html" id="he6" data-i18n="nav.designs">Tasarımlar</a>
+                    </div>
+                </div>
+                <div class="held">
+                    <a style="text-decoration: none;" href="{{base}}news.html">
+                        <li class="liste-buton" id="he7" data-i18n="nav.news">Haberler</li>
+                    </a>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="parent-3">
+        <div class="lang-switch">
+            <input type="checkbox" id="switch" checked />
+            <label class="lang-switch__track" for="switch">
+                <span class="lang-switch__option">TR</span>
+                <span class="lang-switch__option">EN</span>
+            </label>
+        </div>
+        <a id="admin-link" class="a" href="{{base}}admin.html" title="Admin Paneli" hidden><i class="fa-solid fa-gauge"></i></a>
+        <a id="login-link" class="login-btn" href="{{base}}login.html" data-i18n-attr="title" data-i18n="nav.login" title="Giriş Yap">
+            <img id="login-avatar" class="login-btn__avatar" src="" alt="" hidden>
+            <i id="login-icon" class="fa-solid fa-right-to-bracket"></i>
+            <span id="login-label" data-i18n="nav.login">Giriş Yap</span>
+        </a>
+        <a class="a" href="mailto:amalhawksrobotics@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a class="a" href="https://www.fikretyukselfoundation.org/" target="_blank" rel="noopener"><img src="{{base}}images/fy-logo.png" alt="Fikret Yüksel Vakfı"></a>
+        <a class="a" href="https://www.firstinspires.org/robotics/frc" target="_blank" rel="noopener"><img src="{{base}}images/frc-logo.png" alt="FIRST Robotics Competition"></a>
+    </div>
+</nav>

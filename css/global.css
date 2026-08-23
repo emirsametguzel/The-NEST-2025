@@ -1,0 +1,406 @@
+/* =============================================
+   GLOBAL.CSS — Navbar + Global tanımlar + Footer
+   ============================================= */
+
+/* --- Navbar.css --- */
+/* navbar css */
+
+
+.nav-a-00 {
+    z-index: 5;
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 13vh;
+    background: rgb(0, 56, 130);
+    background: linear-gradient(138deg, rgba(0, 56, 130, 1) 0%, rgba(0, 56, 130, 1) 27%, rgba(4, 45, 98, 1) 31%, rgba(7, 38, 79, 1) 100%);
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.logo-img {
+
+    height: 8vh;
+
+}
+
+.logo {
+    margin: auto 1vh;
+    height: 8vh;
+    overflow: hidden;
+}
+
+.parent-1 {
+    display: flex;
+    margin: auto 1vh;
+    height: 17vh;
+    justify-content: flex-start;
+}
+
+
+.help {
+
+    display: flex;
+    overflow: hidden;
+}
+
+
+.liste {
+    display: flex;
+    margin: auto 1vh;
+    height: 17vh;
+    justify-content: center;
+
+}
+
+.liste-buton {
+    font-size: x-large;
+    font-weight: 700;
+    margin: 3vh 2vh;
+    padding: 1vh;
+    color: white;
+
+}
+
+.held {
+    height: 17vh;
+
+}
+
+.held:hover {
+    background: rgb(69, 124, 197);
+    margin: auto 0;
+
+}
+
+
+
+
+/* dropdown */
+.dropdown {
+    float: left;
+    overflow: hidden;
+
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: rgb(69, 124, 197);
+    width: max-content;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    transition: 1s;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 2vh;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    font-size: large;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ffffff;
+    color: black;
+
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+    position: fixed;
+
+}
+
+/* parent 3 */
+
+.parent-3 {
+    display: flex;
+    overflow: hidden;
+
+
+}
+
+.parent-3 img {
+    padding: 1vh;
+    height: 6vh;
+    margin: auto 0;
+    overflow: hidden;
+}
+
+.parent-3 i {
+    margin: auto 0;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    font-size: xx-large;
+    color: #ffffff;
+    padding: 2vh;
+    border-left: 3px solid white;
+
+}
+
+.parent-3 i:hover {
+
+    margin: auto 0;
+    font-size: 2.2rem;
+    color: #ffffff;
+    padding: 2vh;
+
+}
+
+.a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+/* --- Giriş Yap: belirgin buton tasarımı --- */
+.login-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: auto 0.4rem;
+    padding: 0.5rem 1rem;
+    background: #ffffff;
+    color: #042C62;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 100px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.login-btn i {
+    font-size: 1rem;
+}
+
+.login-btn__avatar {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.login-btn:hover {
+    background: #e8eef7;
+    transform: translateY(-1px);
+}
+
+@media only screen and (max-width: 700px) {
+    .login-btn span {
+        display: none; /* dar ekranlarda yalnızca ikon görünür, buton dairesel kalır */
+    }
+    .login-btn {
+        padding: 0.6rem;
+    }
+}
+
+
+/* switch */
+
+
+input[type=checkbox] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+/* --- Dil değiştirici: modern TR/EN segmented toggle --- */
+.lang-switch {
+    display: flex;
+    align-items: center;
+    margin: auto 0.6rem;
+}
+
+.lang-switch__track {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    width: 4.4rem;
+    height: 1.9rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 100px;
+    overflow: hidden;
+    user-select: none;
+}
+
+.lang-switch__option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+    z-index: 1;
+    transition: color 0.25s ease;
+}
+
+.lang-switch__track::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(50% - 2px);
+    height: calc(100% - 4px);
+    background: #ffffff;
+    border-radius: 100px;
+    transition: transform 0.25s ease;
+}
+
+/* checked = TR seçili (soldaki segment) */
+input#switch:checked + .lang-switch__track::before {
+    transform: translateX(0);
+}
+input#switch:checked + .lang-switch__track .lang-switch__option:first-child {
+    color: #042C62;
+}
+
+/* unchecked = EN seçili (sağdaki segment) */
+input#switch:not(:checked) + .lang-switch__track::before {
+    transform: translateX(100%);
+}
+input#switch:not(:checked) + .lang-switch__track .lang-switch__option:last-child {
+    color: #042C62;
+}
+
+
+
+/* --- global2.css --- */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Bevan', serif;
+    font-family: 'Ubuntu', sans-serif;
+    overflow-y: hidden;
+
+
+}
+
+html {
+
+    background: rgb(19, 63, 122);
+    background: linear-gradient(180deg, rgba(19, 63, 122, 1) 0%, rgba(0, 0, 0, 1) 100%);
+
+    overflow: scroll;
+}
+
+/* --- footer.css --- */
+/* Footer CSS (Genel) */
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.foot {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 2rem; /* Sağda boşluk bırakmak için */
+    background: linear-gradient(90deg, rgba(7, 38, 79, 1) 0%, rgba(4, 45, 98, 1) 35%, rgba(0, 56, 130, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 5s ease infinite;
+    color: #fefefe;
+}
+
+.footer-a-01 {
+    text-align: center; /* Yazıyı ortalar */
+    flex: 1; /* Yatayda merkezlemek için genişliği kaplar */
+    margin-right: center; /* Sağ tarafta boşluk bırakır */
+    align-self: center; /* Ortalamak için */
+}
+.footer-a-02 {
+    display: flex;
+    justify-content: space-between; /* İki bölüm arasındaki boşluğu yaymak için */
+    flex-wrap: wrap; /* Küçük ekranlarda satırı taşmasını önlemek için */
+    margin: 4rem 0;
+    gap: 2rem; /* Bölümler arasında boşluk eklemek için */
+}
+
+.footer-pac-01,
+.footer-pac-02 {
+    flex: 1; /* Bölümlerin eşit genişlikte olmasını sağlamak için */
+    min-width: 200px; /* Küçük ekranlarda bölümlerin daha iyi görünmesi için */
+    padding-right:50px;
+}
+
+.footer-list-01,
+.footer-list-02 {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.footer-list-01 li,
+.footer-list-02 li {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    color: #d6d6d6;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.footer-list-01 li::before,
+.footer-list-02 li::before {
+    content: "•";
+    color: #007BFF;
+    position: absolute;
+    left: 0;
+    font-size: 1.5rem;
+}
+
+.footer-pac-01 h1 {
+    border-bottom: 2px solid #007BFF; /* Başlıkların altına çizgi ekler */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    width:max-content;
+    display: inline-block; /* Çizginin genişliğini başlığa göre ayarlar */
+}
+
+.footer-pac-02 h1 {
+    border-bottom: 2px solid #007BFF; /* Başlıkların altına çizgi ekler */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    width:max-content;
+    display: inline-block; /* Çizginin genişliğini başlığa göre ayarlar */
+}
+
+.footer-list-01 li:hover,
+.footer-list-02 li:hover {
+    color: #40ADDE;
+    margin-left: 1rem;
+    margin-right: 2rem;
+    transition: 0.5s;
+}
+
+.iteam {
+    margin-top: 1rem;
+    opacity: 90%;
+}
+
+.iteam .esg-logo {
+    height: 100px;
+    width: auto;
+    display: inline-block;
+}

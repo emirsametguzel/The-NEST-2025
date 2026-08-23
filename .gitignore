@@ -1,0 +1,23 @@
+# Ortam değişkenleri (SESSION_SECRET vb.) — ASLA commit edilmemeli
+server/.env
+
+# Veritabanı dosyaları
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/*.sqlite-shm
+!data/.gitkeep
+
+# Kullanıcı yüklemeleri (avatarlar)
+uploads/avatars/*
+!uploads/avatars/.gitkeep
+
+# Node.js
+server/node_modules/
+npm-debug.log*
+
+# Editör/IDE
+.idea/
+.vscode/
+*.log
+.DS_Store

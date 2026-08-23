@@ -1,0 +1,195 @@
+/* ==========================================================================
+   COMPONENTS.CSS
+   index.html içindeki inline <style> bloklarından ayrıştırılmıştır:
+   - Başvuru afişi modalı
+   - Takım Başvuru Formu
+   - Forum butonu
+   ========================================================================== */
+
+/* --- Forum Butonu --- */
+#forum_button {
+    background-color: #007bff;
+    color: white;
+    font-size: 20px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#forum_button:hover {
+    background-color: #0056b3;
+}
+#forum_button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* --- Modal (Başvuru Afişi) --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-content: center;
+}
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 10% auto;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    animation: fading 3s;
+}
+@keyframes fading {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+}
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+.modal-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.modal-button:hover {
+    background-color: #0056b3;
+}
+.modal-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* --- Takım Başvuru Formu --- */
+.modern-form {
+    margin-top: 20px;
+}
+.modern-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+.modern-form input,
+.modern-form select,
+.modern-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+.modern-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+.modern-form input:focus,
+.modern-form select:focus,
+.modern-form textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.modern-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.modern-form button:hover {
+    background-color: #0056b3;
+}
+.modern-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.form-feedback {
+    margin-top: 10px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.form-feedback img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+.honeypot {
+    display: none;
+}
+
+/* --- Responsive --- */
+@media only screen and (min-width: 1025px) {
+    .modal-content {
+        width: 45%;
+    }
+    .modern-form {
+        max-width: 500px;
+        margin: 20px auto;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .modal-content {
+        margin: 20% auto;
+        padding: 15px;
+    }
+    .modal-content img {
+        max-width: 80%;
+    }
+    .modal-button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    .modern-form input,
+    .modern-form select,
+    .modern-form textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+    .modern-form button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    .joinery {
+        padding: 15px;
+    }
+    .form-feedback img {
+        width: 40px;
+        height: 40px;
+    }
+}

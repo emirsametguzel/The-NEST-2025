@@ -1,0 +1,1094 @@
+/* =============================================
+   MOBILE.CSS — max-width: 500px
+   ============================================= */
+
+/* --- navbar-mobil.css --- */
+/* navbar css */
+
+
+.nav-a-00 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30vh;
+    background: rgb(0, 56, 130);
+    background: linear-gradient(138deg, rgba(0, 56, 130, 1) 0%, rgba(0, 56, 130, 1) 27%, rgba(4, 45, 98, 1) 31%, rgba(7, 38, 79, 1) 100%);
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.logo-img {
+
+    height: 7vh;
+    margin: auto;
+
+}
+
+.logo {
+    margin:  1vh auto;
+    height: 8vh;
+    overflow: hidden;
+}
+
+.parent-1 {
+    display: flex;
+    margin: auto 1vh;
+    height: 10vh;
+    justify-content: flex-start;
+}
+
+
+.help {
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+.liste {
+    display: flex;
+    margin: auto 1vh;
+    height: 17vh;
+    justify-content: center;
+
+}
+
+.liste-buton {
+    font-size: large;
+    font-weight: 700;
+    margin: 3vh 2vh;
+    padding: 1vh;
+    color: white;
+    width:max-content;
+    overflow:hidden;
+
+}
+
+.held {
+    height: 10vh;
+
+}
+
+.held:hover {
+    background: rgb(69, 124, 197);
+    margin:  0;
+
+}
+
+
+
+
+/* dropdown */
+.dropdown {
+    float: left;
+    overflow: hidden;
+
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: rgb(69, 124, 197);
+    width: max-content;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    transition: 1s;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 2vh;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    font-size: large;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ffffff;
+    color: black;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+
+}
+
+/* parent 3 */
+
+.parent-3 {
+    display: flex;
+    overflow: hidden;
+    margin: auto;
+
+
+}
+
+.parent-3 img {
+    padding: 1vh;
+    height: 6vh;
+    margin: auto 0;
+    overflow: hidden;
+}
+
+.parent-3 i {
+    margin: auto 0;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    font-size: xx-large;
+    color: #ffffff;
+    padding: 2vh;
+    border-left: 3px solid white;
+
+}
+
+.parent-3 i:hover {
+
+    margin: auto 0;
+    font-size: 2.2rem;
+    color: #ffffff;
+    padding: 2vh;
+
+}
+
+.a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+
+/* switch */
+
+
+input[type=checkbox] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+.lbl {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 3rem;
+    height: 1.6rem;
+    background-image: url(../images/en-flag.png);
+    background-size:contain;
+    background-repeat: no-repeat;
+    display: block;
+    border-radius: 100px;
+    position: relative;
+    overflow:hidden;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 1rem;
+}
+
+.lbl:after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 1rem;
+    height: 1rem;
+    background: #fff;
+    border-radius: 1rem;
+    transition: 0.3s;
+}
+
+input:checked+.lbl {
+    background-image: url(../images/tr-flag.png);
+    background-size: contain;
+    background-repeat: repeat;
+}
+
+input:checked+.lbl:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+}
+
+.lbl:active:after {
+    width: 1rem;
+}
+
+
+
+/* --- footer-mobil.css --- */
+/* Mobil CSS */
+
+@media only screen and (max-width: 600px) {
+    .foot {
+        flex-direction: column-reverse;
+        padding-right: 1rem; /* Sağda daha az boşluk bırak */
+        background: linear-gradient(138deg, rgba(7, 38, 79, 1) 0%, rgba(4, 45, 98, 1) 35%, rgba(0, 56, 130, 1) 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 5s ease infinite;
+    }
+
+    .footer-a-01 {
+        margin: 1.2rem;
+        align-self: center; /* Merkezde kalmasını sağlar */
+    }
+
+    .footer-a-02 {
+        flex-direction: column;
+        margin: 1rem;
+        align-items: center;
+    }
+
+    .footer-pac-01, .footer-pac-02 {
+        text-align: center;
+        margin: 1rem 0;
+        width: 100%;
+    }
+
+    .footer-pac-01 h1, .footer-pac-02 h1 {
+        font-size: 1.2rem; /* Başlıkları küçült */
+    }
+
+    .footer-list-01 li, .footer-list-02 li {
+        font-size: 1rem; /* Liste elemanlarını küçült */
+        margin: 0.5rem 0;
+    }
+
+    .footer-pac-02 h1 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Sığmayan metin için üç nokta ekler */
+    }
+
+    .iteam {
+        margin-top: 2rem;
+        text-align: center;
+    }
+}
+
+
+/* --- img.holder-mobil.css --- */
+
+
+/* img section */
+
+.img-cont-01{
+    margin-top: 30vh;
+    width: 100%;
+    height:auto;
+    position: relative;
+    background-color: black;
+    overflow: visible;
+}
+.img-sct-01{
+    height: auto;
+}
+
+
+
+.img-stc-01{
+    overflow: visible;
+    position:static;
+}
+
+/* Burada etiket sorunu yok. */
+.img-up-01{
+    width:100%;
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    position:static;
+    overflow: visible;
+    top: 70%;
+    
+}
+.img-up-02{
+
+    width:90%;
+    height: max-content;
+    background-color: rgba(255, 255, 255, 0.83);
+    border-radius: 3rem;
+    margin: 1rem 0;
+    text-align: center;
+    overflow: visible;  
+}
+
+.txt-img-01{
+    font-size: 2rem;
+    padding: 1rem;
+    margin-top:2vh;
+}
+
+.txt-img-02{
+    padding: 1rem 1rem ;
+    margin: 0 2rem;
+    font-size: 1rem;
+    border-top: 1px solid black;
+    margin-bottom:5vh;
+}
+
+
+
+/* --- text-hodler-index-mobil.css --- */
+/* Genel Stil */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.joinery {
+    width: 100%;
+    padding: 1rem;
+    box-shadow: none;
+}
+
+.modern-form {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.modern-form input[type="text"],
+.modern-form input[type="file"],
+.modern-form select,
+.modern-form textarea {
+    width: 100%;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+.modern-form textarea {
+    resize: vertical;
+}
+
+.modern-form button {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pt1, .pt2 {
+    flex-direction: column;
+}
+
+.img-pt1 {
+    width: 100%;
+    margin: 0;
+}
+
+.j {
+    width: 100%;
+    margin: 0;
+}
+
+.j h3 {
+    font-size: 1.5rem;
+}
+
+.j p {
+    margin: 1rem;
+}
+
+.footer-a-01,
+.footer-a-02 {
+    text-align: center;
+}
+
+.footer-list-01,
+.footer-list-02 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-list-01 a,
+.footer-list-02 a {
+    margin: 0.5rem 0;
+}
+
+
+
+/* --- [2024 kaynağından eklendi] classes-mobil.css --- */
+html{overflow:scroll;}
+.mother-1-1 {
+	display: flex;
+	flex-direction: column;
+	margin-left: 6rem;
+	width: 100%;
+	margin-top: 1rem;
+}
+
+
+.mother-1-1 h1 {
+	margin: 1rem;
+	margin-top: 1vh;
+	display: block;
+	margin-left: 1rem;
+	font-size: x-large;
+	font-weight: 900;
+	color: rgb(235, 235, 235);
+
+}
+
+.wrapper:first-child  h1 {
+
+	margin-top: 30vh;
+	
+
+}
+
+.mother-1-2 {
+	display: flex;
+	flex-direction: column;
+	flex-flow: wrap;
+}
+
+/* help */
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+h1 {
+	font-size: 2.5rem;
+
+	font-weight: normal;
+	color: #444;
+}
+font{
+	margin: 2rem 0;
+}
+
+.wrapper {
+	width: 100%;
+
+}
+
+.cols {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	flex-direction: column;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	justify-content: left;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	margin-right: 9rem;
+
+}
+
+.col {
+	
+
+	margin: 1rem;
+	cursor: pointer;
+
+}
+
+.container {
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+}
+
+.front,
+.back {
+	background-size: cover;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+	background-position: center;
+	-webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	text-align: center;
+	min-height: 20vh;
+	height: auto;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 1.5rem;
+
+	background-size: cover;
+}
+
+.back {
+	background: #cedce7;
+	background: -webkit-linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+	background: -o-linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+	background: linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+}
+
+.front:after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	content: '';
+	display: block;
+	opacity: .6;
+	
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	border-radius: 10px;
+}
+
+.container:hover .front,
+.container:hover .back {
+	-webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.back {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.inner {
+	-webkit-transform: translateY(-50%) translateZ(60px) scale(0.94);
+	transform: translateY(-50%) translateZ(60px) scale(0.94);
+	top: 50%;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	padding: 2rem;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	outline: 1px solid transparent;
+	-webkit-perspective: inherit;
+	perspective: inherit;
+	z-index: 2;
+}
+
+.container .back {
+	-webkit-transform: rotateY(180deg);
+	transform: rotateY(180deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container .front {
+	-webkit-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container:hover .back {
+	-webkit-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container:hover .front {
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+p {
+	font-size: 1.2rem;
+	margin-bottom: 0;
+	position: relative;
+}
+
+.front .inner p {
+	font-size: 1.2rem;
+	margin-bottom: 0;
+	position: relative;
+}
+
+.front .inner p:after {
+	content: '';
+
+	height: 2px;
+	position: absolute;
+	background: #C6D4DF;
+	display: block;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	bottom: -.75rem;
+}
+
+
+@media screen and (max-width: 64rem) {
+	.col {
+		width: calc(33.333333% - 2rem);
+	}
+}
+
+@media screen and (max-width: 48rem) {
+	.col {
+		width: calc(50% - 2rem);
+	}
+}
+
+@media screen and (max-width: 32rem) {
+	.col {
+		width: 100%;
+		margin: 0 0 2rem 0;
+	}
+}
+/* --- [2024 kaynağından eklendi] haber-mobil.css --- */
+.hd {
+    color: black;
+    margin: 0 4%;
+    margin-top: 1rem;
+
+}
+
+.header {
+
+    width: 100%;
+
+}
+
+.box-1 {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.box-2 {
+    width: 50%;;
+    display: flex;
+    flex-direction: row;
+    margin-top: 3rem;
+
+    align-items: center;
+}
+
+.box-2 img {
+    padding: 1rem;
+    width: 10rem;
+    height: 8rem;
+    border-radius: 2rem;
+}
+
+.box-txt {
+    margin: 1rem;
+    margin-bottom: 5rem;
+}
+
+.box-2 p {
+
+    font-size: small;
+
+}
+
+.container {
+    width: 100%;
+    margin: auto;
+    margin-top: 30vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dvm {
+    color: maroon;
+
+
+}
+
+
+
+/* deneysel */
+
+.n2 {
+    width: 100%;
+}
+
+.brick {
+    display: flex;
+    flex-direction: column;
+    
+    border-radius: 1rem;
+    width: 100%;
+    margin: 1rem;
+}
+
+.brick img {
+
+    width: 90%;
+    margin: 1rem;
+    border-radius: 3rem;
+
+}
+
+.txt {
+    width: 90%;
+    font-size: 1.2rem;
+    margin: auto;
+}
+
+.txt h2 {
+    margin: 0.5rem;
+}
+.txt p {
+    margin: 0.5rem;
+}
+
+.brick:nth-child(even){
+    flex-direction: column;
+
+}
+/* --- [2024 kaynağından eklendi] makale-main-mobil.css --- */
+html{overflow:scroll;}
+.mother-1-1 {
+	display: flex;
+	flex-direction: column;
+	margin-left: 6rem;
+	width: 100%;
+	margin-top: 1rem;
+}
+
+
+.mother-1-1 h1 {
+	margin: 1rem;
+	margin-top: 30vh;
+	display: block;
+	margin-left: 5rem;
+	font-size: x-large;
+	font-weight: 900;
+	color: rgb(235, 235, 235);
+
+}
+
+.mother-1-2 {
+	display: flex;
+	flex-direction: column;
+	flex-flow: wrap;
+}
+
+/* help */
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+h1 {
+	font-size: 2.5rem;
+
+	font-weight: normal;
+	color: #444;
+}
+font{
+	margin: 2rem 0;
+}
+
+.wrapper {
+	width: 100%;
+
+}
+
+.cols {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	flex-direction: column;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	justify-content: left;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	margin-right: 9rem;
+
+}
+
+.col {
+	
+
+	margin: 1rem;
+	cursor: pointer;
+
+}
+
+.container {
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+}
+
+.front,
+.back {
+	background-size: cover;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+	background-position: center;
+	-webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	text-align: center;
+	min-height: 48vh;
+	height: auto;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 1.5rem;
+
+	background-size: cover;
+}
+
+.back {
+	background: #cedce7;
+	background: -webkit-linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+	background: -o-linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+	background: linear-gradient(45deg, #cedce7 0%, #596a72 100%);
+}
+
+.front:after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	content: '';
+	display: block;
+	opacity: .6;
+	
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	border-radius: 10px;
+}
+
+.container:hover .front,
+.container:hover .back {
+	-webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	-o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+	transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.back {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.inner {
+	-webkit-transform: translateY(-50%) translateZ(60px) scale(0.94);
+	transform: translateY(-50%) translateZ(60px) scale(0.94);
+	top: 50%;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	padding: 2rem;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	outline: 1px solid transparent;
+	-webkit-perspective: inherit;
+	perspective: inherit;
+	z-index: 2;
+}
+
+.container .back {
+	-webkit-transform: rotateY(180deg);
+	transform: rotateY(180deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container .front {
+	-webkit-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container:hover .back {
+	-webkit-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.container:hover .front {
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+p {
+	font-size: 1.2rem;
+	margin-bottom: 0;
+	position: relative;
+}
+
+.front .inner p {
+	font-size: 1.2rem;
+	margin-bottom: 0;
+	position: relative;
+}
+
+.front .inner p:after {
+	content: '';
+
+	height: 2px;
+	position: absolute;
+	background: #C6D4DF;
+	display: block;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	bottom: -.75rem;
+}
+
+
+@media screen and (max-width: 64rem) {
+	.col {
+		width: calc(33.333333% - 2rem);
+	}
+}
+
+@media screen and (max-width: 48rem) {
+	.col {
+		width: calc(50% - 2rem);
+	}
+}
+
+@media screen and (max-width: 32rem) {
+	.col {
+		width: 100%;
+		margin: 0 0 2rem 0;
+	}
+}
+/* --- [2024 kaynağından eklendi] text-holder-vid-mobil.css --- */
+/* 2. kısımdaki mwtin kutuları */
+
+.sc2-cont-01 {
+
+    margin-top: 32vh !important;
+    width: 95%;
+    margin: auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.sc2-cont-02 {
+
+
+    background-color: rgb(230, 230, 230);
+    height: fit-content;
+    width: 100%;
+    margin: 0rem;
+    text-align: center;
+    border-radius: 1rem;
+
+}
+
+.sc2-cont-03 {
+
+   
+    background-color: rgb(230, 230, 230);
+    height: 70rem;
+    width: 100%;
+    margin: 0rem;
+    margin-top: 3rem;
+    text-align: center;
+    border-radius: 1rem;
+
+}
+
+/* iç kısımlar dex */
+
+.sc2-txt-01 {
+
+    text-align: center;
+    padding: 0 3rem;
+    margin: 2rem;
+    font-size: xx-large;
+}
+
+.sc2-vid-01 {
+    width: 90%;
+    border-radius: 1rem;
+    margin: 1rem auto;
+}
+
+.sc2-txt-02 p {
+
+    text-align: center;
+    margin: 1rem;
+
+}
+
+.d3 {
+    min-height: 4rem;
+    width: 90%;
+    margin: auto;
+}
+
+.c2{
+
+opacity: 80%;
+font-size: smaller;
+
+}
+
+/* =============================================================================
+   RESPONSIVE DÜZELTME — Sabit genişlikli sidebar (main/sidebar-1.css,
+   orijinal kaynak: bir CodePen demosu) mobilde ekranın büyük kısmını
+   kaplıyordu (position:fixed; width:256px — hiç küçülmüyordu).
+   Code review geri bildirimi: "sabit px konumlandırılmış UI elemanlarını
+   temizle". Çözüm: mobilde sidebar varsayılan olarak daraltılmış (ikon
+   genişliğinde) başlar; kullanıcı dokunarak genişletebilir (mevcut
+   #nav-toggle checkbox mantığı zaten buna izin veriyordu, yalnızca
+   varsayılan durum mobilde "daraltılmış" yapıldı).
+   ============================================================================= */
+@media only screen and (max-width: 500px) {
+    :root {
+        /* Masaüstünde 256px olan sidebar genişliği mobilde ekranın çoğunu
+           kaplamasın diye daraltıldı. Genişletme/daraltma etkileşimi
+           (#nav-toggle checkbox) değişmedi — yalnızca temel ölçüler küçüldü. */
+        --navbar-width: 200px;
+        --navbar-width-min: 60px;
+    }
+
+    .mother-1-1 {
+        margin-left: calc(var(--navbar-width-min) + 0.5rem) !important;
+    }
+}

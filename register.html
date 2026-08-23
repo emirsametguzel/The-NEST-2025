@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr" data-base-path="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nest | Kayıt Ol</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
+    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app-header" data-component="header"></div>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <i class="fa-solid fa-user-plus auth-icon"></i>
+            <h1>Kayıt Ol</h1>
+            <p class="auth-lead">Takım üyeliği için bir hesap oluştur.</p>
+
+            <form id="register-form" class="auth-form" novalidate>
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" required>
+                <p class="auth-hint">3-32 karakter; yalnızca harf, rakam ve alt çizgi (_).</p>
+
+                <label for="displayName">Görünen Ad (opsiyonel)</label>
+                <input type="text" id="displayName" name="displayName" autocomplete="name" maxlength="64">
+
+                <label for="email">E-posta</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
+
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+                <p class="auth-hint">En az 8 karakter; en az bir büyük harf ve bir rakam içermeli.</p>
+
+                <div id="auth-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
+
+                <button type="submit" id="register-submit">Kayıt Ol</button>
+            </form>
+
+            <p class="auth-switch">Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
+        </div>
+    </main>
+
+    <div id="app-footer" data-component="footer"></div>
+
+    <script src="js/components.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

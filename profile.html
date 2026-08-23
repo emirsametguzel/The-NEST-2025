@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr" data-base-path="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nest | Profil</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
+    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app-header" data-component="header"></div>
+
+    <main class="auth-page profile-page">
+        <div class="auth-card" id="profile-loading">
+            <i class="fa-solid fa-spinner fa-spin auth-icon"></i>
+            <p>Yükleniyor...</p>
+        </div>
+
+        <div class="auth-card" id="profile-content" hidden>
+            <img id="profile-avatar-preview" class="profile-avatar-preview" src="" alt="" hidden>
+            <i id="profile-avatar-placeholder" class="fa-solid fa-user auth-icon"></i>
+
+            <form id="avatar-form" class="avatar-form" novalidate>
+                <label for="avatar-input" class="avatar-form__label">
+                    <i class="fa-solid fa-camera"></i> Fotoğraf Değiştir
+                </label>
+                <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/webp" hidden>
+                <div id="avatar-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
+            </form>
+
+            <h1 id="profile-username">-</h1>
+            <p class="auth-lead" id="profile-email">-</p>
+
+            <h2>Profili Düzenle</h2>
+            <form id="profile-form" class="auth-form" novalidate>
+                <label for="displayName">Görünen Ad</label>
+                <input type="text" id="displayName" name="displayName" maxlength="64">
+
+                <label for="bio">Hakkımda</label>
+                <textarea id="bio" name="bio" maxlength="500" rows="4"></textarea>
+
+                <div id="profile-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
+
+                <button type="submit" id="profile-save">Kaydet</button>
+            </form>
+
+            <button type="button" id="logout-button" class="auth-secondary-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+            </button>
+        </div>
+    </main>
+
+    <div id="app-footer" data-component="footer"></div>
+
+    <script src="js/components.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
