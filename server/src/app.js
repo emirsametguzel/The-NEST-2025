@@ -61,6 +61,17 @@ app.use(
 app.use("/api", generalLimiter);
 
 // API Rotaları (v4 Rotaları Dahil)
+app.get("/api/config/firebase", (req, res) => {
+    res.json({
+        apiKey: process.env.FIREBASE_API_KEY || "",
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN || (process.env.FIREBASE_PROJECT_ID ? `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com` : "the-nest-2025.firebaseapp.com"),
+        projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-2025",
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || (process.env.FIREBASE_PROJECT_ID ? `${process.env.FIREBASE_PROJECT_ID}.appspot.com` : "the-nest-2025.appspot.com"),
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
+        appId: process.env.FIREBASE_APP_ID || "",
+    });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", passwordResetRoutes);
 app.use("/api/profile", profileRoutes);

@@ -1,6 +1,6 @@
 // =============================================================================
 // server/src/routes/passwordReset.js
-// Firebase Authentication tabanlı şifre sıfırlama mekanizması
+// Şifre sıfırlama istekleri ve güncelleme rotaları
 // =============================================================================
 
 const express = require("express");
@@ -11,13 +11,12 @@ const db = require("../db");
 const { verifyCsrfToken } = require("../middleware/csrf");
 const { forgotPasswordLimiter } = require("../middleware/rateLimiter");
 const { forgotPasswordValidationRules, resetPasswordValidationRules } = require("../utils/validators");
-const { generatePasswordResetLink } = require("../utils/firebaseAdmin");
 
 const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
 // -----------------------------------------------------------------------------
-// POST /api/auth/forgot-password (Firebase Auth Destekli)
+// POST /api/auth/forgot-password (Backend Güvenlik ve Doğrulama)
 // -----------------------------------------------------------------------------
 router.post(
     "/forgot-password",
@@ -31,34 +30,21 @@ router.post(
         }
 
         const { email } = req.body;
-        const genericResponse = {
-            success: true,
-            message: "Bu e-posta kayıtlıysa, şifre sıfırlama bağlantısı oluşturuldu.",
-        };
 
         try {
+            // Kullanıcı kontrolü ve güvenlik loglaması
             const user = db.prepare("SELECT id, email FROM users WHERE email = ?").get(email);
-            if (!user) {
-                return res.json(genericResponse);
+            if (user) {
+                console.log(`🔒 [Şifre Sıfırlama Talebi] Kayıtlı kullanıcı: ${user.email}`);
             }
 
-            // Firebase Admin SDK ile şifre sıfırlama linki oluştur
-            const result = await generatePasswordResetLink(user.email);
-
-            const responsePayload = {
+            // Güvenlik gereği link ekrana veya yanıta basılmaz, sadece standart bildirim döner
+            return res.json({
                 success: true,
-                message: "Şifre sıfırlama bağlantısı başarıyla oluşturuldu.",
-                resetLink: result.link,
-            };
-
-            if (result.dev) {
-                responsePayload.devMode = true;
-                responsePayload.devNote = "Geliştirme modu / test bağlantısı oluşturuldu.";
-            }
-
-            return res.json(responsePayload);
+                message: "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!",
+            });
         } catch (err) {
-            console.error("Forgot-password Firebase hatası:", err);
+            console.error("Forgot-password hatası:", err);
             return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
         }
     }

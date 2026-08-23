@@ -103,23 +103,50 @@
             submitBtn.disabled = true;
 
             const email = document.getElementById('email').value.trim();
-            if (email) {
-                try { sessionStorage.setItem('resetEmail', email); } catch (_) {}
+            if (!email) {
+                showFeedback(feedback, 'Lütfen geçerli bir e-posta adresi girin.', true);
+                submitBtn.disabled = false;
+                return;
             }
 
-            const { ok, data } = await postJson('/auth/forgot-password', { email });
+            try {
+                sessionStorage.setItem('resetEmail', email);
+            } catch (_) {}
 
-            const msg = data.message || data.error || 'İşlem tamamlandı.';
-            showFeedback(feedback, msg, !ok);
+            let clientResetSuccess = false;
+            let errorMessage = '';
 
-            const resetLinkBox = document.getElementById('reset-link-box');
-            const resetLinkBtn = document.getElementById('reset-link-btn');
+            // 1. İstemci (Frontend) Firebase Client SDK ile doğrudan e-posta gönderimi
+            if (window.FirebaseClient && typeof window.FirebaseClient.sendPasswordResetEmail === 'function') {
+                try {
+                    await window.FirebaseClient.sendPasswordResetEmail(email);
+                    clientResetSuccess = true;
+                } catch (firebaseErr) {
+                    console.warn('Firebase Client sendPasswordResetEmail hatası:', firebaseErr.message);
+                    if (firebaseErr.code === 'auth/user-not-found') {
+                        errorMessage = 'Bu e-posta adresine ait bir hesap bulunamadı.';
+                    } else if (firebaseErr.code === 'auth/invalid-email') {
+                        errorMessage = 'Geçersiz e-posta adresi biçimi.';
+                    }
+                }
+            }
 
-            if (ok && data.resetLink && resetLinkBox && resetLinkBtn) {
-                resetLinkBtn.href = data.resetLink;
-                resetLinkBox.style.display = 'block';
-                submitBtn.disabled = false;
-            } else if (!ok) {
+            // 2. Backend bildirim ve loglama isteği
+            try {
+                const { ok, data } = await postJson('/auth/forgot-password', { email });
+                if (ok) {
+                    clientResetSuccess = true;
+                } else if (!clientResetSuccess && data && data.error) {
+                    errorMessage = data.error;
+                }
+            } catch (_) {}
+
+            if (clientResetSuccess) {
+                showFeedback(feedback, 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!', false);
+                // Butonu devre dışı bırakıp başarı durumunu koru
+                submitBtn.textContent = 'Gönderildi';
+            } else {
+                showFeedback(feedback, errorMessage || 'Şifre sıfırlama işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.', true);
                 submitBtn.disabled = false;
             }
         });
