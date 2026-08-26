@@ -59,6 +59,8 @@ const contentCol = firestore.collection("content_items");
 const settingsCol = firestore.collection("site_settings");
 const applicationsCol = firestore.collection("team_applications");
 const loginAttemptsCol = firestore.collection("login_attempts");
+const passwordResetsCol = firestore.collection("password_resets");
+const auditLogsCol = firestore.collection("audit_logs");
 
 // =============================================================================
 // KULLANICI İŞLEMLERİ (USERS)
@@ -332,7 +334,7 @@ async function deleteTeamApplication(id) {
 }
 
 // =============================================================================
-// GİRİŞ LOGLARI (LOGIN ATTEMPTS)
+// GİRİŞ & GÜVENLİK & SİSTEM LOGLARI
 // =============================================================================
 
 async function logLoginAttempt({ identifier, ip_address, success, user_agent }) {
@@ -347,6 +349,128 @@ async function logLoginAttempt({ identifier, ip_address, success, user_agent }) 
     } catch (_) {}
 }
 
+async function logPasswordResetRequest({ email, ip_address, success }) {
+    try {
+        await passwordResetsCol.add({
+            email: (email || "").toLowerCase().trim(),
+            ip_address: ip_address || "",
+            success: success ? 1 : 0,
+            created_at: new Date().toISOString(),
+        });
+    } catch (_) {}
+}
+
+async function logAuditEvent({ actor_username, action, entity_type, entity_id, details, ip_address }) {
+    try {
+        await auditLogsCol.add({
+            actor_username: actor_username || "system",
+            action: action || "UNKNOWN",
+            entity_type: entity_type || "general",
+            entity_id: entity_id || "",
+            details: details || "",
+            ip_address: ip_address || "",
+            created_at: new Date().toISOString(),
+        });
+    } catch (_) {}
+}
+
+async function getRecentAuditLogs(limitCount = 15) {
+    try {
+        const snap = await auditLogsCol.get();
+        let logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        logs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        return logs.slice(0, limitCount);
+    } catch (_) {
+        return [];
+    }
+}
+
+async function getRecentLoginAttempts(limitCount = 10) {
+    try {
+        const snap = await loginAttemptsCol.get();
+        let logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        logs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        return logs.slice(0, limitCount);
+    } catch (_) {
+        return [];
+    }
+}
+
+async function getDashboardMetrics() {
+    try {
+        const [users, items, apps, resetSnaps, loginSnaps] = await Promise.all([
+            getAllUsers(),
+            getContentItems(),
+            getTeamApplications(),
+            passwordResetsCol.get().catch(() => ({ size: 0, docs: [] })),
+            loginAttemptsCol.get().catch(() => ({ size: 0, docs: [] })),
+        ]);
+
+        const totalUsers = users.length;
+        const totalItems = items.length;
+        const totalApps = apps.length;
+        const pendingApps = apps.filter((a) => a.status === "pending").length;
+        const totalResets = resetSnaps.size !== undefined ? resetSnaps.size : (resetSnaps.docs ? resetSnaps.docs.length : 0);
+
+        // Son 7 gündeki yeni kullanıcı sayısı hesabı
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const usersLast7Days = users.filter((u) => new Date(u.created_at || 0) >= sevenDaysAgo).length;
+        const userGrowthPercentage = totalUsers > 0 ? Math.round((usersLast7Days / Math.max(1, totalUsers - usersLast7Days)) * 100) : 0;
+
+        // Kategori ve tip kırılımları
+        const contentByType = {};
+        const contentByCategory = {};
+        items.forEach((item) => {
+            contentByType[item.type] = (contentByType[item.type] || 0) + 1;
+            contentByCategory[item.category] = (contentByCategory[item.category] || 0) + 1;
+        });
+
+        // Son girişler / Aktif kullanıcılar
+        const recentActiveUsers = users
+            .filter((u) => u.last_login_at)
+            .sort((a, b) => new Date(b.last_login_at) - new Date(a.last_login_at))
+            .slice(0, 6)
+            .map((u) => ({
+                id: u.id,
+                username: u.username,
+                display_name: u.display_name,
+                email: u.email,
+                role: u.role,
+                avatar_path: u.avatar_path,
+                last_login_at: u.last_login_at,
+            }));
+
+        return {
+            totalUsers,
+            usersLast7Days,
+            userGrowthPercentage: userGrowthPercentage || Math.min(100, usersLast7Days * 20),
+            totalItems,
+            publishedItems: items.filter((i) => i.is_published === 1 || i.is_published === true).length,
+            contentByType,
+            contentByCategory,
+            totalApps,
+            pendingApps,
+            totalPasswordResets: totalResets,
+            recentActiveUsers,
+        };
+    } catch (err) {
+        console.error("getDashboardMetrics hatası:", err.message);
+        return {
+            totalUsers: 1,
+            usersLast7Days: 1,
+            userGrowthPercentage: 100,
+            totalItems: 0,
+            publishedItems: 0,
+            contentByType: {},
+            contentByCategory: {},
+            totalApps: 0,
+            pendingApps: 0,
+            totalPasswordResets: 0,
+            recentActiveUsers: [],
+        };
+    }
+}
+
 module.exports = {
     firestore,
     usersCol,
@@ -354,6 +478,8 @@ module.exports = {
     settingsCol,
     applicationsCol,
     loginAttemptsCol,
+    passwordResetsCol,
+    auditLogsCol,
     // Kullanıcı Metotları
     getUserByEmail,
     getUserByUsername,
@@ -378,6 +504,11 @@ module.exports = {
     getTeamApplications,
     updateTeamApplicationStatus,
     deleteTeamApplication,
-    // Log Metotları
+    // Log & İstatistik Metotları
     logLoginAttempt,
+    logPasswordResetRequest,
+    logAuditEvent,
+    getRecentAuditLogs,
+    getRecentLoginAttempts,
+    getDashboardMetrics,
 };

@@ -1,397 +1,756 @@
 <!DOCTYPE html>
-<html lang="tr" data-base-path="">
+<html lang="tr" data-base-path="" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Yönetim Paneli</title>
+    <title>The Nest | Yönetim Paneli & SaaS Dashboard</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Font Awesome & Google Fonts -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
-    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
-    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
     <link rel="stylesheet" href="css/admin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
-<body class="admin-body">
+<body class="admin-saas-body">
     <script>
-        // Sayfa içeriğini auth işlemi tamamlanana kadar tamamen gizle.
+        // Sayfa içeriğini admin auth kontrolü tamamlanana kadar gizle
         document.body.style.display = 'none';
     </script>
-    <main class="admin-main-container" id="admin-main-container">
-        <!-- DASHBOARD MOUNT ALANI -->
-        <div id="admin-dashboard-mount"></div>
-    </main>
+
+    <!-- Ana Mount Noktası -->
+    <div id="admin-dashboard-mount" class="saas-mount-container">
+        <!-- Auth onaylanınca Template buraya mount edilir -->
+        <div class="saas-auth-spinner-box">
+            <div class="saas-spinner"></div>
+            <p>Yönetici oturumu ve Firestore güvenliği doğrulanıyor...</p>
+        </div>
+    </div>
 
     <!-- GÜVENLİ TEMPLATE: Yalnızca yetkili Admin doğrulaması sonrası JS ile mount edilir -->
     <template id="admin-dashboard-template">
-        <div id="admin-dashboard-app" class="admin-dashboard-app">
-            <!-- Dashboard Üst Barı -->
-            <header class="admin-dashboard-header">
-                <div class="admin-dashboard-title-area">
-                    <div class="admin-logo-badge">
-                        <i class="fa-solid fa-cube"></i>
-                    </div>
-                    <div>
-                        <h1>The Nest <span class="admin-title-badge">Yönetim Paneli</span></h1>
-                        <p class="admin-subtitle">Tüm platform bileşenlerini ve içerikleri merkezi panelden kontrol edin.</p>
-                    </div>
-                </div>
-
-                <div class="admin-dashboard-user-area">
-                    <div class="admin-user-info-pill">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span id="admin-user-display">Yönetici</span>
-                        <span class="admin-role-tag">Admin</span>
-                    </div>
-                    <a href="index.html" class="admin-btn admin-btn--ghost admin-btn--sm" title="Site Önizleme">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Siteyi Aç
+        <div id="admin-dashboard-app" class="saas-app-layout">
+            
+            <!-- ================================================================= -->
+            <!-- 1. SOL SABİT KENAR ÇUBUĞU (SIDEBAR) -->
+            <!-- ================================================================= -->
+            <aside class="saas-sidebar" id="saas-sidebar">
+                <!-- Logo Bölümü -->
+                <div class="saas-sidebar-brand">
+                    <a href="index.html" class="saas-brand-link">
+                        <div class="saas-brand-icon">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <div class="saas-brand-text">
+                            <span class="saas-brand-name">THE NEST</span>
+                            <span class="saas-brand-badge">CONTROL HUB</span>
+                        </div>
                     </a>
-                    <button type="button" id="admin-logout-btn" class="admin-btn admin-btn--danger admin-btn--sm" title="Güvenli Çıkış">
-                        <i class="fa-solid fa-right-from-bracket"></i> Çıkış
+                    <button type="button" id="saas-sidebar-close-btn" class="saas-sidebar-mobile-close" aria-label="Menüyü Kapat">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-            </header>
 
-            <!-- Genel Bildirim Alanı -->
-            <div id="admin-feedback" class="admin-alert" role="alert" hidden></div>
-
-            <!-- Sekme Navigasyonu -->
-            <nav class="admin-nav-tabs">
-                <button type="button" class="admin-tab-btn active" data-tab="users">
-                    <i class="fa-solid fa-users"></i> Kullanıcı Yönetimi
-                </button>
-                <button type="button" class="admin-tab-btn" data-tab="content">
-                    <i class="fa-solid fa-book-bookmark"></i> İçerik Yönetimi
-                </button>
-                <button type="button" class="admin-tab-btn" data-tab="applications">
-                    <i class="fa-solid fa-id-card"></i> Takım Başvuruları
-                    <span id="pending-apps-count" class="admin-tab-badge" hidden>0</span>
-                </button>
-                <button type="button" class="admin-tab-btn" data-tab="settings">
-                    <i class="fa-solid fa-sliders"></i> Site Ayarları
-                </button>
-            </nav>
-
-            <!-- ===================== SEKME 1: KULLANICILAR ===================== -->
-            <section id="tab-users" class="admin-tab-content active">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div>
-                            <h2><i class="fa-solid fa-users-gear"></i> Kayıtlı Kullanıcılar</h2>
-                            <p class="admin-card-lead">Platforma kayıtlı tüm üyeler, yönetici rolleri ve hesap durumları.</p>
-                        </div>
-                        <div class="admin-card-actions">
-                            <span id="user-count-badge" class="admin-count-pill">0 Kullanıcı</span>
-                        </div>
+                <!-- Yönetici Profil Özeti Kartı -->
+                <div class="saas-profile-card">
+                    <div class="saas-avatar-wrapper">
+                        <img id="sidebar-admin-avatar" src="images/favicon.png" alt="Admin Avatar" class="saas-avatar-img">
+                        <span class="saas-status-dot saas-status-dot--online" title="Oturum Aktif"></span>
                     </div>
-
-                    <!-- Sayfa İçi Inline Şifre Sıfırlama Form Paneli -->
-                    <div id="user-pwd-inline-panel" class="admin-inline-form-panel" hidden>
-                        <div class="admin-inline-form-header">
-                            <h3><i class="fa-solid fa-key"></i> Kullanıcı Şifresi Güncelle</h3>
-                            <button type="button" id="user-pwd-close-btn" class="admin-close-btn">&times;</button>
+                    <div class="saas-profile-info">
+                        <h4 id="admin-user-display" class="saas-profile-name">Yönetici</h4>
+                        <span id="admin-email-display" class="saas-profile-email">admin@thenest.org</span>
+                        <div class="saas-profile-tag">
+                            <i class="fa-solid fa-shield-halved"></i> Super Admin
                         </div>
-                        <form id="user-pwd-form" class="admin-form">
-                            <input type="hidden" id="pwd-user-id">
-                            <p id="pwd-user-label" class="admin-form-target-label"></p>
-
-                            <div class="admin-form-row">
-                                <div class="admin-form-col">
-                                    <label for="pwd-new-password">Yeni Şifre</label>
-                                    <input type="text" id="pwd-new-password" required minlength="6" placeholder="Kullanıcıya atanacak yeni şifreyi giriniz...">
-                                </div>
-                            </div>
-                            <div id="pwd-form-feedback" class="admin-alert" hidden></div>
-                            <div class="admin-form-actions">
-                                <button type="button" id="pwd-cancel-btn" class="admin-btn admin-btn--ghost">İptal</button>
-                                <button type="submit" id="pwd-save-btn" class="admin-btn admin-btn--primary"><i class="fa-solid fa-check"></i> Şifreyi Kaydet</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="admin-table-container">
-                        <table class="admin-data-table">
-                            <thead>
-                                <tr>
-                                    <th>Kullanıcı Bilgileri</th>
-                                    <th>E-Posta</th>
-                                    <th>Rol</th>
-                                    <th>Durum</th>
-                                    <th>Kayıt Tarihi</th>
-                                    <th class="text-right">İşlemler</th>
-                                </tr>
-                            </thead>
-                            <tbody id="users-tbody">
-                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
-            </section>
 
-            <!-- ===================== SEKME 2: İÇERİK YÖNETİMİ ===================== -->
-            <section id="tab-content" class="admin-tab-content">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div>
-                            <h2><i class="fa-solid fa-layer-group"></i> İçerik ve Eğitim Yönetimi</h2>
-                            <p class="admin-card-lead">Dersler, makaleler, sunumlar, 3D CAD objeleri ve duyuruları yönetin.</p>
-                        </div>
-                        <div class="admin-card-actions">
-                            <button type="button" id="content-toggle-add-btn" class="admin-btn admin-btn--primary">
-                                <i class="fa-solid fa-plus"></i> Yeni İçerik Ekle
-                            </button>
-                        </div>
-                    </div>
+                <!-- Navigasyon Menüsü -->
+                <nav class="saas-nav-menu" aria-label="Dashboard Navigasyonu">
+                    <div class="saas-nav-category">ANA MERKEZ</div>
+                    <button type="button" class="saas-nav-item active" data-tab="dashboard" id="nav-tab-dashboard">
+                        <i class="fa-solid fa-chart-pie saas-nav-icon"></i>
+                        <span class="saas-nav-label">Genel Bakış & Metrikler</span>
+                    </button>
+                    <button type="button" class="saas-nav-item" data-tab="content" id="nav-tab-content">
+                        <i class="fa-solid fa-layer-group saas-nav-icon"></i>
+                        <span class="saas-nav-label">İçerik Yönetimi</span>
+                        <span id="badge-content-count" class="saas-nav-badge">0</span>
+                    </button>
+                    <button type="button" class="saas-nav-item" data-tab="users" id="nav-tab-users">
+                        <i class="fa-solid fa-users-gear saas-nav-icon"></i>
+                        <span class="saas-nav-label">Kullanıcılar & Roller</span>
+                        <span id="badge-user-count" class="saas-nav-badge">0</span>
+                    </button>
+                    <button type="button" class="saas-nav-item" data-tab="applications" id="nav-tab-applications">
+                        <i class="fa-solid fa-id-card-clip saas-nav-icon"></i>
+                        <span class="saas-nav-label">Takım Başvuruları</span>
+                        <span id="pending-apps-count" class="saas-nav-badge saas-nav-badge--highlight" hidden>0</span>
+                    </button>
 
-                    <!-- Sayfa İçi Inline İçerik Ekle / Düzenle Form Paneli -->
-                    <div id="content-inline-panel" class="admin-inline-form-panel" hidden>
-                        <div class="admin-inline-form-header">
-                            <h3 id="content-form-title"><i class="fa-solid fa-pen-to-square"></i> Yeni İçerik Ekle</h3>
-                            <button type="button" id="content-form-close-btn" class="admin-close-btn">&times;</button>
-                        </div>
-                        <form id="content-form" class="admin-form" novalidate>
-                            <input type="hidden" id="content-id">
+                    <div class="saas-nav-category">SİSTEM & GÜVENLİK</div>
+                    <button type="button" class="saas-nav-item" data-tab="security" id="nav-tab-security">
+                        <i class="fa-solid fa-shield-virus saas-nav-icon"></i>
+                        <span class="saas-nav-label">Güvenlik & Denetim</span>
+                        <span class="saas-nav-indicator saas-indicator--green"></span>
+                    </button>
+                    <button type="button" class="saas-nav-item" data-tab="settings" id="nav-tab-settings">
+                        <i class="fa-solid fa-sliders saas-nav-icon"></i>
+                        <span class="saas-nav-label">Site Ayarları</span>
+                    </button>
+                </nav>
 
-                            <div class="admin-form-row admin-form-row--2col">
-                                <div class="admin-form-col">
-                                    <label for="content-type">İçerik Türü</label>
-                                    <select id="content-type" class="admin-select" required>
-                                        <option value="ders">Ders / Eğitim Modülü</option>
-                                        <option value="makale">Makale</option>
-                                        <option value="sunum">Sunum & Slayt</option>
-                                        <option value="obje">Obje / CAD Tasarımı</option>
-                                        <option value="haber">Haber & Duyuru</option>
-                                    </select>
-                                </div>
-                                <div class="admin-form-col">
-                                    <label for="content-category">Kategori</label>
-                                    <select id="content-category" class="admin-select" required>
-                                        <option value="Mekanik">Mekanik</option>
-                                        <option value="Yazılım">Yazılım</option>
-                                        <option value="Sunum Becerileri">Sunum Becerileri</option>
-                                        <option value="Tasarım">Tasarım</option>
-                                        <option value="Sponsorluk">Sponsorluk</option>
-                                        <option value="Elektronik">Elektronik</option>
-                                        <option value="FRC">FRC</option>
-                                        <option value="FYF">FYF</option>
-                                        <option value="Duyuru">Duyuru</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="admin-form-row">
-                                <div class="admin-form-col">
-                                    <label for="content-title">Başlık</label>
-                                    <input type="text" id="content-title" class="admin-input" required minlength="2" maxlength="255" placeholder="Örn: 2025 FRC Swerve Şasi Tasarım İlkeleri">
-                                </div>
-                            </div>
-
-                            <div class="admin-form-row">
-                                <div class="admin-form-col">
-                                    <label for="content-summary">Kısa Özet (Kart Açıklaması)</label>
-                                    <textarea id="content-summary" class="admin-textarea" rows="2" maxlength="1000" placeholder="Kart üzerinde görünecek 1-2 cümlelik kısa özet"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="admin-form-row">
-                                <div class="admin-form-col">
-                                    <label for="content-body">Detaylı İçerik (Katlanabilir Accordion Gövdesi)</label>
-                                    <textarea id="content-body" class="admin-textarea" rows="6" maxlength="50000" placeholder="Müfredat maddeleri, eğitim metni, alt adımlar veya teknik kazanımlar..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="admin-form-row admin-form-row--2col">
-                                <div class="admin-form-col">
-                                    <label for="content-image-url">Kapak Görsel Yolu</label>
-                                    <input type="text" id="content-image-url" class="admin-input" placeholder="images/mk/1.jpg">
-                                </div>
-                                <div class="admin-form-col">
-                                    <label for="content-file-url">Ekli Dosya / PDF / CAD Yolu</label>
-                                    <input type="text" id="content-file-url" class="admin-input" placeholder="assets/pdf/makale1.pdf">
-                                </div>
-                            </div>
-
-                            <div class="admin-form-row">
-                                <label class="admin-checkbox-label">
-                                    <input type="checkbox" id="content-published" checked>
-                                    <span>Bu içeriği hemen sitede yayına al</span>
-                                </label>
-                            </div>
-
-                            <div id="content-form-feedback" class="admin-alert" hidden></div>
-
-                            <div class="admin-form-actions">
-                                <button type="button" id="content-cancel-btn" class="admin-btn admin-btn--ghost">İptal</button>
-                                <button type="submit" id="content-save-btn" class="admin-btn admin-btn--primary"><i class="fa-solid fa-floppy-disk"></i> İçeriği Kaydet</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- İçerik Filtreleri -->
-                    <div class="admin-filter-bar">
-                        <div class="admin-filter-group">
-                            <label for="content-type-filter"><i class="fa-solid fa-filter"></i> Tür:</label>
-                            <select id="content-type-filter" class="admin-select">
-                                <option value="">Tüm Türler</option>
-                                <option value="ders">Dersler</option>
-                                <option value="makale">Makaleler</option>
-                                <option value="sunum">Sunumlar</option>
-                                <option value="obje">Objeler / CAD</option>
-                                <option value="haber">Haber & Duyuru</option>
-                            </select>
-                        </div>
-                        <div class="admin-filter-group">
-                            <label for="content-cat-filter"><i class="fa-solid fa-tags"></i> Kategori:</label>
-                            <select id="content-cat-filter" class="admin-select">
-                                <option value="">Tüm Kategoriler</option>
-                                <option value="Mekanik">Mekanik</option>
-                                <option value="Yazılım">Yazılım</option>
-                                <option value="Sunum Becerileri">Sunum Becerileri</option>
-                                <option value="Tasarım">Tasarım</option>
-                                <option value="Sponsorluk">Sponsorluk</option>
-                                <option value="Elektronik">Elektronik</option>
-                                <option value="FRC">FRC</option>
-                                <option value="FYF">FYF</option>
-                                <option value="Duyuru">Duyuru</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="admin-table-container">
-                        <table class="admin-data-table">
-                            <thead>
-                                <tr>
-                                    <th>İçerik Başlığı & Özet</th>
-                                    <th>Tür & Kategori</th>
-                                    <th>Yayın Durumu</th>
-                                    <th>Yazar</th>
-                                    <th>Son Güncelleme</th>
-                                    <th class="text-right">İşlemler</th>
-                                </tr>
-                            </thead>
-                            <tbody id="content-tbody">
-                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Sidebar Alt Butonlar -->
+                <div class="saas-sidebar-footer">
+                    <a href="index.html" target="_blank" class="saas-footer-btn saas-btn--preview" title="Web Sitesini Yeni Sekmede Aç">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>Site Önizleme</span>
+                    </a>
+                    <button type="button" id="admin-logout-btn" class="saas-footer-btn saas-btn--logout" title="Güvenli Oturumu Kapat">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Çıkış Yap</span>
+                    </button>
                 </div>
-            </section>
+            </aside>
 
-            <!-- ===================== SEKME 3: TAKIM BAŞVURULARI ===================== -->
-            <section id="tab-applications" class="admin-tab-content">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div>
-                            <h2><i class="fa-solid fa-user-check"></i> Takım Katılım Başvuruları</h2>
-                            <p class="admin-card-lead">Ana sayfadaki başvuru formundan gelen aday öğrenci formları.</p>
+            <!-- ================================================================= -->
+            <!-- 2. ANA İÇERİK ALANI (MAIN CONTENT & HEADER) -->
+            <!-- ================================================================= -->
+            <div class="saas-main-wrapper">
+                
+                <!-- ÜST BAR (HEADER) -->
+                <header class="saas-top-header">
+                    <div class="saas-header-left">
+                        <button type="button" id="saas-mobile-toggle-btn" class="saas-hamburger-btn" aria-label="Menüyü Aç">
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </button>
+                        
+                        <!-- Arama Çubuğu -->
+                        <div class="saas-search-box">
+                            <i class="fa-solid fa-magnifying-glass saas-search-icon"></i>
+                            <input type="text" id="saas-global-search" placeholder="İçerik, kullanıcı, başvuru veya ayar ara..." aria-label="Global Arama">
+                            <kbd class="saas-search-shortcut">ESC</kbd>
                         </div>
                     </div>
 
-                    <!-- Sayfa İçi Inline Başvuru Detay Paneli -->
-                    <div id="app-detail-inline-panel" class="admin-inline-form-panel" hidden>
-                        <div class="admin-inline-form-header">
-                            <h3><i class="fa-solid fa-address-card"></i> Başvuru Detayları</h3>
-                            <button type="button" id="app-detail-close-btn" class="admin-close-btn">&times;</button>
+                    <div class="saas-header-right">
+                        <!-- Canlı Sistem Durum Göstergesi -->
+                        <div class="saas-health-pills">
+                            <div class="saas-health-pill" id="health-db-pill" title="Firestore Veritabanı Durumu">
+                                <span class="saas-pulse-dot saas-pulse-dot--green"></span>
+                                <span class="saas-health-text">DB: <strong>Firestore</strong></span>
+                            </div>
+                            <div class="saas-health-pill" id="health-api-pill" title="API Sunucu Sağlığı">
+                                <span class="saas-pulse-dot saas-pulse-dot--green"></span>
+                                <span class="saas-health-text">API: <strong>Healthy (200)</strong></span>
+                            </div>
+                            <div class="saas-health-pill saas-health-pill--latency" id="health-latency-pill">
+                                <i class="fa-solid fa-bolt text-yellow"></i>
+                                <span id="health-latency-val">12ms</span>
+                            </div>
                         </div>
-                        <div id="app-detail-content" class="admin-detail-card-grid"></div>
-                        <div class="admin-form-actions">
-                            <button type="button" id="app-detail-hide-btn" class="admin-btn admin-btn--ghost">Paneli Kapat</button>
-                        </div>
+
+                        <!-- Hızlı Yenile Butonu -->
+                        <button type="button" id="saas-refresh-btn" class="saas-icon-btn" title="Verileri Yenile">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+
+                        <!-- Hızlı Bildirim & Durum Menüsü -->
+                        <button type="button" id="saas-quick-alerts-btn" class="saas-icon-btn saas-icon-btn--notify" title="Güvenlik Bildirimleri">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="saas-notify-bubble" id="saas-notify-count">1</span>
+                        </button>
                     </div>
+                </header>
 
-                    <div class="admin-table-container">
-                        <table class="admin-data-table">
-                            <thead>
-                                <tr>
-                                    <th>Tarih</th>
-                                    <th>Aday & Sınıf</th>
-                                    <th>Departman</th>
-                                    <th>İletişim Bilgileri</th>
-                                    <th>Değerlendirme Durumu</th>
-                                    <th class="text-right">İşlemler</th>
-                                </tr>
-                            </thead>
-                            <tbody id="applications-tbody">
-                                <tr><td colspan="6" class="admin-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+                <!-- Genel Geri Bildirim Banner'ı -->
+                <div id="admin-feedback" class="saas-alert-banner" role="alert" hidden></div>
 
-            <!-- ===================== SEKME 4: SİTE AYARLARI ===================== -->
-            <section id="tab-settings" class="admin-tab-content">
-                <div class="admin-card admin-card--narrow">
-                    <div class="admin-card-header">
-                        <div>
-                            <h2><i class="fa-solid fa-sliders"></i> Platform ve Sistem Ayarları</h2>
-                            <p class="admin-card-lead">Sitede görünen başlıklar, duyuru bantları ve başvuru alım ayarları.</p>
-                        </div>
-                    </div>
+                <!-- ANA İÇERİK GÖVDESİ -->
+                <main class="saas-content-body">
 
-                    <form id="settings-form" class="admin-form">
-                        <div class="admin-form-row">
-                            <div class="admin-form-col">
-                                <label for="setting-site-title">Site Başlığı</label>
-                                <input type="text" id="setting-site-title" class="admin-input" name="site_title" required>
+                    <!-- ========================================================= -->
+                    <!-- SEKME 1: DASHBOARD / GENEL BAKIŞ -->
+                    <!-- ========================================================= -->
+                    <section id="tab-dashboard" class="saas-tab-panel active">
+                        <!-- Dashboard Başlık ve Hızlı İşlem Barı -->
+                        <div class="saas-page-header">
+                            <div>
+                                <h1 class="saas-page-title">Yönetim & Analiz Merkezi</h1>
+                                <p class="saas-page-desc">The Nest platformunun anlık istatistikleri, içerik durumu ve güvenlik akışı.</p>
+                            </div>
+                            <div class="saas-quick-action-btns">
+                                <button type="button" id="dash-btn-add-content" class="saas-btn saas-btn--primary">
+                                    <i class="fa-solid fa-plus"></i> Yeni İçerik Ekle
+                                </button>
+                                <button type="button" id="dash-btn-run-audit" class="saas-btn saas-btn--outline">
+                                    <i class="fa-solid fa-shield-halved"></i> Güvenlik Denetimi
+                                </button>
                             </div>
                         </div>
 
-                        <div class="admin-form-row">
-                            <div class="admin-form-col">
-                                <label for="setting-announcement-banner">Duyuru Bandı Metni (Tüm Sayfalarda En Üstte Çıkar)</label>
-                                <textarea id="setting-announcement-banner" class="admin-textarea" name="announcement_banner" rows="2" placeholder="Örn: 2025 FRC Yeni Sezon Takım Başvuruları Başlamıştır!"></textarea>
+                        <!-- 4'lü SaaS Metrik Kartları -->
+                        <div class="saas-metrics-grid">
+                            <!-- Kart 1: Toplam Kullanıcı -->
+                            <div class="saas-metric-card">
+                                <div class="saas-metric-top">
+                                    <span class="saas-metric-label">TOPLAM KULLANICI</span>
+                                    <div class="saas-metric-icon saas-icon--blue">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                </div>
+                                <div class="saas-metric-val-row">
+                                    <span id="metric-total-users" class="saas-metric-number">0</span>
+                                    <span id="metric-user-growth" class="saas-growth-badge saas-growth--up">
+                                        <i class="fa-solid fa-arrow-trend-up"></i> +0%
+                                    </span>
+                                </div>
+                                <div class="saas-metric-footer">
+                                    <span class="saas-subtext">Son 7 günde <strong id="metric-recent-users">0</strong> yeni kayıt</span>
+                                </div>
+                            </div>
+
+                            <!-- Kart 2: Aktif İçerik / Gönderi -->
+                            <div class="saas-metric-card">
+                                <div class="saas-metric-top">
+                                    <span class="saas-metric-label">YAYINLANAN İÇERİKLER</span>
+                                    <div class="saas-metric-icon saas-icon--green">
+                                        <i class="fa-solid fa-book-open-reader"></i>
+                                    </div>
+                                </div>
+                                <div class="saas-metric-val-row">
+                                    <span id="metric-total-content" class="saas-metric-number">0</span>
+                                    <span class="saas-growth-badge saas-growth--neutral">
+                                        <i class="fa-solid fa-circle-check"></i> Aktif
+                                    </span>
+                                </div>
+                                <div class="saas-metric-footer">
+                                    <span class="saas-subtext">Dersler, makaleler, CAD & haberler</span>
+                                </div>
+                            </div>
+
+                            <!-- Kart 3: Şifre Sıfırlama İstekleri & Güvenlik Logları -->
+                            <div class="saas-metric-card">
+                                <div class="saas-metric-top">
+                                    <span class="saas-metric-label">ŞİFRE SIFIRLAMA & LOGLAR</span>
+                                    <div class="saas-metric-icon saas-icon--amber">
+                                        <i class="fa-solid fa-key"></i>
+                                    </div>
+                                </div>
+                                <div class="saas-metric-val-row">
+                                    <span id="metric-password-resets" class="saas-metric-number">0</span>
+                                    <span class="saas-growth-badge saas-growth--secure">
+                                        <i class="fa-solid fa-shield"></i> Loglandı
+                                    </span>
+                                </div>
+                                <div class="saas-metric-footer">
+                                    <span class="saas-subtext">Kayıtlı sıfırlama & auth logları</span>
+                                </div>
+                            </div>
+
+                            <!-- Kart 4: Takım Başvuruları -->
+                            <div class="saas-metric-card">
+                                <div class="saas-metric-top">
+                                    <span class="saas-metric-label">TAKIM BAŞVURULARI</span>
+                                    <div class="saas-metric-icon saas-icon--purple">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </div>
+                                </div>
+                                <div class="saas-metric-val-row">
+                                    <span id="metric-total-apps" class="saas-metric-number">0</span>
+                                    <span id="metric-pending-badge" class="saas-growth-badge saas-growth--amber">
+                                        <strong id="metric-pending-apps">0</strong> Bekleyen
+                                    </span>
+                                </div>
+                                <div class="saas-metric-footer">
+                                    <span class="saas-subtext">Aday öğrenci başvuru formları</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="admin-form-row">
-                            <label class="admin-checkbox-label">
-                                <input type="checkbox" id="setting-announcement-active" name="announcement_active">
-                                <span>Duyuru bandını sitede aktif olarak göster</span>
-                            </label>
-                        </div>
+                        <!-- 2 Kolonlu Dashboard İkincil Grid -->
+                        <div class="saas-dashboard-grid">
+                            
+                            <!-- Sol: Son Giriş Yapanlar & Aktif Oturumlar -->
+                            <div class="saas-glass-card">
+                                <div class="saas-glass-card-header">
+                                    <div class="saas-card-title-group">
+                                        <i class="fa-solid fa-clock-rotate-left text-blue"></i>
+                                        <h3>Son Giriş Yapanlar & Aktif Hesaplar</h3>
+                                    </div>
+                                    <button type="button" class="saas-link-btn" id="dash-view-all-users">Tümünü Gör</button>
+                                </div>
+                                <div class="saas-glass-card-body">
+                                    <div id="dash-active-users-list" class="saas-user-activity-list">
+                                        <div class="saas-loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="admin-form-row">
-                            <div class="admin-form-col">
-                                <label for="setting-contact-email">İletişim & Başvuru Bildirim E-Postası</label>
-                                <input type="email" id="setting-contact-email" class="admin-input" name="contact_email" placeholder="contact@thenest.org">
+                            <!-- Sağ: Son Aktiviteler Akışı (Activity Feed / Audit) -->
+                            <div class="saas-glass-card">
+                                <div class="saas-glass-card-header">
+                                    <div class="saas-card-title-group">
+                                        <i class="fa-solid fa-list-check text-purple"></i>
+                                        <h3>Sistem Aktivite Akışı (Audit Logs)</h3>
+                                    </div>
+                                    <span class="saas-badge-live">CANLI</span>
+                                </div>
+                                <div class="saas-glass-card-body">
+                                    <div id="dash-activity-feed" class="saas-activity-feed">
+                                        <div class="saas-loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="admin-form-row">
-                            <label class="admin-checkbox-label">
-                                <input type="checkbox" id="setting-applications-open" name="applications_open">
-                                <span>Takım alımları açık (Başvuru formunu aktif tut)</span>
-                            </label>
+                        <!-- Kategori Dağılım Çubukları & Sistem Özeti -->
+                        <div class="saas-glass-card mt-6">
+                            <div class="saas-glass-card-header">
+                                <div class="saas-card-title-group">
+                                    <i class="fa-solid fa-chart-column text-green"></i>
+                                    <h3>İçerik Türü & Kategori Dağılımı</h3>
+                                </div>
+                            </div>
+                            <div class="saas-glass-card-body">
+                                <div id="dash-content-breakdown" class="saas-breakdown-grid">
+                                    <!-- Dinamik olarak JS ile doldurulur -->
+                                </div>
+                            </div>
                         </div>
+                    </section>
 
-                        <div class="admin-form-row">
-                            <div class="admin-form-col">
-                                <label for="setting-footer-text">Footer Alt Bilgi Metni</label>
-                                <textarea id="setting-footer-text" class="admin-textarea" name="footer_text" rows="2"></textarea>
+                    <!-- ========================================================= -->
+                    <!-- SEKME 2: İÇERİK YÖNETİMİ -->
+                    <!-- ========================================================= -->
+                    <section id="tab-content" class="saas-tab-panel">
+                        <div class="saas-glass-card">
+                            <div class="saas-glass-card-header">
+                                <div>
+                                    <h2 class="saas-card-heading"><i class="fa-solid fa-layer-group text-blue"></i> İçerik ve Eğitim Kütüphanesi</h2>
+                                    <p class="saas-card-subheading">Dersler, teknik makaleler, CAD tasarımları, sunumlar ve duyuruları yönetin.</p>
+                                </div>
+                                <div class="saas-card-actions">
+                                    <button type="button" id="content-toggle-add-btn" class="saas-btn saas-btn--primary">
+                                        <i class="fa-solid fa-plus"></i> Yeni İçerik Ekle
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Sayfa İçi Inline / Modal İçerik Ekleme & Düzenleme Formu -->
+                            <div id="content-inline-panel" class="saas-inline-form-box" hidden>
+                                <div class="saas-inline-form-header">
+                                    <h3 id="content-form-title"><i class="fa-solid fa-pen-to-square"></i> Yeni İçerik Ekle</h3>
+                                    <button type="button" id="content-form-close-btn" class="saas-close-btn">&times;</button>
+                                </div>
+                                <form id="content-form" class="saas-form" novalidate>
+                                    <input type="hidden" id="content-id">
+
+                                    <div class="saas-form-row saas-form-row--2col">
+                                        <div class="saas-form-group">
+                                            <label for="content-type">İçerik Türü</label>
+                                            <select id="content-type" class="saas-select" required>
+                                                <option value="ders">Ders / Eğitim Modülü</option>
+                                                <option value="makale">Teknik Makale</option>
+                                                <option value="sunum">Sunum & Slayt</option>
+                                                <option value="obje">Obje / CAD & 3D Tasarım</option>
+                                                <option value="haber">Haber & Duyuru</option>
+                                            </select>
+                                        </div>
+                                        <div class="saas-form-group">
+                                            <label for="content-category">Kategori / Departman</label>
+                                            <select id="content-category" class="saas-select" required>
+                                                <option value="Mekanik">Mekanik</option>
+                                                <option value="Yazılım">Yazılım</option>
+                                                <option value="Sunum Becerileri">Sunum Becerileri</option>
+                                                <option value="Tasarım">Tasarım & CAD</option>
+                                                <option value="Sponsorluk">Sponsorluk & Bütçe</option>
+                                                <option value="Elektronik">Elektronik & Güç</option>
+                                                <option value="FRC">FRC Robotik</option>
+                                                <option value="FYF">FYF</option>
+                                                <option value="Duyuru">Duyuru</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="saas-form-row">
+                                        <div class="saas-form-group">
+                                            <label for="content-title">Başlık</label>
+                                            <input type="text" id="content-title" class="saas-input" required minlength="2" maxlength="255" placeholder="Örn: Swerve Drive Şase Montajı ve PID Kalibrasyonu">
+                                        </div>
+                                    </div>
+
+                                    <div class="saas-form-row">
+                                        <div class="saas-form-group">
+                                            <label for="content-summary">Kısa Kart Özeti</label>
+                                            <textarea id="content-summary" class="saas-textarea" rows="2" maxlength="1000" placeholder="Kullanıcı kartında görünecek 1-2 cümlelik açıklama"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="saas-form-row">
+                                        <div class="saas-form-group">
+                                            <label for="content-body">Detaylı İçerik (Gövde Metni / Müfredat Maddeleri)</label>
+                                            <textarea id="content-body" class="saas-textarea" rows="6" maxlength="50000" placeholder="Eğitim adımları, teknik formüller veya detaylı makale metni..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="saas-form-row saas-form-row--2col">
+                                        <div class="saas-form-group">
+                                            <label for="content-image-url">Kapak Görsel Yolu</label>
+                                            <input type="text" id="content-image-url" class="saas-input" placeholder="images/mk/1.jpg">
+                                        </div>
+                                        <div class="saas-form-group">
+                                            <label for="content-file-url">Ekli Dosya / PDF / CAD Yolu</label>
+                                            <input type="text" id="content-file-url" class="saas-input" placeholder="assets/pdf/makale1.pdf">
+                                        </div>
+                                    </div>
+
+                                    <div class="saas-form-row">
+                                        <label class="saas-checkbox-pill">
+                                            <input type="checkbox" id="content-published" checked>
+                                            <span>Bu içeriği hemen sitede yayına al</span>
+                                        </label>
+                                    </div>
+
+                                    <div id="content-form-feedback" class="saas-form-feedback" hidden></div>
+
+                                    <div class="saas-form-actions">
+                                        <button type="button" id="content-cancel-btn" class="saas-btn saas-btn--ghost">İptal</button>
+                                        <button type="submit" id="content-save-btn" class="saas-btn saas-btn--primary">
+                                            <i class="fa-solid fa-floppy-disk"></i> İçeriği Kaydet
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Filtre ve Arama Çubuğu -->
+                            <div class="saas-table-toolbar">
+                                <div class="saas-filter-wrapper">
+                                    <div class="saas-filter-item">
+                                        <label for="content-type-filter"><i class="fa-solid fa-filter"></i> Tür:</label>
+                                        <select id="content-type-filter" class="saas-select-sm">
+                                            <option value="">Tüm Türler</option>
+                                            <option value="ders">Dersler</option>
+                                            <option value="makale">Makaleler</option>
+                                            <option value="sunum">Sunumlar</option>
+                                            <option value="obje">Objeler / CAD</option>
+                                            <option value="haber">Haber & Duyuru</option>
+                                        </select>
+                                    </div>
+                                    <div class="saas-filter-item">
+                                        <label for="content-cat-filter"><i class="fa-solid fa-tags"></i> Kategori:</label>
+                                        <select id="content-cat-filter" class="saas-select-sm">
+                                            <option value="">Tüm Kategoriler</option>
+                                            <option value="Mekanik">Mekanik</option>
+                                            <option value="Yazılım">Yazılım</option>
+                                            <option value="Sunum Becerileri">Sunum Becerileri</option>
+                                            <option value="Tasarım">Tasarım</option>
+                                            <option value="Sponsorluk">Sponsorluk</option>
+                                            <option value="Elektronik">Elektronik</option>
+                                            <option value="FRC">FRC</option>
+                                            <option value="FYF">FYF</option>
+                                            <option value="Duyuru">Duyuru</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="saas-search-mini">
+                                    <input type="text" id="content-table-search" placeholder="İçerik başlığında ara..." class="saas-input-sm">
+                                </div>
+                            </div>
+
+                            <!-- Data Table -->
+                            <div class="saas-table-responsive">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>İçerik Başlığı & Özet</th>
+                                            <th>Tür & Kategori</th>
+                                            <th>Durum</th>
+                                            <th>Yazar</th>
+                                            <th>Son Güncelleme</th>
+                                            <th class="text-right">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="content-tbody">
+                                        <tr><td colspan="6" class="saas-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- SEKME 3: KULLANICILAR & ROLLER -->
+                    <!-- ========================================================= -->
+                    <section id="tab-users" class="saas-tab-panel">
+                        <div class="saas-glass-card">
+                            <div class="saas-glass-card-header">
+                                <div>
+                                    <h2 class="saas-card-heading"><i class="fa-solid fa-users-gear text-purple"></i> Kayıtlı Kullanıcılar & Yetkiler</h2>
+                                    <p class="saas-card-subheading">Kullanıcı rolleri (Admin/Member), hesap durumu dondurma ve şifre yönetimi.</p>
+                                </div>
+                                <div class="saas-card-actions">
+                                    <span id="user-count-badge" class="saas-tag-pill">0 Kullanıcı</span>
+                                </div>
+                            </div>
+
+                            <!-- Inline Şifre Sıfırlama Formu -->
+                            <div id="user-pwd-inline-panel" class="saas-inline-form-box" hidden>
+                                <div class="saas-inline-form-header">
+                                    <h3><i class="fa-solid fa-key"></i> Kullanıcı Şifresi Değiştir</h3>
+                                    <button type="button" id="user-pwd-close-btn" class="saas-close-btn">&times;</button>
+                                </div>
+                                <form id="user-pwd-form" class="saas-form">
+                                    <input type="hidden" id="pwd-user-id">
+                                    <p id="pwd-user-label" class="saas-form-target-badge"></p>
+
+                                    <div class="saas-form-row">
+                                        <div class="saas-form-group">
+                                            <label for="pwd-new-password">Yeni Güvenli Şifre</label>
+                                            <input type="text" id="pwd-new-password" class="saas-input" required minlength="6" placeholder="Kullanıcıya atanacak yeni şifreyi giriniz...">
+                                        </div>
+                                    </div>
+                                    <div id="pwd-form-feedback" class="saas-form-feedback" hidden></div>
+                                    <div class="saas-form-actions">
+                                        <button type="button" id="pwd-cancel-btn" class="saas-btn saas-btn--ghost">İptal</button>
+                                        <button type="submit" id="pwd-save-btn" class="saas-btn saas-btn--primary"><i class="fa-solid fa-check"></i> Şifreyi Kaydet</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Kullanıcı Filtre & Arama -->
+                            <div class="saas-table-toolbar">
+                                <div class="saas-filter-wrapper">
+                                    <input type="text" id="users-table-search" placeholder="İsim, kullanıcı adı veya e-posta ile ara..." class="saas-input-sm w-72">
+                                </div>
+                            </div>
+
+                            <div class="saas-table-responsive">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı Profili</th>
+                                            <th>E-Posta</th>
+                                            <th>Rol</th>
+                                            <th>Hesap Durumu</th>
+                                            <th>Kayıt Tarihi</th>
+                                            <th class="text-right">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-tbody">
+                                        <tr><td colspan="6" class="saas-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- SEKME 4: TAKIM BAŞVURULARI -->
+                    <!-- ========================================================= -->
+                    <section id="tab-applications" class="saas-tab-panel">
+                        <div class="saas-glass-card">
+                            <div class="saas-glass-card-header">
+                                <div>
+                                    <h2 class="saas-card-heading"><i class="fa-solid fa-id-card-clip text-amber"></i> Takım Katılım Başvuruları</h2>
+                                    <p class="saas-card-subheading">Ana sayfadaki başvuru formundan gelen aday öğrenci başvuru kayıtları.</p>
+                                </div>
+                            </div>
+
+                            <!-- Inline Başvuru Detay Paneli -->
+                            <div id="app-detail-inline-panel" class="saas-inline-form-box" hidden>
+                                <div class="saas-inline-form-header">
+                                    <h3><i class="fa-solid fa-address-card"></i> Aday Başvuru Detayları</h3>
+                                    <button type="button" id="app-detail-close-btn" class="saas-close-btn">&times;</button>
+                                </div>
+                                <div id="app-detail-content" class="saas-detail-grid"></div>
+                                <div class="saas-form-actions">
+                                    <button type="button" id="app-detail-hide-btn" class="saas-btn saas-btn--ghost">Kapat</button>
+                                </div>
+                            </div>
+
+                            <div class="saas-table-responsive">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Başvuru Tarihi</th>
+                                            <th>Aday İsim & Sınıf</th>
+                                            <th>Departman Tercihi</th>
+                                            <th>İletişim Bilgileri</th>
+                                            <th>Değerlendirme</th>
+                                            <th class="text-right">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="applications-tbody">
+                                        <tr><td colspan="6" class="saas-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- SEKME 5: CANLI GÜVENLİK & DENETİM EKRANI (SECURITY CENTER) -->
+                    <!-- ========================================================= -->
+                    <section id="tab-security" class="saas-tab-panel">
+                        <!-- Güvenlik Skor Banner'ı -->
+                        <div class="saas-security-score-card">
+                            <div class="saas-score-left">
+                                <div class="saas-score-circle">
+                                    <span id="sec-audit-score" class="saas-score-val">96</span>
+                                    <span class="saas-score-max">/100</span>
+                                </div>
+                                <div class="saas-score-text">
+                                    <h2>Sistem Güvenlik & Denetim Raporu</h2>
+                                    <p>The Nest platformu Firestore, CSRF koruması, Route Guard ve Bcrypt algoritmalarıyla yüksek seviyede güvence altındadır.</p>
+                                </div>
+                            </div>
+                            <div class="saas-score-badge">
+                                <i class="fa-solid fa-shield-check"></i> Sistem Durumu: Sağlıklı
                             </div>
                         </div>
 
-                        <div id="settings-feedback" class="admin-alert" hidden></div>
+                        <!-- 2 Kolon: Aktif Korumalar vs Sistem Tavsiyeleri -->
+                        <div class="saas-security-grid">
+                            
+                            <!-- 🟢 Aktif Korumalar Kartı -->
+                            <div class="saas-glass-card">
+                                <div class="saas-glass-card-header">
+                                    <div class="saas-card-title-group">
+                                        <span class="saas-indicator-dot saas-indicator--green"></span>
+                                        <h3>🟢 Aktif Korumalar & Güvenlik Kalkanları</h3>
+                                    </div>
+                                    <span class="saas-badge-pill saas-badge-pill--green">5 Katman Aktif</span>
+                                </div>
+                                <div class="saas-glass-card-body">
+                                    <div id="sec-active-protections-list" class="saas-audit-items-list">
+                                        <!-- JS ile dinamik oluşturulur -->
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="admin-form-actions">
-                            <button type="submit" id="settings-save-btn" class="admin-btn admin-btn--primary">
-                                <i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet
-                            </button>
+                            <!-- 🟡 Sistem Tavsiyeleri Kartı -->
+                            <div class="saas-glass-card">
+                                <div class="saas-glass-card-header">
+                                    <div class="saas-card-title-group">
+                                        <span class="saas-indicator-dot saas-indicator--amber"></span>
+                                        <h3>🟡 Güvenlik İyileştirme & Sistem Tavsiyeleri</h3>
+                                    </div>
+                                    <span class="saas-badge-pill saas-badge-pill--amber">Öneriler</span>
+                                </div>
+                                <div class="saas-glass-card-body">
+                                    <div id="sec-recommendations-list" class="saas-audit-items-list">
+                                        <!-- JS ile dinamik oluşturulur -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
-            </section>
+
+                        <!-- Canlı Giriş Denemeleri & IP Güvenlik Log Tablosu -->
+                        <div class="saas-glass-card mt-6">
+                            <div class="saas-glass-card-header">
+                                <div class="saas-card-title-group">
+                                    <i class="fa-solid fa-user-lock text-blue"></i>
+                                    <h3>Son Giriş Denemeleri & IP Güvenlik Günlüğü</h3>
+                                </div>
+                                <button type="button" class="saas-btn saas-btn--xs saas-btn--outline" id="sec-refresh-logs-btn">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Logları Yenile
+                                </button>
+                            </div>
+                            <div class="saas-table-responsive">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı / Tanımlayıcı</th>
+                                            <th>IP Adresi</th>
+                                            <th>Giriş Sonucu</th>
+                                            <th>Tarayıcı (User Agent)</th>
+                                            <th>Zaman</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sec-login-attempts-tbody">
+                                        <tr><td colspan="5" class="saas-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- SEKME 6: SİTE AYARLARI -->
+                    <!-- ========================================================= -->
+                    <section id="tab-settings" class="saas-tab-panel">
+                        <div class="saas-glass-card saas-glass-card--narrow">
+                            <div class="saas-glass-card-header">
+                                <div>
+                                    <h2 class="saas-card-heading"><i class="fa-solid fa-sliders text-cyan"></i> Platform ve Sistem Ayarları</h2>
+                                    <p class="saas-card-subheading">Sitede görünen başlıklar, duyuru bantları ve başvuru alım durumunu yönetin.</p>
+                                </div>
+                            </div>
+
+                            <form id="settings-form" class="saas-form">
+                                <div class="saas-form-row">
+                                    <div class="saas-form-group">
+                                        <label for="setting-site-title">Site Başlığı & SEO Meta Adı</label>
+                                        <input type="text" id="setting-site-title" class="saas-input" name="site_title" required>
+                                    </div>
+                                </div>
+
+                                <div class="saas-form-row">
+                                    <div class="saas-form-group">
+                                        <label for="setting-announcement-banner">Duyuru Bandı Metni (Tüm Sayfalarda En Üstte Çıkar)</label>
+                                        <textarea id="setting-announcement-banner" class="saas-textarea" name="announcement_banner" rows="2" placeholder="Örn: 2025 FRC Yeni Sezon Takım Başvuruları Başlamıştır!"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="saas-form-row">
+                                    <label class="saas-checkbox-pill">
+                                        <input type="checkbox" id="setting-announcement-active" name="announcement_active">
+                                        <span>Duyuru bandını sitede aktif olarak göster</span>
+                                    </label>
+                                </div>
+
+                                <div class="saas-form-row">
+                                    <div class="saas-form-group">
+                                        <label for="setting-contact-email">İletişim & Başvuru Bildirim E-Postası</label>
+                                        <input type="email" id="setting-contact-email" class="saas-input" name="contact_email" placeholder="contact@thenest.org">
+                                    </div>
+                                </div>
+
+                                <div class="saas-form-row">
+                                    <label class="saas-checkbox-pill">
+                                        <input type="checkbox" id="setting-applications-open" name="applications_open">
+                                        <span>Takım alımları açık (Başvuru formunu aktif tut)</span>
+                                    </label>
+                                </div>
+
+                                <div class="saas-form-row">
+                                    <div class="saas-form-group">
+                                        <label for="setting-footer-text">Footer Alt Bilgi Metni</label>
+                                        <textarea id="setting-footer-text" class="saas-textarea" name="footer_text" rows="2"></textarea>
+                                    </div>
+                                </div>
+
+                                <div id="settings-feedback" class="saas-form-feedback" hidden></div>
+
+                                <div class="saas-form-actions">
+                                    <button type="submit" id="settings-save-btn" class="saas-btn saas-btn--primary">
+                                        <i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+
+                </main>
+            </div>
         </div>
     </template>
-
-    <!-- Footer Bileşeni -->
-    <div id="app-footer" data-component="footer"></div>
 
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>

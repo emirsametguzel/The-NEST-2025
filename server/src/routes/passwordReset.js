@@ -33,6 +33,11 @@ router.post(
 
         try {
             const user = await db.getUserByEmail(email);
+            await db.logPasswordResetRequest({
+                email,
+                ip_address: req.ip,
+                success: !!user,
+            });
             if (user) {
                 console.log(`🔒 [Şifre Sıfırlama Talebi] Kayıtlı kullanıcı: ${user.email}`);
             }
