@@ -1,28 +1,6 @@
 // =============================================================================
 // server/src/routes/admin.js
-// Tüm rotalar requireAdmin ile korunur (yalnızca role='admin' erişebilir).
-//
-// Kullanıcı Yönetimi:
-//   GET    /api/admin/users                  -> tüm kullanıcıları listele
-//   PATCH  /api/admin/users/:id/role         -> rol güncelle (member/admin)
-//   PATCH  /api/admin/users/:id/status       -> hesap dondur / aktifleştir (is_active)
-//   POST   /api/admin/users/:id/reset-password -> yönetici şifre sıfırlama
-//   DELETE /api/admin/users/:id              -> kullanıcı sil
-//
-// İçerik Yönetimi:
-//   GET    /api/admin/content                -> içerikleri listele (?type=&category=)
-//   POST   /api/admin/content                -> yeni içerik oluştur
-//   PATCH  /api/admin/content/:id            -> içerik güncelle
-//   DELETE /api/admin/content/:id            -> içerik sil
-//
-// Takım Başvuruları:
-//   GET    /api/admin/applications           -> başvuruları listele
-//   PATCH  /api/admin/applications/:id/status -> durum güncelle (pending/approved/rejected)
-//   DELETE /api/admin/applications/:id       -> başvuru sil
-//
-// Site Ayarları:
-//   GET    /api/admin/settings               -> tüm ayarları getir
-//   PUT    /api/admin/settings               -> ayarları güncelle
+// Firebase Firestore Tabanlı Yönetici Paneli API Servisi
 // =============================================================================
 
 const express = require("express");
@@ -42,34 +20,36 @@ const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
 // =============================================================================
-// ÖZEL VE BAĞIMSIZ ADMİN GİRİŞ / DURUM ROTALARI (Herkese Açık / Kimlik Doğrulamalı)
+// ADMİN OTURUM DURUMU KONTROLÜ
 // =============================================================================
-
-// GET /api/admin/me -> Admin oturum durumu kontrolü
-router.get("/me", (req, res) => {
+router.get("/me", async (req, res) => {
     if (req.session && req.session.userId && req.session.role === "admin") {
-        const user = db.prepare("SELECT id, username, email, display_name, role FROM users WHERE id = ?").get(req.session.userId);
-        if (user && user.role === "admin") {
-            return res.json({
-                authenticated: true,
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    email: user.email,
-                    display_name: user.display_name,
-                    role: user.role
-                }
-            });
+        try {
+            const user = await db.getUserById(req.session.userId);
+            if (user && user.role === "admin") {
+                return res.json({
+                    authenticated: true,
+                    user: {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email,
+                        display_name: user.display_name,
+                        role: user.role,
+                    },
+                });
+            }
+        } catch (err) {
+            console.error("Admin me error:", err);
         }
     }
     return res.status(401).json({ authenticated: false, error: "Yetkili yönetici oturumu bulunamadı." });
 });
 
-// Aşağıdaki TÜM rotalar admin yetkisi gerektirir.
+// Aşağıdaki TÜM rotalar requireAdmin gerektirir.
 router.use(requireAdmin);
 
 // -----------------------------------------------------------------------------
-// Yardımcı: başlıktan URL-dostu, benzersiz bir slug üretir.
+// Yardımcı: slug üretici
 // -----------------------------------------------------------------------------
 function slugify(title) {
     const trMap = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", İ: "i", Ç: "c", Ğ: "g", Ö: "o", Ş: "s", Ü: "u" };
@@ -84,18 +64,15 @@ function slugify(title) {
     return base || "icerik";
 }
 
-function uniqueSlug(title, excludeId = null) {
+async function uniqueSlug(title, excludeId = null) {
     const base = slugify(title);
     let slug = base;
     let n = 1;
-    while (true) {
-        const existing = excludeId
-            ? db.prepare("SELECT id FROM content_items WHERE slug = ? AND id != ?").get(slug, excludeId)
-            : db.prepare("SELECT id FROM content_items WHERE slug = ?").get(slug);
-        if (!existing) return slug;
+    while (await db.slugExists(slug, excludeId)) {
         n += 1;
         slug = `${base}-${n}`;
     }
+    return slug;
 }
 
 // =============================================================================
@@ -103,108 +80,124 @@ function uniqueSlug(title, excludeId = null) {
 // =============================================================================
 
 // GET /api/admin/users
-router.get("/users", (req, res) => {
-    const users = db
-        .prepare(
-            `SELECT id, username, email, display_name, role, is_active, created_at, last_login_at
-             FROM users ORDER BY created_at DESC`
-        )
-        .all();
-    return res.json({ users });
+router.get("/users", async (req, res) => {
+    try {
+        const users = await db.getAllUsers();
+        const safeUsers = users.map((u) => {
+            const copy = { ...u };
+            delete copy.password_hash;
+            return copy;
+        });
+        return res.json({ users: safeUsers });
+    } catch (err) {
+        console.error("Admin get users error:", err);
+        return res.status(500).json({ error: "Kullanıcılar getirilemedi." });
+    }
 });
 
 // PATCH /api/admin/users/:id/role
-router.patch("/users/:id/role", verifyCsrfToken, adminUpdateRoleValidationRules, (req, res) => {
+router.patch("/users/:id/role", verifyCsrfToken, adminUpdateRoleValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
     }
 
-    const targetId = Number(req.params.id);
+    const targetId = req.params.id;
     const { role } = req.body;
 
-    if (targetId === req.userId) {
+    if (String(targetId) === String(req.userId)) {
         return res.status(400).json({ error: "Kendi rolünüzü değiştiremezsiniz." });
     }
 
-    const target = db.prepare("SELECT id FROM users WHERE id = ?").get(targetId);
-    if (!target) {
-        return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+    try {
+        const target = await db.getUserById(targetId);
+        if (!target) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+        }
+
+        const updated = await db.updateUser(targetId, { role });
+        delete updated.password_hash;
+        return res.json({ message: "Kullanıcı rolü güncellendi.", user: updated });
+    } catch (err) {
+        console.error("Update role error:", err);
+        return res.status(500).json({ error: "Rol güncellenemedi." });
     }
-
-    db.prepare(
-        `UPDATE users SET role = ?, updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
-    ).run(role, targetId);
-
-    const updated = db
-        .prepare("SELECT id, username, email, display_name, role, is_active FROM users WHERE id = ?")
-        .get(targetId);
-    return res.json({ message: "Kullanıcı rolü güncellendi.", user: updated });
 });
 
 // PATCH /api/admin/users/:id/status (Hesap Dondur / Aktifleştir)
-router.patch("/users/:id/status", verifyCsrfToken, (req, res) => {
-    const targetId = Number(req.params.id);
+router.patch("/users/:id/status", verifyCsrfToken, async (req, res) => {
+    const targetId = req.params.id;
     const { isActive } = req.body;
 
-    if (targetId === req.userId) {
+    if (String(targetId) === String(req.userId)) {
         return res.status(400).json({ error: "Kendi hesabınızı donduramazsınız." });
     }
 
-    const target = db.prepare("SELECT id FROM users WHERE id = ?").get(targetId);
-    if (!target) {
-        return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+    try {
+        const target = await db.getUserById(targetId);
+        if (!target) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+        }
+
+        const newStatus = isActive ? 1 : 0;
+        await db.updateUser(targetId, { is_active: newStatus });
+
+        return res.json({
+            message: newStatus === 1 ? "Hesap aktifleştirildi." : "Hesap donduruldu.",
+            isActive: newStatus === 1,
+        });
+    } catch (err) {
+        console.error("Update status error:", err);
+        return res.status(500).json({ error: "Hesap durumu güncellenemedi." });
     }
-
-    const newStatus = isActive ? 1 : 0;
-    db.prepare(
-        `UPDATE users SET is_active = ?, updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
-    ).run(newStatus, targetId);
-
-    return res.json({
-        message: newStatus === 1 ? "Hesap aktifleştirildi." : "Hesap donduruldu.",
-        isActive: newStatus === 1,
-    });
 });
 
-// POST /api/admin/users/:id/reset-password (Yönetici Tarafından Şifre Belirleme)
+// POST /api/admin/users/:id/reset-password
 router.post("/users/:id/reset-password", verifyCsrfToken, adminResetPasswordValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
     }
 
-    const targetId = Number(req.params.id);
+    const targetId = req.params.id;
     const { newPassword } = req.body;
 
-    const target = db.prepare("SELECT id, username FROM users WHERE id = ?").get(targetId);
-    if (!target) {
-        return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+    try {
+        const target = await db.getUserById(targetId);
+        if (!target) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+        }
+
+        const hash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+        await db.updateUser(targetId, { password_hash: hash });
+
+        return res.json({ message: `"${target.username}" kullanıcısının şifresi başarıyla güncellendi.` });
+    } catch (err) {
+        console.error("Reset password error:", err);
+        return res.status(500).json({ error: "Şifre sıfırlanamadı." });
     }
-
-    const hash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
-    db.prepare(
-        `UPDATE users SET password_hash = ?, failed_attempts = 0, locked_until = NULL, updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
-    ).run(hash, targetId);
-
-    return res.json({ message: `"${target.username}" kullanıcısının şifresi başarıyla güncellendi.` });
 });
 
 // DELETE /api/admin/users/:id
-router.delete("/users/:id", verifyCsrfToken, (req, res) => {
-    const targetId = Number(req.params.id);
+router.delete("/users/:id", verifyCsrfToken, async (req, res) => {
+    const targetId = req.params.id;
 
-    if (targetId === req.userId) {
+    if (String(targetId) === String(req.userId)) {
         return res.status(400).json({ error: "Kendi hesabınızı silemezsiniz." });
     }
 
-    const target = db.prepare("SELECT id FROM users WHERE id = ?").get(targetId);
-    if (!target) {
-        return res.status(404).json({ error: "Kullanıcı bulunamadı." });
-    }
+    try {
+        const target = await db.getUserById(targetId);
+        if (!target) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+        }
 
-    db.prepare("DELETE FROM users WHERE id = ?").run(targetId);
-    return res.json({ message: "Kullanıcı silindi." });
+        await db.deleteUser(targetId);
+        return res.json({ message: "Kullanıcı silindi." });
+    } catch (err) {
+        console.error("Delete user error:", err);
+        return res.status(500).json({ error: "Kullanıcı silinemedi." });
+    }
 });
 
 // =============================================================================
@@ -212,110 +205,108 @@ router.delete("/users/:id", verifyCsrfToken, (req, res) => {
 // =============================================================================
 
 // GET /api/admin/content
-router.get("/content", (req, res) => {
-    const { type, category } = req.query;
-    let query = `
-        SELECT ci.*, u.username AS author_username
-        FROM content_items ci
-        LEFT JOIN users u ON u.id = ci.author_id
-        WHERE 1=1
-    `;
-    const params = [];
-
-    if (type) {
-        query += ` AND ci.type = ?`;
-        params.push(type);
+router.get("/content", async (req, res) => {
+    try {
+        const { type, category } = req.query;
+        const items = await db.getContentItems({
+            type: type || undefined,
+            category: category || undefined,
+            onlyPublished: false,
+        });
+        return res.json({ items });
+    } catch (err) {
+        console.error("Admin content error:", err);
+        return res.status(500).json({ error: "İçerikler alınamadı." });
     }
-    if (category) {
-        query += ` AND ci.category = ?`;
-        params.push(category);
-    }
-
-    query += ` ORDER BY ci.created_at DESC`;
-
-    const items = db.prepare(query).all(...params);
-    return res.json({ items });
 });
 
 // POST /api/admin/content
-router.post("/content", verifyCsrfToken, contentValidationRules, (req, res) => {
+router.post("/content", verifyCsrfToken, contentValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
     }
 
     const { type, category, title, summary, body, imageUrl, fileUrl, isPublished } = req.body;
-    const slug = uniqueSlug(title);
 
-    const result = db
-        .prepare(
-            `INSERT INTO content_items (type, category, title, slug, summary, body, image_url, file_url, author_id, is_published)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        )
-        .run(
+    try {
+        const currentUser = await db.getUserById(req.userId);
+        const slug = await uniqueSlug(title);
+
+        const created = await db.createContentItem({
             type,
-            category || "Mekanik",
+            category: category || "Mekanik",
             title,
             slug,
-            summary || null,
-            body || null,
-            imageUrl || null,
-            fileUrl || null,
-            req.userId,
-            isPublished === false ? 0 : 1
-        );
+            summary: summary || "",
+            body: body || "",
+            image_url: imageUrl || null,
+            file_url: fileUrl || null,
+            author_id: req.userId,
+            author_username: currentUser?.username || "admin",
+            author_display_name: currentUser?.display_name || "Yönetici",
+            is_published: isPublished === false ? 0 : 1,
+        });
 
-    const created = db.prepare("SELECT * FROM content_items WHERE id = ?").get(result.lastInsertRowid);
-    return res.status(201).json({ message: "İçerik oluşturuldu.", item: created });
+        return res.status(201).json({ message: "İçerik oluşturuldu.", item: created });
+    } catch (err) {
+        console.error("Create content error:", err);
+        return res.status(500).json({ error: "İçerik kaydedilemedi." });
+    }
 });
 
 // PATCH /api/admin/content/:id
-router.patch("/content/:id", verifyCsrfToken, contentValidationRules, (req, res) => {
+router.patch("/content/:id", verifyCsrfToken, contentValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
     }
 
-    const itemId = Number(req.params.id);
-    const existing = db.prepare("SELECT * FROM content_items WHERE id = ?").get(itemId);
-    if (!existing) {
-        return res.status(404).json({ error: "İçerik bulunamadı." });
+    const itemId = req.params.id;
+
+    try {
+        const existing = await db.getContentItemBySlugOrId(itemId);
+        if (!existing) {
+            return res.status(404).json({ error: "İçerik bulunamadı." });
+        }
+
+        const { type, category, title, summary, body, imageUrl, fileUrl, isPublished } = req.body;
+        const slug = title && title !== existing.title ? await uniqueSlug(title, existing.id) : existing.slug;
+
+        const updated = await db.updateContentItem(existing.id, {
+            type: type || existing.type,
+            category: category !== undefined ? category : existing.category,
+            title: title || existing.title,
+            slug,
+            summary: summary !== undefined ? summary : existing.summary,
+            body: body !== undefined ? body : existing.body,
+            image_url: imageUrl !== undefined ? imageUrl : existing.image_url,
+            file_url: fileUrl !== undefined ? fileUrl : existing.file_url,
+            is_published: isPublished !== undefined ? (isPublished ? 1 : 0) : existing.is_published,
+        });
+
+        return res.json({ message: "İçerik güncellendi.", item: updated });
+    } catch (err) {
+        console.error("Update content error:", err);
+        return res.status(500).json({ error: "İçerik güncellenemedi." });
     }
-
-    const { type, category, title, summary, body, imageUrl, fileUrl, isPublished } = req.body;
-    const slug = title !== existing.title ? uniqueSlug(title, itemId) : existing.slug;
-
-    db.prepare(
-        `UPDATE content_items
-         SET type = ?, category = ?, title = ?, slug = ?, summary = ?, body = ?, image_url = ?, file_url = ?, is_published = ?,
-             updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now')
-         WHERE id = ?`
-    ).run(
-        type || existing.type,
-        category !== undefined ? category : existing.category,
-        title || existing.title,
-        slug,
-        summary !== undefined ? summary : existing.summary,
-        body !== undefined ? body : existing.body,
-        imageUrl !== undefined ? imageUrl : existing.image_url,
-        fileUrl !== undefined ? fileUrl : existing.file_url,
-        isPublished !== undefined ? (isPublished ? 1 : 0) : existing.is_published,
-        itemId
-    );
-
-    const updated = db.prepare("SELECT * FROM content_items WHERE id = ?").get(itemId);
-    return res.json({ message: "İçerik güncellendi.", item: updated });
 });
 
 // DELETE /api/admin/content/:id
-router.delete("/content/:id", verifyCsrfToken, (req, res) => {
-    const itemId = Number(req.params.id);
-    const existing = db.prepare("SELECT id FROM content_items WHERE id = ?").get(itemId);
-    if (!existing) {
-        return res.status(404).json({ error: "İçerik bulunamadı." });
+router.delete("/content/:id", verifyCsrfToken, async (req, res) => {
+    const itemId = req.params.id;
+
+    try {
+        const existing = await db.getContentItemBySlugOrId(itemId);
+        if (!existing) {
+            return res.status(404).json({ error: "İçerik bulunamadı." });
+        }
+        await db.deleteContentItem(existing.id);
+        return res.json({ message: "İçerik silindi." });
+    } catch (err) {
+        console.error("Delete content error:", err);
+        return res.status(500).json({ error: "İçerik silinemedi." });
     }
-    db.prepare("DELETE FROM content_items WHERE id = ?").run(itemId);
-    return res.json({ message: "İçerik silindi." });
 });
 
 // =============================================================================
@@ -323,40 +314,44 @@ router.delete("/content/:id", verifyCsrfToken, (req, res) => {
 // =============================================================================
 
 // GET /api/admin/applications
-router.get("/applications", (req, res) => {
-    const applications = db
-        .prepare(`SELECT * FROM team_applications ORDER BY created_at DESC`)
-        .all();
-    return res.json({ applications });
+router.get("/applications", async (req, res) => {
+    try {
+        const applications = await db.getTeamApplications();
+        return res.json({ applications });
+    } catch (err) {
+        console.error("Admin applications error:", err);
+        return res.status(500).json({ error: "Başvurular alınamadı." });
+    }
 });
 
 // PATCH /api/admin/applications/:id/status
-router.patch("/applications/:id/status", verifyCsrfToken, (req, res) => {
-    const appId = Number(req.params.id);
+router.patch("/applications/:id/status", verifyCsrfToken, async (req, res) => {
+    const appId = req.params.id;
     const { status } = req.body;
 
     if (!["pending", "approved", "rejected"].includes(status)) {
         return res.status(400).json({ error: "Geçersiz başvuru durumu." });
     }
 
-    const existing = db.prepare("SELECT id FROM team_applications WHERE id = ?").get(appId);
-    if (!existing) {
-        return res.status(404).json({ error: "Başvuru bulunamadı." });
+    try {
+        await db.updateTeamApplicationStatus(appId, status);
+        return res.json({ message: "Başvuru durumu güncellendi." });
+    } catch (err) {
+        console.error("Update app status error:", err);
+        return res.status(500).json({ error: "Başvuru durumu güncellenemedi." });
     }
-
-    db.prepare(`UPDATE team_applications SET status = ? WHERE id = ?`).run(status, appId);
-    return res.json({ message: "Başvuru durumu güncellendi." });
 });
 
 // DELETE /api/admin/applications/:id
-router.delete("/applications/:id", verifyCsrfToken, (req, res) => {
-    const appId = Number(req.params.id);
-    const existing = db.prepare("SELECT id FROM team_applications WHERE id = ?").get(appId);
-    if (!existing) {
-        return res.status(404).json({ error: "Başvuru bulunamadı." });
+router.delete("/applications/:id", verifyCsrfToken, async (req, res) => {
+    const appId = req.params.id;
+    try {
+        await db.deleteTeamApplication(appId);
+        return res.json({ message: "Başvuru silindi." });
+    } catch (err) {
+        console.error("Delete app error:", err);
+        return res.status(500).json({ error: "Başvuru silinemedi." });
     }
-    db.prepare(`DELETE FROM team_applications WHERE id = ?`).run(appId);
-    return res.json({ message: "Başvuru silindi." });
 });
 
 // =============================================================================
@@ -364,38 +359,30 @@ router.delete("/applications/:id", verifyCsrfToken, (req, res) => {
 // =============================================================================
 
 // GET /api/admin/settings
-router.get("/settings", (req, res) => {
-    const rows = db.prepare(`SELECT key, value, updated_at FROM site_settings`).all();
-    const settings = {};
-    for (const r of rows) {
-        settings[r.key] = r.value;
+router.get("/settings", async (req, res) => {
+    try {
+        const settings = await db.getSiteSettings();
+        return res.json({ settings });
+    } catch (err) {
+        console.error("Admin settings error:", err);
+        return res.status(500).json({ error: "Site ayarları alınamadı." });
     }
-    return res.json({ settings });
 });
 
 // PUT /api/admin/settings
-router.put("/settings", verifyCsrfToken, (req, res) => {
+router.put("/settings", verifyCsrfToken, async (req, res) => {
     const { settings } = req.body;
     if (!settings || typeof settings !== "object") {
         return res.status(400).json({ error: "Geçersiz ayar verisi." });
     }
 
-    const upsert = db.prepare(`
-        INSERT INTO site_settings (key, value, updated_at)
-        VALUES (?, ?, STRFTIME('%Y-%m-%dT%H:%M:%fZ','now'))
-        ON CONFLICT(key) DO UPDATE SET
-            value = excluded.value,
-            updated_at = excluded.updated_at
-    `);
-
-    const updateMany = db.transaction((entries) => {
-        for (const [key, value] of entries) {
-            upsert.run(key, String(value));
-        }
-    });
-
-    updateMany(Object.entries(settings));
-    return res.json({ message: "Site ayarları başarıyla kaydedildi." });
+    try {
+        const updated = await db.updateSiteSettings(settings);
+        return res.json({ message: "Site ayarları başarıyla kaydedildi.", settings: updated });
+    } catch (err) {
+        console.error("Save settings error:", err);
+        return res.status(500).json({ error: "Ayar kaydedilemedi." });
+    }
 });
 
 module.exports = router;

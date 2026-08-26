@@ -1,12 +1,6 @@
 // =============================================================================
 // server/src/routes/auth.js
-//
-//   GET  /api/auth/csrf-token   -> CSRF token al
-//   POST /api/auth/register     -> Yeni kullanıcı kaydı
-//   POST /api/auth/login        -> Giriş yap, session başlat
-//   POST /api/auth/logout       -> Çıkış yap, session sonlandır
-//   GET  /api/auth/me           -> Mevcut oturum bilgisini döndür
-//                                    (main.js sayfa yüklenirken bunu çağırır)
+// Firebase Firestore Tabanlı Kimlik Doğrulama & Oturum Yönetimi
 // =============================================================================
 
 const express = require("express");
@@ -22,7 +16,7 @@ const { registerValidationRules, loginValidationRules } = require("../utils/vali
 const router = express.Router();
 
 const BCRYPT_ROUNDS = 12;
-const REGISTRATION_ENABLED = process.env.REGISTRATION_ENABLED !== "false"; // .env ile kapatılabilir
+const REGISTRATION_ENABLED = process.env.REGISTRATION_ENABLED !== "false";
 
 router.get("/csrf-token", issueCsrfToken);
 
@@ -42,33 +36,36 @@ router.post("/register", registerLimiter, verifyCsrfToken, registerValidationRul
     const { username, email, password, displayName } = req.body;
 
     try {
-        const existing = db.prepare("SELECT id FROM users WHERE username = ? OR email = ?").get(username, email);
-        if (existing) {
-            // Hangisinin çakıştığını belirtmiyoruz -> hesap keşfi (enumeration) önleme
+        const existingEmail = await db.getUserByEmail(email);
+        const existingUsername = await db.getUserByUsername(username);
+
+        if (existingEmail || existingUsername) {
             return res.status(409).json({ error: "Bu kullanıcı adı veya e-posta zaten kayıtlı." });
         }
 
         const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
-        const result = db
-            .prepare(
-                `INSERT INTO users (username, email, password_hash, display_name, role)
-                 VALUES (?, ?, ?, ?, 'member')`
-            )
-            .run(username, email, passwordHash, displayName || username);
+        const newUser = await db.createUser({
+            username,
+            email,
+            password_hash: passwordHash,
+            display_name: displayName || username,
+            role: "member",
+            is_active: 1,
+        });
 
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Session regenerate hatası:", err);
                 return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
             }
-            req.session.userId = result.lastInsertRowid;
-            req.session.username = username;
+            req.session.userId = newUser.id;
+            req.session.username = newUser.username;
             req.session.role = "member";
 
             return res.status(201).json({
                 message: "Kayıt başarılı.",
-                user: { id: result.lastInsertRowid, username, email, role: "member" },
+                user: { id: newUser.id, username: newUser.username, email: newUser.email, role: "member" },
             });
         });
     } catch (err) {
@@ -79,11 +76,6 @@ router.post("/register", registerLimiter, verifyCsrfToken, registerValidationRul
 
 // -----------------------------------------------------------------------------
 // POST /api/auth/login
-//
-// Ürün kararı: hesap/IP kilitleme mantığı tamamen kaldırıldı. Hatalı şifrede
-// yalnızca genel bir "E-posta veya şifre hatalı." mesajı dönülür, hesap hiçbir
-// şekilde kilitlenmez. (Not: bu, brute-force korumasını zayıflatır — dilerseniz
-// ileride CAPTCHA veya IP bazlı hafif bir rate limit eklenebilir.)
 // -----------------------------------------------------------------------------
 router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) => {
     const errors = validationResult(req);
@@ -94,12 +86,10 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
     const { identifier, password } = req.body;
     const ipAddress = req.ip;
     const userAgent = req.headers["user-agent"] || "";
-    const normalized = identifier.toLowerCase();
+    const normalized = (identifier || "").toLowerCase().trim();
 
     const logAttempt = (success) => {
-        db.prepare(
-            `INSERT INTO login_attempts (identifier, ip_address, success, user_agent) VALUES (?, ?, ?, ?)`
-        ).run(normalized, ipAddress, success ? 1 : 0, userAgent);
+        db.logLoginAttempt({ identifier: normalized, ip_address: ipAddress, success, user_agent: userAgent });
     };
 
     try {
@@ -107,24 +97,27 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
         // ÖZEL ADMİN GİRİŞ KONTROLÜ
         // ---------------------------------------------------------------------
         if (normalized === "emirsametguzel@gmail.com" && password === "emir2011") {
-            let adminUser = db.prepare("SELECT * FROM users WHERE email = ?").get("emirsametguzel@gmail.com");
+            let adminUser = await db.getUserByEmail("emirsametguzel@gmail.com");
             const adminPassHash = await bcrypt.hash("emir2011", BCRYPT_ROUNDS);
-            
+
             if (!adminUser) {
-                const insertRes = db.prepare(
-                    `INSERT INTO users (username, email, password_hash, display_name, role, is_active)
-                     VALUES ('emirsametguzel', 'emirsametguzel@gmail.com', ?, 'Emir Samet Güzel', 'admin', 1)`
-                ).run(adminPassHash);
-                adminUser = db.prepare("SELECT * FROM users WHERE id = ?").get(insertRes.lastInsertRowid);
+                adminUser = await db.createUser({
+                    username: "emirsametguzel",
+                    email: "emirsametguzel@gmail.com",
+                    password_hash: adminPassHash,
+                    display_name: "Emir Samet Güzel",
+                    role: "admin",
+                    is_active: 1,
+                });
             } else {
-                db.prepare(
-                    `UPDATE users SET role = 'admin', is_active = 1, password_hash = ? WHERE id = ?`
-                ).run(adminPassHash, adminUser.id);
-                adminUser.role = "admin";
-                adminUser.is_active = 1;
+                adminUser = await db.updateUser(adminUser.id, {
+                    role: "admin",
+                    is_active: 1,
+                    password_hash: adminPassHash,
+                    last_login_at: new Date().toISOString(),
+                });
             }
-            
-            db.prepare(`UPDATE users SET last_login_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`).run(adminUser.id);
+
             logAttempt(true);
 
             return new Promise((resolve) => {
@@ -137,29 +130,31 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
                     req.session.role = "admin";
                     req.session.isAdminAuth = true;
 
-                    return resolve(res.json({
-                        message: "Yönetici girişi başarılı.",
-                        user: { id: adminUser.id, username: adminUser.username, email: adminUser.email, role: "admin" },
-                    }));
+                    return resolve(
+                        res.json({
+                            message: "Yönetici girişi başarılı.",
+                            user: {
+                                id: adminUser.id,
+                                username: adminUser.username,
+                                email: adminUser.email,
+                                role: "admin",
+                            },
+                        })
+                    );
                 });
             });
         }
         // ---------------------------------------------------------------------
 
-        const user = db
-            .prepare("SELECT * FROM users WHERE username = ? OR email = ?")
-            .get(normalized, normalized);
+        const user = await db.getUserByUsernameOrEmail(normalized);
 
         if (!user) {
             logAttempt(false);
-            // Zamanlama saldırısını (timing attack) zorlaştırmak için sahte bir
-            // bcrypt karşılaştırması yapılır -> "kullanıcı yok" ile "şifre yanlış"
-            // yanıt süreleri neredeyse eşitlenir.
             await bcrypt.compare(password, "$2b$12$invalidsaltinvalidsaltinvalidsaltinvalidsalt.");
             return res.status(401).json({ error: "E-posta veya şifre hatalı." });
         }
 
-        if (!user.is_active) {
+        if (user.is_active === 0 || user.is_active === false) {
             logAttempt(false);
             return res.status(403).json({ error: "Bu hesap devre dışı bırakılmış." });
         }
@@ -171,12 +166,9 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
             return res.status(401).json({ error: "E-posta veya şifre hatalı." });
         }
 
-        db.prepare(
-            `UPDATE users SET last_login_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
-        ).run(user.id);
+        await db.updateUser(user.id, { last_login_at: new Date().toISOString() });
         logAttempt(true);
 
-        // Session fixation saldırılarına karşı: girişte session ID'sini yenile.
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Session regenerate hatası:", err);
@@ -206,6 +198,7 @@ router.post("/logout", verifyCsrfToken, requireAuth, (req, res) => {
             console.error("Logout hatası:", err);
             return res.status(500).json({ error: "Çıkış yapılırken hata oluştu." });
         }
+        res.clearCookie("nest.sid");
         res.clearCookie("connect.sid");
         return res.json({ message: "Çıkış yapıldı." });
     });
@@ -214,17 +207,29 @@ router.post("/logout", verifyCsrfToken, requireAuth, (req, res) => {
 // -----------------------------------------------------------------------------
 // GET /api/auth/me
 // -----------------------------------------------------------------------------
-router.get("/me", requireAuth, (req, res) => {
-    const user = db
-        .prepare(
-            "SELECT id, username, email, display_name, bio, avatar_path, role, created_at, last_login_at FROM users WHERE id = ?"
-        )
-        .get(req.userId);
-
-    if (!user) {
-        return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+router.get("/me", requireAuth, async (req, res) => {
+    try {
+        const user = await db.getUserById(req.userId);
+        if (!user) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+        }
+        return res.json({
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                display_name: user.display_name,
+                bio: user.bio,
+                avatar_path: user.avatar_path,
+                role: user.role,
+                created_at: user.created_at,
+                last_login_at: user.last_login_at,
+            },
+        });
+    } catch (err) {
+        console.error("Auth me hatası:", err);
+        return res.status(500).json({ error: "Sunucu hatası." });
     }
-    return res.json({ user });
 });
 
 module.exports = router;

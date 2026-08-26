@@ -1,6 +1,6 @@
 // =============================================================================
 // server/src/routes/passwordReset.js
-// Şifre sıfırlama istekleri ve güncelleme rotaları
+// Şifre sıfırlama istekleri ve güncelleme rotaları (Firestore)
 // =============================================================================
 
 const express = require("express");
@@ -16,7 +16,7 @@ const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
 // -----------------------------------------------------------------------------
-// POST /api/auth/forgot-password (Backend Güvenlik ve Doğrulama)
+// POST /api/auth/forgot-password
 // -----------------------------------------------------------------------------
 router.post(
     "/forgot-password",
@@ -32,13 +32,11 @@ router.post(
         const { email } = req.body;
 
         try {
-            // Kullanıcı kontrolü ve güvenlik loglaması
-            const user = db.prepare("SELECT id, email FROM users WHERE email = ?").get(email);
+            const user = await db.getUserByEmail(email);
             if (user) {
                 console.log(`🔒 [Şifre Sıfırlama Talebi] Kayıtlı kullanıcı: ${user.email}`);
             }
 
-            // Güvenlik gereği link ekrana veya yanıta basılmaz, sadece standart bildirim döner
             return res.json({
                 success: true,
                 message: "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!",
@@ -62,16 +60,13 @@ router.post("/reset-password", verifyCsrfToken, resetPasswordValidationRules, as
     const { email, newPassword } = req.body;
 
     try {
-        const user = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
+        const user = await db.getUserByEmail(email);
         if (!user) {
             return res.status(400).json({ error: "Kullanıcı bulunamadı veya işlem geçersiz." });
         }
 
         const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
-
-        db.prepare(
-            `UPDATE users SET password_hash = ?, updated_at = STRFTIME('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`
-        ).run(passwordHash, user.id);
+        await db.updateUser(user.id, { password_hash: passwordHash });
 
         return res.json({ message: "Şifreniz başarıyla güncellendi. Şimdi giriş yapabilirsiniz." });
     } catch (err) {

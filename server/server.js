@@ -1,6 +1,5 @@
 // =============================================================================
-// server/server.js — Giriş noktası
-// Çalıştırmak için: npm start  (veya: node server.js)
+// server/server.js — Giriş noktası (Firestore Entegrasyonu)
 // =============================================================================
 
 require("dotenv").config();
@@ -10,7 +9,15 @@ if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
 }
 
 const { initDatabase } = require("./db/init-db");
-initDatabase(); // veritabanı/tablolar yoksa oluşturur (idempotent)
+
+// Firestore koleksiyonlarını ve yönetici kullanıcısını kontrol et / başlat
+(async () => {
+    try {
+        await initDatabase();
+    } catch (err) {
+        console.warn("Veritabanı başlatma uyarısı:", err.message);
+    }
+})();
 
 const app = require("./src/app");
 

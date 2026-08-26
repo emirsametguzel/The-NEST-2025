@@ -7,10 +7,9 @@ const express = require("express");
 const path = require("path");
 const helmet = require("helmet");
 const session = require("express-session");
-const SQLiteStore = require("connect-sqlite3")(session);
-
 const multer = require("multer");
 
+const db = require("./db");
 const { generalLimiter } = require("./middleware/rateLimiter");
 const authRoutes = require("./routes/auth");
 const passwordResetRoutes = require("./routes/passwordReset");
@@ -25,7 +24,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // Ters proxy arkasında (Render / Cloud Run) doğru IP tespiti
 app.set("trust proxy", 1);
 
-// Güvenlik HTTP başlıkları (Statik dosyalar ve CDN'ler için esnetilmiş CSP, iframe uyumlu)
+// Güvenlik HTTP başlıkları
 app.use(
     helmet({
         contentSecurityPolicy: false,
@@ -40,19 +39,15 @@ app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 // Session Yönetimi
 app.use(
     session({
-        store: new SQLiteStore({
-            dir: path.join(__dirname, "..", "..", "data"),
-            db: "sessions.sqlite",
-        }),
         name: "nest.sid",
-        secret: process.env.SESSION_SECRET || "default_secret_key",
+        secret: process.env.SESSION_SECRET || "default_development_session_secret_32_chars_long_key_the_nest",
         resave: false,
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
-            maxAge: 1000 * 60 * 60 * 2, // 2 saat
+            maxAge: 1000 * 60 * 60 * 24, // 24 saat
         },
     })
 );
@@ -60,7 +55,7 @@ app.use(
 // Tüm /api rotalarına genel rate limit
 app.use("/api", generalLimiter);
 
-// API Rotaları (v4 Rotaları Dahil)
+// Firebase İstemci Yapılandırma Bilgisi
 app.get("/api/config/firebase", (req, res) => {
     res.json({
         apiKey: process.env.FIREBASE_API_KEY || "AIzaSyDeeISJIL3SHLj35cJpvfTBWG5c0J3JQLE",
@@ -81,26 +76,23 @@ app.use("/api", contentRoutes);
 
 // Takım başvuru formu API'si (index.html ve apply.html formu için)
 const uploadNone = multer().none();
-const handleTeamApplication = (req, res) => {
+const handleTeamApplication = async (req, res) => {
     const { name, class_name, email, phone, experience, department, tools, motivation } = req.body || {};
     if (!name || !email) {
         return res.status(400).json({ success: false, error: "İsim ve e-posta zorunludur." });
     }
 
     try {
-        db.prepare(`
-            INSERT INTO team_applications (name, class_name, email, phone, experience, department, tools, motivation)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `).run(
-            name || "Anonim",
-            class_name || "Lise",
+        await db.createTeamApplication({
+            name: name || "Anonim",
+            class_name: class_name || "Lise",
             email,
-            phone || "—",
-            experience || "—",
-            department || "Genel",
-            tools || "—",
-            motivation || "Takıma katılmak istiyorum."
-        );
+            phone: phone || "—",
+            experience: experience || "—",
+            department: department || "Genel",
+            tools: tools || "—",
+            motivation: motivation || "Takıma katılmak istiyorum.",
+        });
         console.log(`📝 Takım Başvurusu kaydedildi: ${name} (${email}) -> ${department}`);
         return res.json({
             success: true,
@@ -114,6 +106,7 @@ const handleTeamApplication = (req, res) => {
         });
     }
 };
+
 app.post("/team_application.html", uploadNone, handleTeamApplication);
 app.post("/api/team-application", uploadNone, handleTeamApplication);
 
@@ -121,7 +114,7 @@ app.post("/api/team-application", uploadNone, handleTeamApplication);
 app.use("/uploads", express.static(path.join(__dirname, "..", "..", "uploads")));
 
 // Basit sağlık kontrolü
-app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+app.get("/api/health", (req, res) => res.json({ status: "ok", database: "firestore" }));
 
 // -----------------------------------------------------------------------------
 // FRONTEND STATİK DOSYA SUNUMU
