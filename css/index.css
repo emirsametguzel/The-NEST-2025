@@ -1,4 +1,5 @@
 /* =============================================
+<<<<<<< HEAD
    INDEX.CSS — Anasayfa Genel ve Bölüm Stilleri
    ============================================= */
 
@@ -76,4 +77,270 @@ body {
     font-size: 1.05rem;
     line-height: 1.7;
     color: #444;
+=======
+   INDEX.CSS — Anasayfaya özel görsel & metin alanları
+   ============================================= */
+
+/* --- img-holder.css --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* img section */
+
+.img-cont-01{
+    width: 100%;
+    height:100vh;
+    position: relative;
+    background-image: url("../images/index-hero.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: visible;
 }
+.img-sct-01 {
+    height: 100vh; /* Ana ekran responsive çözümü. */
+    margin-bottom: 0; /* Alt boşluğu kaldırır veya ayarlar */
+}
+
+
+.img-stc-01{
+    overflow: visible;
+    position: relative;
+}
+
+
+.img-up-01{
+    font-family: 'Poppins', sans-serif;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    overflow: visible;
+    top: 35%;
+    
+}
+.img-up-02{
+    width:50%;
+    background-color: rgba(255, 255, 255, 0.83);
+    border-radius: 3rem;
+    text-align: center;
+    overflow: visible;  
+    padding:23px;
+}
+
+.txt-img-01{
+    font-size: 2rem;
+    padding: 1rem;
+    margin-top: 3vh;
+}
+
+.txt-img-02{
+    padding: 1rem 1rem ;
+    margin-bottom: 5vh;
+    font-size: 1.4rem;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+   
+    
+}
+
+
+
+
+
+
+/* --- text-holder.css --- */
+/* 2. kısımdaki mwtin kutuları */
+
+.sc2-text-01{
+
+width: 80%;
+margin: auto;
+
+height: 55rem;
+display: flex;
+
+}
+
+.sc2-text-02{
+
+    margin: auto;
+    margin-top: auto;
+    background-color:rgb(230, 230, 230);
+    height: 40rem;
+    width: 30rem;
+    border-radius: 3rem;
+    text-align: center;
+    
+}
+
+.sc2-text-03{
+
+    margin: auto;
+    background-color:rgb(230, 230, 230);
+    height: 40rem;
+    width: 30rem;
+    border-radius: 3rem;
+    text-align: center;
+    
+}
+
+/* Parent container için */
+.container {
+    display: flex;
+    justify-content: center; /* Yatayda ortalar */
+    align-items: center; /* Dikeyde ortalar */
+}
+
+.joinery {
+    width: 95%;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.joinery h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.joinery p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.form-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+.modern-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modern-form label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.modern-form input[type="text"],
+.modern-form input[type="file"],
+.modern-form select,
+.modern-form textarea {
+    width: 95%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.modern-form textarea {
+    resize: vertical;
+}
+
+.modern-form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modern-form fieldset legend {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.modern-form fieldset label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modern-form button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.modern-form button:hover {
+    background-color: #0056b3;
+}
+
+.pt1{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    
+    width: 94%;
+    margin: 3%;
+    margin-top: 3rem;
+    
+    text-align: center;  
+    border-radius: 1rem;
+    
+}
+
+.img-pt1 {
+ width: 30rem; 
+ margin: 1rem ;
+ border-radius: 1rem;
+}
+
+.j{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: calc(94% - 19rem);
+    margin:  1rem ;
+    color: white;
+    border-radius: 1rem;
+    
+>>>>>>> parent of c225a7c (tasarimi yeniledik)
+}
+
+.j h3{
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 900;
+
+}
+
+.j p{
+    margin: 0rem 2rem 0rem 2rem ;
+   
+
+}
+
+.pt2{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+    width: 94%;
+    margin: 3%;
+    margin-top: 3rem;
+    
+    text-align: center;  
+    border-radius: 1rem;
+    
+}
+    
+    
+

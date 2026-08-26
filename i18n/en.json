@@ -23,43 +23,11 @@
     "index.intro": "The Nest is a multifunctional website that addresses all communities and individuals related to STEAM. It focuses on creating a platform that increases communication and bonds between STEAM enthusiasts while also providing resources and education.",
     "index.forumButton": "Forum",
 
-    "index.heroBadge": "7611 AmalHawks Open Source STEAM Initiative",
-    "index.heroTitle": "Open Source STEAM Ecosystem for Future Engineers",
-    "index.heroDesc": "Founded by Team 7611 AmalHawks, The Nest brings robotics, WPILib Java programming, 3D CAD design, mechanical architecture, and FRC competition insights together under one modern roof.",
-    "index.exploreCourses": "Explore Courses",
-    "index.applyTeam": "Apply to Join Team",
-    "index.readArticles": "Technical Articles",
-
-    "index.stat1.num": "18+",
-    "index.stat1.label": "Curriculum & Course Modules",
-    "index.stat2.num": "30+",
-    "index.stat2.label": "3D CAD & STEP Models",
-    "index.stat3.num": "100%",
-    "index.stat3.label": "Free & Open Access",
-    "index.stat4.num": "7611",
-    "index.stat4.label": "AmalHawks Ecosystem",
-
-    "index.hubsTitle": "Core Content Hubs",
-    "index.hubsSubtitle": "Everything you need from robotics engineering fundamentals to official judging presentations.",
-    "index.hubCoursesTitle": "Courses & Modules",
-    "index.hubCoursesDesc": "WPILib Java, Subsystem architecture, Swerve kinematics, and PID tuning algorithms.",
-    "index.hubArticlesTitle": "Technical Articles",
-    "index.hubArticlesDesc": "Battery impedance, CAN bus topology, gear reduction ratios, and power distribution analysis.",
-    "index.hubDesignsTitle": "3D CAD Designs",
-    "index.hubDesignsDesc": "3D printable robot components, Swerve bumper mounts, and sensor enclosures in STEP/STL.",
-    "index.hubPresentationsTitle": "Presentations & Impact",
-    "index.hubPresentationsDesc": "FIRST Impact award templates, pit interview strategies, and sponsorship packages.",
-
-    "index.bentoTitle": "Ecosystem & Partners",
-    "index.bentoSubtitle": "A thriving robotics and engineering community built on open collaboration.",
     "index.founderTitle": "The Founder Team",
     "index.founderText": "The Nest Project, established by Team 7611#AmalHawks, aims to be a resource accessible to everyone in the FRC community. This project facilitates access to the information needed by everyone from youth to mentors and encourages collaboration within the community. Its goal is to increase the accessibility and sustainability of FRC, thereby providing more young people with opportunities to develop STEM skills.",
 
     "index.fyTitle": "The Fikret Yüksel Foundation",
     "index.fyText": "The Fikret Yüksel Foundation supports the development of young people in the fields of science, technology, engineering, and mathematics (STEM) by making significant contributions to the FIRST Robotics Competition (FRC). The foundation provides financial and moral support to FRC teams with the aim of helping young people develop their STEM skills and showcase their creativity.",
-    "index.fyDetail": "Providing team mentoring, technical training, component supplies, and competition grants to empower future generations.",
-
-    "form.badge": "Join the 7611 AmalHawks Family",
 
     "form.title": "Team Application Form",
     "form.name.label": "Full Name*:",
