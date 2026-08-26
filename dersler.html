@@ -4,388 +4,490 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Eğitimler & Dersler</title>
+    <title>The Nest | Eğitimler & Robotik Kursları</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/content-hub.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <!-- Header -->
+<body class="content-hub-page" data-cms-type="ders">
+
+    <!-- Global Header / Navbar -->
     <div id="app-header" data-component="header"></div>
 
-    <!-- Yan Kategori Gezinti Çubuğu -->
-    <section>
-        <div id="nav-bar">
-            <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header">
-                <a id="nav-title" href="#a1">Eğitimler</a>
-                <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
-                <hr />
+    <!-- Hero Bölümü -->
+    <header class="ch-hero">
+        <div class="ch-hero-inner">
+            <div class="ch-hero-badge">
+                <i class="fa-solid fa-graduation-cap"></i> Kapsamlı STEM & Robotik Müfredatı
             </div>
-            <div id="nav-content">
-                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span>Mekanik</span></a></div>
-                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"></i><span>Yazılım</span></a></div>
-                <div class="nav-button"><a href="#a3"><i class="fas fa-solid fa-person-chalkboard"></i><span>Sunum Becerileri</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span>Tasarım</span></a></div>
-                <div class="nav-button"><a href="#a5"><i class="fas fa-chart-line"></i><span>Sponsorluk</span></a></div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span>Elektronik</span></a></div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span>FRC</span></a></div>
-                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"></i><span>FYF</span></a></div>
-                <div id="nav-content-highlight"></div>
-            </div>
-            <input id="nav-footer-toggle" type="checkbox" />
-        </div>
-    </section>
+            <h1 class="ch-hero-title">Eğitimler & <span>Mühendislik Kursları</span></h1>
+            <p class="ch-hero-description">
+                Sıfırdan ileri seviyeye adım adım modüller: Mekanik şasi hesaplamaları, WPILib Java programlama, yapay zeka & AprilTag görüntü işleme ve profesyonel jüri sunum teknikleri.
+            </p>
 
-    <!-- Öğretici Ders ve Accordion İçerikleri -->
-    <section>
-        <div class="mother-1-1" data-content-type="ders">
-            <div class="mother-1-2">
-
-                <!-- 1. MEKANİK BÖLÜMÜ -->
-                <div class="wrapper" id="a1">
-                    <h1><i class="fa-solid fa-gear" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik Eğitimleri</h1>
-                    
-                    <!-- 3D Kartlar -->
-                    <div class="cols">
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/1.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Mekanik 101</span>
-                                        <p>Şasi Tasarımı ve Malzeme Mukavemeti</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Kazanımlar</span>
-                                        <p>Alüminyum profiller, CNC işleme toleransları ve ağırlık merkezi optimizasyonu.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-book-open"></i> Modülü İncele</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/2.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Dişli & Redüksiyon</span>
-                                        <p>Planetary Dişli Kutuları ve Tork</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Kazanımlar</span>
-                                        <p>Motor rpm-tork eğrileri, dişli oranları ve kayış-kasnak tahrik hesaplamaları.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-book-open"></i> Modülü İncele</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/3.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Pnömatik</span>
-                                        <p>Hava Basınç Sistemleri & Pistonlar</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Kazanımlar</span>
-                                        <p>Kompresör, regülatör ve selenoid valf montajı ve güvenlik testleri.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-book-open"></i> Modülü İncele</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Katlanabilir Accordion Detayları -->
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-cubes"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Mekanik 101: Şasi ve Mukavemet Mühendisliği Müfredatı</h3>
-                                        <span class="accordion-category-badge">Mekanik • 4 Hafta</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Bu eğitim modülünde FRC robotlarında kullanılan şasi tipleri (West Coast Drive, Swerve Drive, Mecanum) ayrıntılı olarak ele alınmaktadır:</p>
-                                    <ul>
-                                        <li><strong>Hafta 1:</strong> Şasi geometrisi seçimi ve robot ağırlık merkezinin (CoG) devrilme stabilitesine etkisi.</li>
-                                        <li><strong>Hafta 2:</strong> 6061-T6 Alüminyum ve Polikarbonat malzeme seçimi, yük altındaki esneme analizleri.</li>
-                                        <li><strong>Hafta 3:</strong> Rulman yuvaları, mil hizalamaları ve zincir gerdirme mekanizmaları.</li>
-                                        <li><strong>Hafta 4:</strong> Üretim aşaması: Su jeti, CNC frezeleme ve perçin montaj teknikleri.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-gears"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Tork, Hız ve Güç Aktarım Organları Hesaplama Rehberi</h3>
-                                        <span class="accordion-category-badge">Mekanik • Pratik Rehber</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Robot mekanizmalarında doğru motor ve redüksiyon seçimi performansın anahtarıdır. Bu rehberde JVN ve ILITE mekanik hesaplama tabloları incelenmektedir.</p>
-                                    <p>Motor serbest devri (Free Speed) ve durma torku (Stall Torque) baz alınarak efektif ivmelenme süreleri simüle edilir.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- İstatistik Kartları -->
+            <div class="ch-stats-grid">
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-chalkboard-user"></i> 18+</div>
+                    <div class="ch-stat-lbl">Eğitim Modülü</div>
                 </div>
-
-                <!-- 2. YAZILIM BÖLÜMÜ -->
-                <div class="wrapper" id="a2">
-                    <h1><i class="fa-solid fa-laptop" style="color: #60a5fa; margin-right: 8px;"></i> Yazılım Eğitimleri</h1>
-                    
-                    <div class="cols">
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/yazilim.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">WPILib & Java</span>
-                                        <p>Robot Kontrol Mimarisi & Command-Based</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Kazanımlar</span>
-                                        <p>Subsystem-Command yapısı, PID kontrol döngüleri ve CAN bus iletişimi.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-code"></i> İncele</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/4.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Görüntü İşleme</span>
-                                        <p>PhotonVision, Limelight & AprilTags</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Kazanımlar</span>
-                                        <p>Saha pozisyonlama (Odometry), Kalman Filtresi ve hedef takip algoritmaları.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-code"></i> İncele</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-terminal"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Command-Based Java Robot Programlama Eğitimi</h3>
-                                        <span class="accordion-category-badge">Yazılım • WPILib 2025</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>WPILib kütüphanesi ile modern FRC robot yazılımı adımları:</p>
-                                    <ul>
-                                        <li><strong>Subsystems:</strong> Motor sürücüleri (CANSparkMax, TalonFX) ve sensörlerin kapsüllenmesi.</li>
-                                        <li><strong>Commands & Triggers:</strong> Joystick ve otonom komut zincirleri (Sequential & Parallel Command Groups).</li>
-                                        <li><strong>PIDF Tuning:</strong> Konum ve hız kontrolünde Feedforward + PID kazançlarının SysId ile tespiti.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-clock-rotate-left"></i> 60+</div>
+                    <div class="ch-stat-lbl">Saatlik Müfredat</div>
                 </div>
-
-                <!-- 3. SUNUM BECERİLERİ BÖLÜMÜ -->
-                <div class="wrapper" id="a3">
-                    <h1><i class="fa-solid fa-person-chalkboard" style="color: #60a5fa; margin-right: 8px;"></i> Sunum Becerileri & Jüri Mülakatları</h1>
-                    
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-microphone-lines"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">FIRST Impact & Dean's List Jüri Sunum Teknikleri</h3>
-                                        <span class="accordion-category-badge">Sunum • 10 Dakika Kuralı</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Jüri mülakatlarında başarılı olmanın temel ilkeleri:</p>
-                                    <ul>
-                                        <li>Takım hikayesini rakamlar ve somut topluluk etkileriyle (outreach) destekleme.</li>
-                                        <li>Beden dili, ses tonu yönetimi ve beklenmeyen jüri sorularına takım içi rol dağılımı.</li>
-                                        <li>Pit alanında teknik jüri karşılaması ve Executive Summary dosyası sunumu.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-certificate"></i> %100</div>
+                    <div class="ch-stat-lbl">Ücretsiz & Açık</div>
                 </div>
-
-                <!-- 4. TASARIM BÖLÜMÜ -->
-                <div class="wrapper" id="a4">
-                    <h1><i class="fa-solid fa-brush" style="color: #60a5fa; margin-right: 8px;"></i> Tasarım & CAD Modelleme</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-compass-drafting"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Onshape & SolidWorks ile Parametrik Robot Tasarımı</h3>
-                                        <span class="accordion-category-badge">Tasarım • CAD</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Featurescript kullanımı, FRC parça kütüphaneleri (MKCad, WCP, Rev) entegrasyonu ve montaj ilişkileri (Mate Connectors) ile hatasız 3D tasarım prensipleri.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-cubes"></i> 6</div>
+                    <div class="ch-stat-lbl">Temel Branş</div>
                 </div>
-
-                <!-- 5. SPONSORLUK BÖLÜMÜ -->
-                <div class="wrapper" id="a5">
-                    <h1><i class="fa-solid fa-chart-line" style="color: #60a5fa; margin-right: 8px;"></i> Sponsorluk & Kurumsal İlişkiler</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-handshake"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Sponsorluk Dosyası Hazırlama ve B2B Görüşme Stratejileri</h3>
-                                        <span class="accordion-category-badge">Sponsorluk • Kurumsal</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Şirketlere sunulacak sponsorluk paketleri (Platin, Altın, Gümüş), vergi avantajları ve sosyal sorumluluk ortaklığı teklif metinleri oluşturma.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. ELEKTRONİK BÖLÜMÜ -->
-                <div class="wrapper" id="a6">
-                    <h1><i class="fa-solid fa-bolt" style="color: #60a5fa; margin-right: 8px;"></i> Elektronik & Güç Dağıtımı</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-plug-circle-bolt"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Power Distribution Hub (PDH), roboRIO ve CAN Topolojisi</h3>
-                                        <span class="accordion-category-badge">Elektronik • Kablolama</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>120A Ana sigorta montajı, AWG kablo standartları, ferrule pabuç sıkma teknikleri ve CAN bus gürültü önleme kılavuzu.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 7. FRC BÖLÜMÜ -->
-                <div class="wrapper" id="a7">
-                    <h1><i class="fa-solid fa-wrench" style="color: #60a5fa; margin-right: 8px;"></i> FRC Sezon Yönetimi & Strateji</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">6 Haftalık Build Season Zaman Yönetimi ve Scouting</h3>
-                                        <span class="accordion-category-badge">FRC • Takım Yönetimi</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Kickoff sonrası kural kitabı analizi, öncelik matrisi (MoSCoW), prototipleme haftası ve maç esnasında veri toplama (scouting) sistemleri.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 8. FYF BÖLÜMÜ -->
-                <div class="wrapper" id="a8">
-                    <h1><i class="fa-solid fa-hammer" style="color: #60a5fa; margin-right: 8px;"></i> FYF (FIRST Youth Forum) & Topluluk</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-users-rays"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">STEM Erişilebilirliği ve Akran Eğitimi Projeleri</h3>
-                                        <span class="accordion-category-badge">FYF • Topluluk</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Dezavantajlı okullara robotik atölyeleri kurma, FLL takımlarına mentorluk yapma ve The Nest platformu üzerinden açık kaynak bilgi paylaşımı.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Footer -->
+    <!-- Ana İçerik Konteyneri -->
+    <main class="content-hub-container">
+
+        <!-- Sayfalar Arası Hızlı Geçiş Menüsü -->
+        <nav class="ch-type-nav-wrapper" aria-label="İçerik Türleri">
+            <div class="ch-type-nav-tabs">
+                <a href="makaleler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-newspaper"></i> Makaleler
+                </a>
+                <a href="dersler.html" class="ch-type-tab is-active">
+                    <i class="fa-solid fa-graduation-cap"></i> Eğitimler & Kurslar
+                </a>
+                <a href="sunumlar.html" class="ch-type-tab">
+                    <i class="fa-solid fa-person-chalkboard"></i> Sunumlar
+                </a>
+                <a href="objeler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-cube"></i> 3D CAD Tasarımları
+                </a>
+                <a href="news.html" class="ch-type-tab">
+                    <i class="fa-solid fa-bullhorn"></i> Haberler & Duyurular
+                </a>
+            </div>
+
+            <!-- Görünüm Seçici -->
+            <div class="ch-view-switch">
+                <button type="button" class="ch-view-btn is-active" id="ch-view-grid" title="Izgara Görünümü">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button type="button" class="ch-view-btn" id="ch-view-list" title="Liste Görünümü">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Öne Çıkan Kurs (Spotlight) -->
+        <section class="ch-featured-section">
+            <div class="ch-featured-card" data-item-id="featured-course">
+                <div class="ch-featured-content">
+                    <div class="ch-featured-tags">
+                        <span class="ch-tag-featured"><i class="fa-solid fa-fire"></i> Popüler Kurs</span>
+                        <span class="ch-tag-cat">Yazılım • WPILib 2025</span>
+                    </div>
+                    <h2 class="ch-featured-title">Modern FRC Robot Programlama: Command-Based Java Mimarisi</h2>
+                    <p class="ch-featured-excerpt">
+                        Subsystems, Commands, PID geribildirim döngüleri, Kalman Filtresi ile otonom konum belirleme ve CAN motor kontrolcülerini uçtan uca kapsayan profesyonel eğitim serisi.
+                    </p>
+                    <div class="ch-featured-meta">
+                        <span class="ch-meta-item"><i class="fa-solid fa-chalkboard-user"></i> The Nest Yazılım Ekibi</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-cubes-stacked"></i> 6 Hafta Müfredat</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-code"></i> Java & WPILib</span>
+                    </div>
+                    <div class="ch-featured-actions">
+                        <button type="button" class="ch-btn-primary" data-action="read-modal">
+                            <i class="fa-solid fa-book-open"></i> Müfredatı İncele
+                        </button>
+                    </div>
+                </div>
+                <div class="ch-featured-image-wrap">
+                    <img src="images/yazilim.jpg" alt="Robot Yazılım Eğitimi" class="ch-featured-image">
+                </div>
+                <!-- Kurs Müfredatı Tam Metni -->
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Eğitim Hedefi:</strong> Bir robotun sürücü kontrolünden otonom rota takibine kadar tüm yazılım katmanlarını temiz kod (Clean Code) standartlarında inşa etmek.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Müfredat İçeriği:</h3>
+                        <ul>
+                            <li><strong>Modül 1:</strong> WPILib kurulumu, VS Code eklentileri ve Git/GitHub ile takım içi işbirliği.</li>
+                            <li><strong>Modül 2:</strong> Subsystem yapısı: CANSparkMax (NEO) ve TalonFX (Kraken/Falcon) motor sürücülerinin kapsüllenmesi.</li>
+                            <li><strong>Modül 3:</strong> Command & Trigger yapısı: Joystick buton atamaları, sıralı ve paralel komut grupları (Sequential & Parallel Command Groups).</li>
+                            <li><strong>Modül 4:</strong> PID ve Feedforward kontrolü: SysId aracı ile mekanizma karakterizasyonu ve PID tuning.</li>
+                            <li><strong>Modül 5:</strong> Limelight ve PhotonVision ile AprilTag 3D pozisyon takibi (Vision Pose Estimation).</li>
+                            <li><strong>Modül 6:</strong> PathPlanner ile otonom sürüş ve olay tetikleyicileri (Event Markers).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Arama ve Departman Filtre Araç Çubuğu -->
+        <section class="ch-toolbar">
+            <div class="ch-search-row">
+                <div class="ch-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="ch-search-input" class="ch-search-input" placeholder="Kurs, konu veya müfredat ara (Örn: şasi, Swerve, AprilTag, jüri)..." autocomplete="off">
+                    <button type="button" id="ch-search-clear" class="ch-search-clear" title="Aramayı Temizle">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="ch-item-counter" class="ch-item-counter">Yükleniyor...</div>
+            </div>
+
+            <!-- Departman Filtre Butonları -->
+            <div class="ch-category-pills" role="tablist">
+                <button type="button" class="ch-pill-btn is-active" data-filter="all">
+                    <i class="fa-solid fa-border-all"></i> Tüm Eğitimler
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="mekanik">
+                    <i class="fa-solid fa-gears"></i> Mekanik & Şasi
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="yazilim">
+                    <i class="fa-solid fa-code"></i> Yazılım & Java
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="elektronik">
+                    <i class="fa-solid fa-microchip"></i> Elektronik & Güç
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="sunum">
+                    <i class="fa-solid fa-microphone-lines"></i> Sunum & Jüri
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="tasarim">
+                    <i class="fa-solid fa-cube"></i> CAD & Onshape
+                </button>
+            </div>
+        </section>
+
+        <!-- Eğitim Kartları Izgarası -->
+        <section class="ch-cards-grid" id="ch-cards-grid">
+
+            <!-- KURS 1: Mekanik 101 -->
+            <article class="ch-card" data-item-id="course-1" data-category="mekanik" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/mk/1.jpg" alt="Mekanik 101 Şasi Mühendisliği" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 4 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Mekanik 101: Şasi ve Mukavemet Mühendisliği Müfredatı</h3>
+                    <p class="ch-card-excerpt">West Coast Drive ve Swerve şasi tipleri, 6061-T6 alüminyum profil kesimleri, rulman yuvaları ve CNC/su jeti üretim aşamaları.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-wrench"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Mekanik Kurulu</span>
+                                <span class="ch-card-date">Başlangıç Seviye</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Kazanımlar:</strong> Şasi geometrisi seçimi, ağırlık merkezi simülasyonu ve talaşlı üretim teknikleri.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Haftalık Ders Planı:</h3>
+                        <ul>
+                            <li><strong>Hafta 1:</strong> Şasi tiplerinin karşılaştırılması: Swerve vs Tank (West Coast).</li>
+                            <li><strong>Hafta 2:</strong> Mukavemet analizleri ve profil et kalınlıkları (1/16" vs 1/8").</li>
+                            <li><strong>Hafta 3:</strong> Şanzıman (Gearbox) montajı, mil yataklaması ve zincir/kayış gerdirme.</li>
+                            <li><strong>Hafta 4:</strong> Perçinleme (Riveting) ve cıvata montaj standartları.</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KURS 2: Tork ve Redüksiyon Hesapları -->
+            <article class="ch-card" data-item-id="course-2" data-category="mekanik" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/mk/2.jpg" alt="Tork ve Güç Aktarımı" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 2 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Tork, Hız ve Güç Aktarım Organları Hesaplama Rehberi</h3>
+                    <p class="ch-card-excerpt">Motor durma torku (Stall Torque), serbest devir (Free Speed), planet redüktörler ve JVN hesaplama tablolarının kullanımı.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-calculator"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Akademi</span>
+                                <span class="ch-card-date">Orta Seviye</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Mühendislik Formülü:</strong> Güç (Watt) = Tork (Nm) x Açısal Hız (rad/s). Doğru dişli oranı seçilmezse motor akım çekerek sigorta attırır (Brownout).
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Ders Konuları:</h3>
+                        <p>1. DC Fırçasız (Brushless) motor karakteristik eğrileri.</p>
+                        <p>2. Kol (Arm) ve asansör (Elevator) mekanizmalarında yerçekimi dengesi (Gravity Compensation) hesapları.</p>
+                        <p>3. Gazlı amortisör ve sabit kuvvet yayları (Constant Force Springs) ile motor yükünü azaltma.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KURS 3: Görüntü İşleme & AprilTag -->
+            <article class="ch-card" data-item-id="course-3" data-category="yazilim" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/mk/4.jpg" alt="Görüntü İşleme ve AprilTags" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-yazilim">Yazılım</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 3 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Robotik Görüntü İşleme: Limelight & AprilTags Entegrasyonu</h3>
+                    <p class="ch-card-excerpt">3D uzamsal hedef tespiti, saha içi milimetrik pozisyon tahmini (Vision Odometry) ve otomatik hedef kilitlenme algoritmaları.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-eye"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Yazılım</span>
+                                <span class="ch-card-date">İleri Seviye</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>AprilTag Standardı:</strong> FRC sahasında yer alan 36h11 fiducial etiketleri kamera ile okunarak robotun koordinatları (X, Y, Z, Yaw, Pitch, Roll) anlık hesaplanır.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Ders İçeriği:</h3>
+                        <ul>
+                            <li>Limelight 3G ve PhotonVision kamera kalibrasyonu (Intrinsic/Extrinsic).</li>
+                            <li>Çoklu kamera (Multi-Camera Fusion) ile kör noktaları yok etme.</li>
+                            <li>Kalman Filtresi ile tekerlek odometrisi ve kamera verisini harmanlama.</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KURS 4: Sunum Becerileri & Jüri Mülakatı -->
+            <article class="ch-card" data-item-id="course-4" data-category="sunum" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/fll.jpg" alt="Sunum Becerileri" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-pr">Sunum & Jüri</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 2 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">FIRST Impact & Dean's List Jüri Mülakat Teknikleri</h3>
+                    <p class="ch-card-excerpt">10 dakikalık jüri sunumunda hikaye anlatıcılığı (Storytelling), veri görselleştirme, beden dili ve beklenmedik sorulara hazır olma sanatı.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-microphone"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Sunum Koçluğu</span>
+                                <span class="ch-card-date">Tüm Takım</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Jüri İpucu:</strong> Ezberlenmiş metinler yerine somut sayılarla desteklenmiş doğal bir takım anlatısı jürinin dikkatini çeker.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Sunum Modülleri:</h3>
+                        <p>1. Takım etki haritası ve sürdürülebilirlik kanıtları.</p>
+                        <p>2. Pit jürisi karşısında teknik ekibin hazır bulunması ve soru yönlendirme protokolü.</p>
+                        <p>3. Görsel sunum slaytları ve infografik tasarım prensipleri.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KURS 5: Elektronik 101 & Güç Mimarisi -->
+            <article class="ch-card" data-item-id="course-5" data-category="elektronik" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/frc-comp.jpg" alt="Elektronik Güç Mimarisi" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-elektronik">Elektronik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 3 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Robotik Elektronik 101: Güç Dağıtımı, Sigortalar ve Lehimleme</h3>
+                    <p class="ch-card-excerpt">roboRIO 2.0, REV Power Distribution Hub (PDH), Radio Power Module, Anderson Powerpole terminalleri ve güvenli kablo yönetimi.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Elektronik Kurulu</span>
+                                <span class="ch-card-date">Temel Seviye</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Güvenlik Standartları:</strong> Akü bağlantılarında 6 AWG kablo, motorlarda 10/12 AWG kablo ve ters polarite koruması zorunludur.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Ders Konuları:</h3>
+                        <ul>
+                            <li>Doğru pabuç sıkma (Crimping) ve ısı ile büzüşen makaron kullanımı.</li>
+                            <li>Telsiz (Radio) kesintilerini sıfırlayan RPM / PoE bağlantı mimarisi.</li>
+                            <li>RoboRIO durum LED'leri ve akü empedans test cihazı kullanımı.</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KURS 6: Onshape CAD Tasarımı -->
+            <article class="ch-card" data-item-id="course-6" data-category="tasarim" data-type="ders">
+                <div class="ch-card-header">
+                    <img src="images/mk/3.jpg" alt="Onshape CAD Tasarımı" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-tasarim">CAD Tasarım</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 4 Hafta</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Bulut Tabanlı CAD Eğitimi: Onshape & FRC Parça Kütüphaneleri</h3>
+                    <p class="ch-card-excerpt">Part Studio, Assembly ilişkileri, Featurescript eklentileri (Bevel Gear, Tube Converter) ve takım içi eşzamanlı 3D modelleme.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-compass-drafting"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Tasarım Departmanı</span>
+                                <span class="ch-card-date">Tüm Düzeyler</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-graduation-cap"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Onshape Avantajı:</strong> Donanım gereksinimi olmadan tarayıcı üzerinden 10+ öğrencinin aynı anda aynı robot üzerinde çalışabilmesini sağlar.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Müfredat:</h3>
+                        <p>1. Parametrik eskiz (Sketch) ve kısıtlama (Constraints) kuralları.</p>
+                        <p>2. MKCad parça kütüphanesinden COTS (Standard off-the-shelf) parçaları çağırma.</p>
+                        <p>3. Ağırlık ve mukavemet için cep boşaltma (Pocketing/Lightweighting) teknikleri.</p>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Arama Sonucu Bulunamadı Durumu -->
+        <div class="ch-empty-state" id="ch-empty-state">
+            <div class="ch-empty-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h3 class="ch-empty-title">Aramanızla Eşleşen Kurs Bulunamadı</h3>
+            <p class="ch-empty-desc">Farklı bir arama yapabilir veya tüm kursları görmek için filtreleri sıfırlayabilirsiniz.</p>
+            <button type="button" class="ch-btn-primary" id="ch-reset-filters">
+                <i class="fa-solid fa-rotate-left"></i> Filtreleri Sıfırla
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Detaylı Okuma & İnceleme Modalı (Full Reader Modal) -->
+    <div class="ch-modal-overlay" id="ch-reader-modal" role="dialog" aria-modal="true" aria-labelledby="ch-modal-title">
+        <div class="ch-modal-window">
+            <div class="ch-modal-topbar">
+                <div class="ch-modal-top-tags">
+                    <span id="ch-modal-category" class="ch-badge-dept dept-yazilim">Yazılım</span>
+                    <span id="ch-modal-time" class="ch-badge-time"><i class="fa-solid fa-clock"></i> 4 Hafta</span>
+                </div>
+                <button type="button" class="ch-modal-close-btn" id="ch-modal-close" title="Kapat (ESC)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ch-modal-content-scroll">
+                <h2 class="ch-modal-title" id="ch-modal-title">Kurs Başlığı</h2>
+                <div class="ch-modal-meta">
+                    <span><i class="fa-solid fa-user-pen"></i> <strong id="ch-modal-author">Eğitmen</strong></span>
+                    <span><i class="fa-solid fa-calendar-day"></i> <span id="ch-modal-date">Seviye</span></span>
+                </div>
+                <div id="ch-modal-body" class="ch-modal-body-text">
+                    <!-- Dinamik İçerik Buraya Aktarılır -->
+                </div>
+            </div>
+            <div class="ch-modal-actions-bar">
+                <button type="button" class="ch-btn-secondary" id="ch-modal-share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> Paylaş
+                </button>
+                <a href="#" id="ch-modal-file-btn" target="_blank" class="ch-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-download"></i> Ek Dökümanı İndir
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/content-hub.js"></script>
 </body>
 
 </html>

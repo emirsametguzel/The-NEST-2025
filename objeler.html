@@ -4,121 +4,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Tasarımlar & 3D Objeler</title>
+    <title>The Nest | 3D CAD Modelleri & Parça Kütüphanesi</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/content-hub.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <!-- Navbar -->
+<body class="content-hub-page" data-cms-type="obje">
+
+    <!-- Global Header / Navbar -->
     <div id="app-header" data-component="header"></div>
 
-    <section>
-        <div id="nav-bar">
-            <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header">
-                <a id="nav-title" href="#a1">Tasarımlar</a>
-                <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
-                <hr />
+    <!-- Hero Bölümü -->
+    <header class="ch-hero">
+        <div class="ch-hero-inner">
+            <div class="ch-hero-badge">
+                <i class="fa-solid fa-cube"></i> Açık Kaynak 3D CAD & Parça Kütüphanesi
             </div>
-            <div id="nav-content">
-                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span>Mekanik CAD</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span>3D Parçalar</span></a></div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span>Elektronik Montaj</span></a></div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span>FRC Şasi</span></a></div>
-                <div id="nav-content-highlight"></div>
+            <h1 class="ch-hero-title">3D CAD Tasarımları & <span>Objeler</span></h1>
+            <p class="ch-hero-description">
+                FRC robotik sezonunda test edilmiş Swerve montajları, Limelight koruma kılıfları, CAN kablo düzenleyicileri ve STEP/STL formatında 3D baskı parçaları.
+            </p>
+
+            <!-- İstatistik Kartları -->
+            <div class="ch-stats-grid">
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-cubes"></i> 30+</div>
+                    <div class="ch-stat-lbl">3D CAD Modeli</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-print"></i> STEP / STL</div>
+                    <div class="ch-stat-lbl">Baskıya Hazır</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-cloud-arrow-down"></i> %100</div>
+                    <div class="ch-stat-lbl">Ücretsiz İndir</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-shapes"></i> Onshape</div>
+                    <div class="ch-stat-lbl">Bulut Entegrasyonu</div>
+                </div>
             </div>
-            <input id="nav-footer-toggle" type="checkbox" />
         </div>
-    </section>
+    </header>
 
-    <section>
-        <!-- 3D Objeler ve CAD Tasarımları -->
-        <div class="mother-1-1" data-content-type="obje">
-            <div class="mother-1-2">
+    <!-- Ana İçerik Konteyneri -->
+    <main class="content-hub-container">
 
-                <!-- 1. MEKANİK CAD TASARIMLARI -->
-                <div class="wrapper" id="a1">
-                    <h1><i class="fa-solid fa-cube" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik CAD & 3D Modeller</h1>
-                    <div class="cols">
+        <!-- Sayfalar Arası Hızlı Geçiş Menüsü -->
+        <nav class="ch-type-nav-wrapper" aria-label="İçerik Türleri">
+            <div class="ch-type-nav-tabs">
+                <a href="makaleler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-newspaper"></i> Makaleler
+                </a>
+                <a href="dersler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-graduation-cap"></i> Eğitimler & Kurslar
+                </a>
+                <a href="sunumlar.html" class="ch-type-tab">
+                    <i class="fa-solid fa-person-chalkboard"></i> Sunumlar
+                </a>
+                <a href="objeler.html" class="ch-type-tab is-active">
+                    <i class="fa-solid fa-cube"></i> 3D CAD Tasarımları
+                </a>
+                <a href="news.html" class="ch-type-tab">
+                    <i class="fa-solid fa-bullhorn"></i> Haberler & Duyurular
+                </a>
+            </div>
 
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/1.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">STEP / Onshape</span>
-                                        <p>Swerve Modülü Montaj Modeli</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Model Detayı</span>
-                                        <p>MK4i L2 Dişli oranlı Swerve modülü CAD çizimi ve parça listesi (BOM).</p>
-                                        <span class="card-btn"><i class="fa-solid fa-download"></i> CAD İndir</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Görünüm Seçici -->
+            <div class="ch-view-switch">
+                <button type="button" class="ch-view-btn is-active" id="ch-view-grid" title="Izgara Görünümü">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button type="button" class="ch-view-btn" id="ch-view-list" title="Liste Görünümü">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </nav>
 
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/2.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">STL / 3D Baskı</span>
-                                        <p>RoboRIO ve PDH Montaj Braketleri</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Model Detayı</span>
-                                        <p>Titreşim sönümleyici TPU ve PETG baskı profilleri.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-download"></i> STL İndir</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+        <!-- Öne Çıkan CAD Modeli -->
+        <section class="ch-featured-section">
+            <div class="ch-featured-card" data-item-id="featured-cad">
+                <div class="ch-featured-content">
+                    <div class="ch-featured-tags">
+                        <span class="ch-tag-featured"><i class="fa-solid fa-star"></i> Popüler CAD</span>
+                        <span class="ch-tag-cat">Swerve & Şasi</span>
                     </div>
+                    <h2 class="ch-featured-title">MK4i Swerve Modülü Tam Montaj Modeli ve Koruma Kalkanı</h2>
+                    <p class="ch-featured-excerpt">
+                        L2 redüksiyon dişli oranlı Swerve modülü için parametrik Onshape montajı, zemin darbelerine karşı koruyucu TPU alt tampon ve parça listesi (BOM).
+                    </p>
+                    <div class="ch-featured-meta">
+                        <span class="ch-meta-item"><i class="fa-solid fa-user-pen"></i> The Nest CAD Lab</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-file-lines"></i> STEP / STL</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-print"></i> 3D Baskıya Uygun</span>
+                    </div>
+                    <div class="ch-featured-actions">
+                        <button type="button" class="ch-btn-primary" data-action="read-modal">
+                            <i class="fa-solid fa-eye"></i> 3D Model Detayları
+                        </button>
+                    </div>
+                </div>
+                <div class="ch-featured-image-wrap">
+                    <img src="images/mk/1.jpg" alt="Swerve Montaj Modeli" class="ch-featured-image">
+                </div>
+                <!-- Model Detayları (Modal) -->
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Baskı ve İmalat Parametreleri:</strong> Koruyucu kalkan için 95A Sertlikte TPU filament, 4 duvar (Perimeter) ve %40 Gyroid dolgu önerilir.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Model Özellikleri:</h3>
+                        <ul>
+                            <li><strong>Dişli Oranı:</strong> L2 (6.75:1) - Hızlı ivmelenme ve 4.8 m/s tepe hız.</li>
+                            <li><strong>Motor Uyumluluğu:</strong> Falcon 500 & Kraken X60 montaj yuvaları.</li>
+                            <li><strong>Ağırlık:</strong> Modül başına 2.15 kg (Motorlar dahil).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-cube"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">FRC Açık Kaynak 3D Baskı Parça Kütüphanesi (The Nest CAD)</h3>
-                                        <span class="accordion-category-badge">3D Tasarım • Açık Kaynak</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Takımlarımızın sezon boyunca tasarlayıp test ettiği tüm 3D baskı parçaları (kablo düzenleyiciler, sensör tutucular, Limelight koruyucu kılıfları) STEP ve STL formatlarında ücretsiz olarak sunulmaktadır.</p>
-                                </div>
+        <!-- Arama ve Departman Filtre Araç Çubuğu -->
+        <section class="ch-toolbar">
+            <div class="ch-search-row">
+                <div class="ch-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="ch-search-input" class="ch-search-input" placeholder="CAD modeli veya 3D parça ara (Örn: Swerve, Limelight, braket, kablo)..." autocomplete="off">
+                    <button type="button" id="ch-search-clear" class="ch-search-clear" title="Aramayı Temizle">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="ch-item-counter" class="ch-item-counter">Yükleniyor...</div>
+            </div>
+
+            <!-- Departman Filtre Butonları -->
+            <div class="ch-category-pills" role="tablist">
+                <button type="button" class="ch-pill-btn is-active" data-filter="all">
+                    <i class="fa-solid fa-border-all"></i> Tüm Modeller
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="mekanik">
+                    <i class="fa-solid fa-gears"></i> Şasi & Mekanizma
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="elektronik">
+                    <i class="fa-solid fa-microchip"></i> Elektronik Braketleri
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="tasarim">
+                    <i class="fa-solid fa-camera"></i> Kamera & Sensör Tutucu
+                </button>
+            </div>
+        </section>
+
+        <!-- 3D Model Kartları Izgarası -->
+        <section class="ch-cards-grid" id="ch-cards-grid">
+
+            <!-- CAD 1: Swerve Modülü -->
+            <article class="ch-card" data-item-id="cad-1" data-category="mekanik" data-type="obje">
+                <div class="ch-card-header">
+                    <img src="images/mk/1.jpg" alt="Swerve Modülü CAD" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Şasi CAD</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-cube"></i> STEP Modeli</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Swerve Modülü Montaj Modeli & Parça Listesi (BOM)</h3>
+                    <p class="ch-card-excerpt">MK4i L2 oranlı yönlendirme ve sürüş motor montajı, CANcoder pozisyonlama kovanı ve tekerlek bağlantıları.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-cube"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest CAD</span>
+                                <span class="ch-card-date">Onshape & STEP</span>
                             </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-eye"></i> İncele
+                            </button>
                         </div>
                     </div>
                 </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Kullanım Bilgisi:</strong> STEP dosyasını Onshape, SolidWorks veya Fusion 360 içerisine doğrudan aktarabilirsiniz.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Model Detayları:</h3>
+                        <p>• 4 inç Billet tekerlek modeli ve tread montaj delikleri.</p>
+                        <p>• 1/4" alüminyum taban plakası ve rulman toleransları.</p>
+                    </div>
+                </div>
+            </article>
 
+            <!-- CAD 2: RoboRIO ve PDH Braketi -->
+            <article class="ch-card" data-item-id="cad-2" data-category="elektronik" data-type="obje">
+                <div class="ch-card-header">
+                    <img src="images/mk/2.jpg" alt="Elektronik Montaj Braketi" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-elektronik">Elektronik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-print"></i> STL 3D Baskı</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">RoboRIO 2.0 & REV PDH Titreşim Sönümleyici Montaj Braketi</h3>
+                    <p class="ch-card-excerpt">Şasi titreşimlerinin kontrol kartlarına iletilmesini engelleyen elastik TPU yataklı modüler montaj yuvası.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Elektronik Grubu</span>
+                                <span class="ch-card-date">PETG / TPU</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-eye"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Baskı Ayarı:</strong> PETG filament, 0.2mm katman yüksekliği, %30 dolgu. Vida delikleri M4 cıvataya uygundur.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Avantajları:</h3>
+                        <p>1. roboRIO ivmeölçer gürültüsünü %40 azaltır.</p>
+                        <p>2. Kolay sökülüp takılabilir hızlı klips mekanizması.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CAD 3: Limelight Koruyucu Kılıf -->
+            <article class="ch-card" data-item-id="cad-3" data-category="tasarim" data-type="obje">
+                <div class="ch-card-header">
+                    <img src="images/mk/4.jpg" alt="Limelight Koruyucu Kılıf" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-tasarim">Sensör CAD</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-print"></i> STL / STEP</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Limelight 3 / 3G Ayarlanabilir Açılı Koruyucu Zırh ve Siperlik</h3>
+                    <p class="ch-card-excerpt">Saha oyun parçası çarpmalarına karşı kamerayı koruyan, 0° ile 45° arasında kilitlenebilir açılı montaj aparatı.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-camera"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Görüntü İşleme</span>
+                                <span class="ch-card-date">PLA+ / PETG</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-eye"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Özellik:</strong> Entegre fan kanalları sayesinde uzun maçlarda Limelight'ın ısınmasını ve FPS düşüşünü engeller.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Tasarım Detayları:</h3>
+                        <p>• Lens önüne 2mm şeffaf polikarbonat cam takılabilir yuva.</p>
+                        <p>• 5 derecelik açılı kilit dişleri.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CAD 4: CAN Kablo Düzenleyici -->
+            <article class="ch-card" data-item-id="cad-4" data-category="elektronik" data-type="obje">
+                <div class="ch-card-header">
+                    <img src="images/mk/3.jpg" alt="CAN Kablo Düzenleyici" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-elektronik">Kablo Düzeni</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-print"></i> STL Dosyası</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Wago & Lever Nut Titreşim Kilitli Kablo Düzenleyici Klips</h3>
+                    <p class="ch-card-excerpt">CAN bus hatlarının yarışma esnasında sarsıntıdan ayrılmasını fiziksel olarak kilitleyen pratik 3D baskı aparatı.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Elektronik Grubu</span>
+                                <span class="ch-card-date">Hızlı Baskı (15 dk)</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-eye"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Kritik Fayda:</strong> FRC finallerinde yaşanan CAN bus kopma arızalarını %100 önler.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <p>• 2'li, 3'lü ve 5'li Wago 221 modelleriyle uyumludur.</p>
+                        <p>• Çift taraflı 3M VHB bant veya M3 vida ile şasiye sabitlenir.</p>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Arama Sonucu Bulunamadı Durumu -->
+        <div class="ch-empty-state" id="ch-empty-state">
+            <div class="ch-empty-icon">
+                <i class="fa-solid fa-cube"></i>
+            </div>
+            <h3 class="ch-empty-title">Aramanızla Eşleşen CAD Modeli Bulunamadı</h3>
+            <p class="ch-empty-desc">Farklı anahtar kelimeler deneyebilir veya filtreleri sıfırlayabilirsiniz.</p>
+            <button type="button" class="ch-btn-primary" id="ch-reset-filters">
+                <i class="fa-solid fa-rotate-left"></i> Filtreleri Sıfırla
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Detaylı Okuma & İnceleme Modalı -->
+    <div class="ch-modal-overlay" id="ch-reader-modal" role="dialog" aria-modal="true" aria-labelledby="ch-modal-title">
+        <div class="ch-modal-window">
+            <div class="ch-modal-topbar">
+                <div class="ch-modal-top-tags">
+                    <span id="ch-modal-category" class="ch-badge-dept dept-mekanik">CAD</span>
+                    <span id="ch-modal-time" class="ch-badge-time"><i class="fa-solid fa-cube"></i> 3D Model</span>
+                </div>
+                <button type="button" class="ch-modal-close-btn" id="ch-modal-close" title="Kapat (ESC)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ch-modal-content-scroll">
+                <h2 class="ch-modal-title" id="ch-modal-title">CAD Modeli Başlığı</h2>
+                <div class="ch-modal-meta">
+                    <span><i class="fa-solid fa-user-pen"></i> <strong id="ch-modal-author">Tasarımcı</strong></span>
+                    <span><i class="fa-solid fa-calendar-day"></i> <span id="ch-modal-date">Format</span></span>
+                </div>
+                <div id="ch-modal-body" class="ch-modal-body-text">
+                    <!-- Dinamik İçerik Buraya Aktarılır -->
+                </div>
+            </div>
+            <div class="ch-modal-actions-bar">
+                <button type="button" class="ch-btn-secondary" id="ch-modal-share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> Paylaş
+                </button>
+                <a href="#" id="ch-modal-file-btn" target="_blank" class="ch-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-download"></i> 3D CAD Dosyasını İndir (STEP/STL)
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
+    <!-- Global Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/content-hub.js"></script>
 </body>
 
 </html>

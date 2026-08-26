@@ -1,69 +1,307 @@
 <!DOCTYPE html>
 <html lang="tr" data-base-path="">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Haberler</title>
+    <title>The Nest | Haberler & Duyurular</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/content-hub.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bevan&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <!-- navbar -->
+<body class="content-hub-page" data-cms-type="haber">
+
+    <!-- Global Header / Navbar -->
     <div id="app-header" data-component="header"></div>
 
-<!-- fotoraf -->
+    <!-- Hero Bölümü -->
+    <header class="ch-hero">
+        <div class="ch-hero-inner">
+            <div class="ch-hero-badge">
+                <i class="fa-solid fa-bullhorn"></i> Topluluk Güncellemeleri & Bülten
+            </div>
+            <h1 class="ch-hero-title">Haberler & <span>Duyurular</span></h1>
+            <p class="ch-hero-description">
+                The Nest platformu güncellemeleri, takım başarıları, FRC sezon takvimi ve STEM atölye duyuruları.
+            </p>
 
-
-
-
-
-    <section class="n2">
-        <div class="container">
-
-            <div class="brick">
-                <img src="images/favicon.png" alt="">
-                <div class="txt">
-                    <h2>The Nest Açıldı </h2>
-                    <p>The Nest de duyuru yapmak için lütfen ana sayfadaki formu doldurun
-                    </p>
+            <!-- İstatistik Kartları -->
+            <div class="ch-stats-grid">
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-newspaper"></i> 10+</div>
+                    <div class="ch-stat-lbl">Güncel Bülten</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-calendar-check"></i> 2025</div>
+                    <div class="ch-stat-lbl">Sezon Takvimi</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-users-rays"></i> 7611</div>
+                    <div class="ch-stat-lbl">Takım Ağı</div>
+                </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-bell"></i> Canlı</div>
+                    <div class="ch-stat-lbl">Duyuru Yayını</div>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <div class="brick" >
-                <img src="images/favicon.png" alt="">
-                <div class="txt">
-                    <h2>The Nest is open </h2>
-                    <p>To make an announcement on The Nest, please fill out the form on the homepage.
-                    </p>
-                </div>
+    <!-- Ana İçerik Konteyneri -->
+    <main class="content-hub-container">
+
+        <!-- Sayfalar Arası Hızlı Geçiş Menüsü -->
+        <nav class="ch-type-nav-wrapper" aria-label="İçerik Türleri">
+            <div class="ch-type-nav-tabs">
+                <a href="makaleler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-newspaper"></i> Makaleler
+                </a>
+                <a href="dersler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-graduation-cap"></i> Eğitimler & Kurslar
+                </a>
+                <a href="sunumlar.html" class="ch-type-tab">
+                    <i class="fa-solid fa-person-chalkboard"></i> Sunumlar
+                </a>
+                <a href="objeler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-cube"></i> 3D CAD Tasarımları
+                </a>
+                <a href="news.html" class="ch-type-tab is-active">
+                    <i class="fa-solid fa-bullhorn"></i> Haberler & Duyurular
+                </a>
             </div>
 
-           
+            <!-- Görünüm Seçici -->
+            <div class="ch-view-switch">
+                <button type="button" class="ch-view-btn is-active" id="ch-view-grid" title="Izgara Görünümü">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button type="button" class="ch-view-btn" id="ch-view-list" title="Liste Görünümü">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </nav>
 
-           
+        <!-- Öne Çıkan Haber (Spotlight) -->
+        <section class="ch-featured-section">
+            <div class="ch-featured-card" data-item-id="featured-news">
+                <div class="ch-featured-content">
+                    <div class="ch-featured-tags">
+                        <span class="ch-tag-featured"><i class="fa-solid fa-bolt"></i> Son Dakika</span>
+                        <span class="ch-tag-cat">Platform Duyurusu</span>
+                    </div>
+                    <h2 class="ch-featured-title">The Nest 2.0 Açık Kaynak STEAM Platformu Yayında!</h2>
+                    <p class="ch-featured-excerpt">
+                        7611 AmalHawks ekibinin geliştirdiği The Nest; yenilenen modern içerik merkezi, zenginleştirilmiş FRC ders müfredatları ve 3D CAD kütüphanesi ile tüm robotik topluluğunun kullanımına açıldı.
+                    </p>
+                    <div class="ch-featured-meta">
+                        <span class="ch-meta-item"><i class="fa-solid fa-user-pen"></i> The Nest Yönetimi</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-calendar-day"></i> 2025 Sezonu</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-globe"></i> Global Erişim</span>
+                    </div>
+                    <div class="ch-featured-actions">
+                        <button type="button" class="ch-btn-primary" data-action="read-modal">
+                            <i class="fa-solid fa-book-open"></i> Haberi Oku
+                        </button>
+                    </div>
+                </div>
+                <div class="ch-featured-image-wrap">
+                    <img src="images/index-hero.jpg" alt="The Nest Yayında" class="ch-featured-image">
+                </div>
+                <!-- Haber Tam Metni (Modal) -->
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Açık Kaynak Misyonu:</strong> Amacımız tüm gençlerin yüksek bütçeli eğitimlere gerek kalmadan robotik, kodlama ve mekanik tasarım becerilerini geliştirmesidir.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Yenilikler Neler?</h3>
+                        <ul>
+                            <li><strong>Modern İçerik Merkezi:</strong> Makaleler, eğitimler, sunumlar ve 3D CAD modelleri tek bir çatı altında, anlık arama ve kategori filtreleriyle sunuluyor.</li>
+                            <li><strong>Zengin Okuma Modalı:</strong> Dosya indirmeden önce içerikleri tarayıcı üzerinden doğrudan inceleyebilirsiniz.</li>
+                            <li><strong>Topluluk Katılımı:</strong> Takım başvuru formu ve CMS yönetim paneli ile sürekli genişleyen bir kütüphane.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Arama ve Departman Filtre Araç Çubuğu -->
+        <section class="ch-toolbar">
+            <div class="ch-search-row">
+                <div class="ch-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="ch-search-input" class="ch-search-input" placeholder="Haber veya duyuru ara..." autocomplete="off">
+                    <button type="button" id="ch-search-clear" class="ch-search-clear" title="Aramayı Temizle">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="ch-item-counter" class="ch-item-counter">Yükleniyor...</div>
+            </div>
+
+            <!-- Departman Filtre Butonları -->
+            <div class="ch-category-pills" role="tablist">
+                <button type="button" class="ch-pill-btn is-active" data-filter="all">
+                    <i class="fa-solid fa-border-all"></i> Tüm Haberler
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="genel">
+                    <i class="fa-solid fa-bullhorn"></i> Platform Duyuruları
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="frc">
+                    <i class="fa-solid fa-trophy"></i> Yarışma & FRC
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="pr">
+                    <i class="fa-solid fa-users"></i> Topluluk Etkinlikleri
+                </button>
+            </div>
+        </section>
+
+        <!-- Haber Kartları Izgarası -->
+        <section class="ch-cards-grid" id="ch-cards-grid">
+
+            <!-- HABER 1: The Nest Açıldı -->
+            <article class="ch-card" data-item-id="news-1" data-category="genel" data-type="haber">
+                <div class="ch-card-header">
+                    <img src="images/favicon.png" alt="The Nest Açıldı" class="ch-card-img" style="object-fit: contain; background: #042C62; padding: 2rem;" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-genel">Platform</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 2 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">The Nest Platformu Topluluğa Açıldı</h3>
+                    <p class="ch-card-excerpt">The Nest'te duyuru yapmak, makale paylaşmak veya takımımıza başvurmak için ana sayfadaki başvuru formunu doldurabilirsiniz.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-feather"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Ekibi</span>
+                                <span class="ch-card-date">Duyuru</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Duyuru:</strong> The Nest platformuna hoş geldiniz! STEAM tutkunları için kaynaklar, eğitimler ve açık kaynak mühendislik arşivi bir arada.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <p>Takım başvuruları ve içerik önerileri için lütfen ana sayfadaki formu doldurunuz veya iletişim adreslerimizden bize ulaşınız.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- HABER 2: 2025 FRC Sezonu Başladı -->
+            <article class="ch-card" data-item-id="news-2" data-category="frc" data-type="haber">
+                <div class="ch-card-header">
+                    <img src="images/frc-comp.jpg" alt="FRC Sezonu Başladı" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-frc">FRC 2025</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 3 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">2025 FRC Sezonu: Reefscape Kuralları ve Analizler</h3>
+                    <p class="ch-card-excerpt">Bu sezonun oyun dinamikleri, otonom puanlama stratejileri ve sahadaki kritik mekanik gereksinimler üzerine detaylı analiz bülteni.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-robot"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">AmalHawks 7611</span>
+                                <span class="ch-card-date">Strateji Kurulu</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Sezon Özeti:</strong> Otonom dönemde hızlı skor yapabilen ve zemin intake mekanizmasına sahip robotlar turnuvada büyük avantaj sağlayacak.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <p>Oyun kuralları kılavuzundaki güncellemeler ve hakem direktifleri düzenli olarak içerikler sayfamıza eklenecektir.</p>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Arama Sonucu Bulunamadı Durumu -->
+        <div class="ch-empty-state" id="ch-empty-state">
+            <div class="ch-empty-icon">
+                <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <h3 class="ch-empty-title">Aramanızla Eşleşen Haber Bulunamadı</h3>
+            <p class="ch-empty-desc">Farklı bir arama yapabilir veya tüm haberleri listelemek için filtreleri sıfırlayabilirsiniz.</p>
+            <button type="button" class="ch-btn-primary" id="ch-reset-filters">
+                <i class="fa-solid fa-rotate-left"></i> Filtreleri Sıfırla
+            </button>
         </div>
 
-    </section>
+    </main>
 
+    <!-- Detaylı Okuma & İnceleme Modalı -->
+    <div class="ch-modal-overlay" id="ch-reader-modal" role="dialog" aria-modal="true" aria-labelledby="ch-modal-title">
+        <div class="ch-modal-window">
+            <div class="ch-modal-topbar">
+                <div class="ch-modal-top-tags">
+                    <span id="ch-modal-category" class="ch-badge-dept dept-genel">Haber</span>
+                    <span id="ch-modal-time" class="ch-badge-time"><i class="fa-solid fa-clock"></i> Duyuru</span>
+                </div>
+                <button type="button" class="ch-modal-close-btn" id="ch-modal-close" title="Kapat (ESC)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ch-modal-content-scroll">
+                <h2 class="ch-modal-title" id="ch-modal-title">Haber Başlığı</h2>
+                <div class="ch-modal-meta">
+                    <span><i class="fa-solid fa-user-pen"></i> <strong id="ch-modal-author">Yayınlayan</strong></span>
+                    <span><i class="fa-solid fa-calendar-day"></i> <span id="ch-modal-date">Tarih</span></span>
+                </div>
+                <div id="ch-modal-body" class="ch-modal-body-text">
+                    <!-- Dinamik İçerik Buraya Aktarılır -->
+                </div>
+            </div>
+            <div class="ch-modal-actions-bar">
+                <button type="button" class="ch-btn-secondary" id="ch-modal-share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> Paylaş
+                </button>
+                <a href="#" id="ch-modal-file-btn" target="_blank" class="ch-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-download"></i> Ek Dosyayı İndir
+                </a>
+            </div>
+        </div>
+    </div>
 
+    <!-- Global Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/content-hub.js"></script>
 </body>
 
 </html>

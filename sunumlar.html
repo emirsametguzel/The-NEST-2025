@@ -4,175 +4,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Sunumlar</title>
+    <title>The Nest | Sunumlar & Mülakat Dökümanları</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/content-hub.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <!-- Navbar -->
+<body class="content-hub-page" data-cms-type="sunum">
+
+    <!-- Global Header / Navbar -->
     <div id="app-header" data-component="header"></div>
 
-    <section>
-        <div id="nav-bar">
-            <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header">
-                <a id="nav-title" href="#a1">Sunumlar</a>
-                <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
-                <hr />
+    <!-- Hero Bölümü -->
+    <header class="ch-hero">
+        <div class="ch-hero-inner">
+            <div class="ch-hero-badge">
+                <i class="fa-solid fa-person-chalkboard"></i> Yarışma & Jüri Sunum Arşivi
             </div>
-            <div id="nav-content">
-                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span id="l1">Mekanik</span></a></div>
-                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"></i><span id="l2">Yazılım</span></a></div>
-                <div class="nav-button"><a href="#a3"><i class="fas fa-solid fa-person-chalkboard"></i><span id="l3">Sunum & Jüri</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span id="l4">Tasarım</span></a></div>
-                <div class="nav-button"><a href="#a5"><i class="fas fa-chart-line"></i><span id="l5">Sponsorluk</span></a></div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span id="l6">Elektronik</span></a></div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span id="l7">FRC</span></a></div>
-                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"></i><span id="l8">FYF</span></a></div>
-                <div id="nav-content-highlight"></div>
-            </div>
-            <input id="nav-footer-toggle" type="checkbox" />
-        </div>
-    </section>
+            <h1 class="ch-hero-title">Sunumlar & <span>Takım Dökümanları</span></h1>
+            <p class="ch-hero-description">
+                FIRST Impact sunum şablonları, mekanik alt takım sezonluk raporları, yazılım kontrol stratejileri ve kurumsal sponsorluk sunumları.
+            </p>
 
-    <section>
-        <!-- Sunum İçerikleri -->
-        <div class="mother-1-1" data-content-type="sunum">
-            <div class="mother-1-2">
-
-                <!-- 1. MEKANİK SUNUMLARI -->
-                <div class="wrapper" id="a1">
-                    <h1><i class="fa-solid fa-gear" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik Sunumları</h1>
-                    <div class="cols">
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/1.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Sunum Slaytı</span>
-                                        <p>Mekanik Sistem Optimizasyonu & Testleri</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Slayt Özeti</span>
-                                        <p>Sürtünme analizi, redüksiyon oranları ve tolerans kontrol yöntemleri.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/2.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Sunum Slaytı</span>
-                                        <p>FRC Robot Şasilerinde Malzeme Seçimi</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Slayt Özeti</span>
-                                        <p>Metal alaşımları ve polimerlerin mukavemet / ağırlık oranı analizleri.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-file-powerpoint"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Mekanik Alt Takımı Sezon İçi Çalışma Sunumu (42 Slayt)</h3>
-                                        <span class="accordion-category-badge">Mekanik Sunum • PDF / PPTX</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Bu sunumda robot mekanik alt ekibinin prototipleme, üretim ve saha testleri aşamalarında kullandığı metotlar ve jüri sunum şablonları yer almaktadır.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- İstatistik Kartları -->
+            <div class="ch-stats-grid">
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-file-powerpoint"></i> 15+</div>
+                    <div class="ch-stat-lbl">Hazır Sunum</div>
                 </div>
-
-                <!-- 2. YAZILIM SUNUMLARI -->
-                <div class="wrapper" id="a2">
-                    <h1><i class="fa-solid fa-laptop" style="color: #60a5fa; margin-right: 8px;"></i> Yazılım Sunumları</h1>
-                    <div class="cols">
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/yazilim.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Yazılım Sunumu</span>
-                                        <p>FRC Otonom Stratejileri ve Path Generation</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Slayt Özeti</span>
-                                        <p>Otonom 15 saniyelik dönemde maksimum puan optimizasyonu algoritması.</p>
-                                        <span class="card-btn"><i class="fa-solid fa-file-powerpoint"></i> Sunumu Başlat</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-award"></i> Impact</div>
+                    <div class="ch-stat-lbl">Ödül Şablonları</div>
                 </div>
-
-                <!-- 3. JÜRİ & IMPACT SUNUMLARI -->
-                <div class="wrapper" id="a3">
-                    <h1><i class="fa-solid fa-person-chalkboard" style="color: #60a5fa; margin-right: 8px;"></i> Jüri & Impact Sunumları</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-award"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">FIRST Impact Award Şampiyonluk Sunumu Şablonu</h3>
-                                        <span class="accordion-category-badge">Impact • Sunum Becerileri</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Impact jürisinin dikkat ettiği 7 temel metrik: Sürdürülebilirlik, Genişleme, STEM Mentorluğu, Kapsayıcılık, Ölçülebilir Etki, Kültürel Değişim ve FIRST Değerleri.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-download"></i> PPTX / PDF</div>
+                    <div class="ch-stat-lbl">Format Desteği</div>
                 </div>
-
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-bullhorn"></i> 100%</div>
+                    <div class="ch-stat-lbl">Açık Kaynak</div>
+                </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Footer -->
+    <!-- Ana İçerik Konteyneri -->
+    <main class="content-hub-container">
+
+        <!-- Sayfalar Arası Hızlı Geçiş Menüsü -->
+        <nav class="ch-type-nav-wrapper" aria-label="İçerik Türleri">
+            <div class="ch-type-nav-tabs">
+                <a href="makaleler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-newspaper"></i> Makaleler
+                </a>
+                <a href="dersler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-graduation-cap"></i> Eğitimler & Kurslar
+                </a>
+                <a href="sunumlar.html" class="ch-type-tab is-active">
+                    <i class="fa-solid fa-person-chalkboard"></i> Sunumlar
+                </a>
+                <a href="objeler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-cube"></i> 3D CAD Tasarımları
+                </a>
+                <a href="news.html" class="ch-type-tab">
+                    <i class="fa-solid fa-bullhorn"></i> Haberler & Duyurular
+                </a>
+            </div>
+
+            <!-- Görünüm Seçici -->
+            <div class="ch-view-switch">
+                <button type="button" class="ch-view-btn is-active" id="ch-view-grid" title="Izgara Görünümü">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button type="button" class="ch-view-btn" id="ch-view-list" title="Liste Görünümü">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Öne Çıkan Sunum -->
+        <section class="ch-featured-section">
+            <div class="ch-featured-card" data-item-id="featured-pres">
+                <div class="ch-featured-content">
+                    <div class="ch-featured-tags">
+                        <span class="ch-tag-featured"><i class="fa-solid fa-trophy"></i> Şampiyonluk Şablonu</span>
+                        <span class="ch-tag-cat">Impact & Kültür</span>
+                    </div>
+                    <h2 class="ch-featured-title">FIRST Impact Award Jüri Sunumu ve Takım Etki Stratejisi</h2>
+                    <p class="ch-featured-excerpt">
+                        En prestijli FIRST ödülü olan Impact için 7 dakikalık jüri sunumu slayt dizilimi, video entegrasyonu, veri infografikleri ve pit mülakatı soru-cevap kılavuzu.
+                    </p>
+                    <div class="ch-featured-meta">
+                        <span class="ch-meta-item"><i class="fa-solid fa-user-pen"></i> The Nest Mentör Ekibi</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-file-powerpoint"></i> 38 Slayt</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-language"></i> TR / EN</span>
+                    </div>
+                    <div class="ch-featured-actions">
+                        <button type="button" class="ch-btn-primary" data-action="read-modal">
+                            <i class="fa-solid fa-book-open"></i> Sunum Detaylarını İncele
+                        </button>
+                    </div>
+                </div>
+                <div class="ch-featured-image-wrap">
+                    <img src="images/fll.jpg" alt="Impact Sunum Şablonu" class="ch-featured-image">
+                </div>
+                <!-- Sunum Tam Metni (Modal) -->
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Impact Sunumunun 7 Anahtarı:</strong> Sürdürülebilirlik, Ölçülebilir Topluluk Etkisi, STEM Eğitimi, Kapsayıcılık, FIRST Değerleri, Mentorluk Ağı ve Kültürel Değişim.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Sunum Slayt Akışı:</h3>
+                        <ul>
+                            <li><strong>Giriş (1. Dk):</strong> Takımın misyonu, kökeni ve çözdüğü temel toplumsal problem.</li>
+                            <li><strong>Gelişme (2-4. Dk):</strong> Yürütülen projeler, ulaşılan öğrenci sayısı ve kurulan yeni FLL/FRC takımları.</li>
+                            <li><strong>Sonuç (5-7. Dk):</strong> Gelecek 5 yıllık vizyon ve FIRST ruhunun yayılması.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Arama ve Departman Filtre Araç Çubuğu -->
+        <section class="ch-toolbar">
+            <div class="ch-search-row">
+                <div class="ch-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="ch-search-input" class="ch-search-input" placeholder="Sunum adı, jüri konusu veya departman ara (Örn: şasi analizi, otonom, bütçe)..." autocomplete="off">
+                    <button type="button" id="ch-search-clear" class="ch-search-clear" title="Aramayı Temizle">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="ch-item-counter" class="ch-item-counter">Yükleniyor...</div>
+            </div>
+
+            <!-- Departman Filtre Butonları -->
+            <div class="ch-category-pills" role="tablist">
+                <button type="button" class="ch-pill-btn is-active" data-filter="all">
+                    <i class="fa-solid fa-border-all"></i> Tüm Sunumlar
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="mekanik">
+                    <i class="fa-solid fa-gears"></i> Mekanik Sunumları
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="yazilim">
+                    <i class="fa-solid fa-code"></i> Yazılım & Otonom
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="pr">
+                    <i class="fa-solid fa-bullhorn"></i> PR & Sponsorluk
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="frc">
+                    <i class="fa-solid fa-trophy"></i> Impact & Jüri
+                </button>
+            </div>
+        </section>
+
+        <!-- Sunum Kartları Izgarası -->
+        <section class="ch-cards-grid" id="ch-cards-grid">
+
+            <!-- SUNUM 1: Mekanik Optimizasyon -->
+            <article class="ch-card" data-item-id="pres-1" data-category="mekanik" data-type="sunum">
+                <div class="ch-card-header">
+                    <img src="images/mk/1.jpg" alt="Mekanik Sistem Optimizasyonu Sunumu" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-file-powerpoint"></i> 42 Slayt</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Mekanik Sistem Optimizasyonu & Dayanıklılık Testleri</h3>
+                    <p class="ch-card-excerpt">Sürtünme analizi, redüksiyon oranları, tolerans kontrol yöntemleri ve robotik test protokollerini içeren teknik sunum.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-wrench"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Mekanik Kurulu</span>
+                                <span class="ch-card-date">Teknik Sunum</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Sunum Özeti:</strong> Robot mekanik alt ekibinin prototipleme, imalat ve saha dayanıklılık testleri aşamalarında kullandığı yöntemler.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Slayt Başlıkları:</h3>
+                        <p>1. Sonlu Elemanlar Analizi (FEA) ve gerilme dağılımı.</p>
+                        <p>2. Rulman yuvalarında pres geçme (Press-fit) toleransları.</p>
+                        <p>3. Saha darbe testleri ve pit bakım checklist'i.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SUNUM 2: Malzeme Seçimi -->
+            <article class="ch-card" data-item-id="pres-2" data-category="mekanik" data-type="sunum">
+                <div class="ch-card-header">
+                    <img src="images/mk/2.jpg" alt="Malzeme Seçimi Sunumu" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-file-powerpoint"></i> 26 Slayt</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">FRC Robot Şasilerinde Malzeme Seçimi ve Ağırlık Analizi</h3>
+                    <p class="ch-card-excerpt">6061-T6 Alüminyum, Karbon Fiber, Polikarbonat ve 3D TPU baskı parçaların mukavemet / ağırlık oranları.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Tasarım Grubu</span>
+                                <span class="ch-card-date">Malzeme Bilimi</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Kritik Kural:</strong> Robotun darbe alan bölgelerinde pleksiglas asla kullanılmamalıdır; yerine 3-4mm Lexan (Polikarbonat) tercih edilmelidir.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Slayt İçeriği:</h3>
+                        <p>• Alüminyum alaşımları ve ısıl işlem sınıfları (T6 vs T4).</p>
+                        <p>• Karbon fiber boru bağlantılarında epoksi ve perçin yöntemleri.</p>
+                        <p>• 3D baskıda infill deseni (Gyroid vs Grid) mukavemet karşılaştırması.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SUNUM 3: Otonom Stratejisi -->
+            <article class="ch-card" data-item-id="pres-3" data-category="yazilim" data-type="sunum">
+                <div class="ch-card-header">
+                    <img src="images/yazilim.jpg" alt="Otonom Stratejileri Sunumu" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-yazilim">Yazılım</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-file-powerpoint"></i> 32 Slayt</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">FRC Otonom Stratejileri ve Path Generation Algoritmaları</h3>
+                    <p class="ch-card-excerpt">15 saniyelik otonom dönemde maksimum skor optimizasyonu, ittifak ortakları ile çakışmayan rota planlaması.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-code"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Yazılım Ekibi</span>
+                                <span class="ch-card-date">Otonom & Kontrol</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Otonom Prensibi:</strong> Tek bir karmaşık rota yerine, maç durumuna göre sürücü panosundan seçilebilen modüler 4 farklı otonom seçeneği hazırlayın.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Sunum Konuları:</h3>
+                        <p>1. SendableChooser ile Shuffleboard üzerinden otonom seçimi.</p>
+                        <p>2. Swerve kinematic limitleri ve ivmelenme eğrileri.</p>
+                        <p>3. Sensör hatası durumunda fallback (yedek) sürüş modları.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SUNUM 4: Sponsorluk Pitch Deck -->
+            <article class="ch-card" data-item-id="pres-4" data-category="pr" data-type="sunum">
+                <div class="ch-card-header">
+                    <img src="images/kurum.jpg" alt="Kurumsal Sponsorluk Sunumu" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-pr">PR & Sponsorluk</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-file-powerpoint"></i> 20 Slayt</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Kurumsal Sponsorluk Pitch Deck & Değer Teklifi</h3>
+                    <p class="ch-card-excerpt">Teknoloji şirketlerine ve sanayi kuruluşlarına yapılacak 5 dakikalık etkili sunum şablonu ve ROI metrikleri.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-chart-line"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">PR & Finans</span>
+                                <span class="ch-card-date">Kurumsal İletişim</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Pitch Deck Formatı:</strong> Problem -> Çözüm -> Takım Yetkinlikleri -> Sponsorluk Paketleri (Platin/Altın/Gümüş) -> Bütçe Şeffaflığı.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Sunum Tasarım Kılavuzu:</h3>
+                        <p>• Net, anlaşılır ve kurumsal renk paleti.</p>
+                        <p>• Somut öğrenci başarı hikayeleri ve mezunların mühendislik kariyerleri.</p>
+                        <p>• Sponsor logolarının sergileneceği alanlar (Robot, Forma, Pit Alanı, Web Sitesi).</p>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Arama Sonucu Bulunamadı Durumu -->
+        <div class="ch-empty-state" id="ch-empty-state">
+            <div class="ch-empty-icon">
+                <i class="fa-solid fa-file-powerpoint"></i>
+            </div>
+            <h3 class="ch-empty-title">Aramanızla Eşleşen Sunum Bulunamadı</h3>
+            <p class="ch-empty-desc">Farklı anahtar kelimelerle arama yapabilir veya filtreleri sıfırlayabilirsiniz.</p>
+            <button type="button" class="ch-btn-primary" id="ch-reset-filters">
+                <i class="fa-solid fa-rotate-left"></i> Filtreleri Sıfırla
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Detaylı Okuma & İnceleme Modalı -->
+    <div class="ch-modal-overlay" id="ch-reader-modal" role="dialog" aria-modal="true" aria-labelledby="ch-modal-title">
+        <div class="ch-modal-window">
+            <div class="ch-modal-topbar">
+                <div class="ch-modal-top-tags">
+                    <span id="ch-modal-category" class="ch-badge-dept dept-pr">Sunum</span>
+                    <span id="ch-modal-time" class="ch-badge-time"><i class="fa-solid fa-file-powerpoint"></i> Slayt Detayı</span>
+                </div>
+                <button type="button" class="ch-modal-close-btn" id="ch-modal-close" title="Kapat (ESC)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ch-modal-content-scroll">
+                <h2 class="ch-modal-title" id="ch-modal-title">Sunum Başlığı</h2>
+                <div class="ch-modal-meta">
+                    <span><i class="fa-solid fa-user-pen"></i> <strong id="ch-modal-author">Hazırlayan</strong></span>
+                    <span><i class="fa-solid fa-calendar-day"></i> <span id="ch-modal-date">Kategori</span></span>
+                </div>
+                <div id="ch-modal-body" class="ch-modal-body-text">
+                    <!-- Dinamik İçerik Buraya Aktarılır -->
+                </div>
+            </div>
+            <div class="ch-modal-actions-bar">
+                <button type="button" class="ch-btn-secondary" id="ch-modal-share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> Paylaş
+                </button>
+                <a href="#" id="ch-modal-file-btn" target="_blank" class="ch-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-download"></i> Sunumu İndir (PPTX / PDF)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/content-hub.js"></script>
 </body>
 
 </html>

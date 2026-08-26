@@ -1,0 +1,1100 @@
+/* ==========================================================================
+   THE NEST — MODERN CONTENT HUB & EDUCATIONAL DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  --ch-bg-primary: #f8fafc;
+  --ch-bg-surface: #ffffff;
+  --ch-bg-subtle: #f1f5f9;
+  --ch-border: #e2e8f0;
+  --ch-border-focus: #3b82f6;
+  --ch-text-main: #0f172a;
+  --ch-text-muted: #64748b;
+  --ch-text-light: #94a3b8;
+  --ch-brand-dark: #042C62;
+  --ch-brand-blue: #0284c7;
+  --ch-brand-accent: #2563eb;
+  --ch-brand-light: #eff6ff;
+  --ch-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --ch-shadow-md: 0 4px 14px -2px rgba(0,0,0,0.08), 0 2px 6px -2px rgba(0,0,0,0.04);
+  --ch-shadow-lg: 0 12px 28px -4px rgba(0,0,0,0.12), 0 4px 12px -2px rgba(0,0,0,0.06);
+  --ch-shadow-hover: 0 16px 36px -6px rgba(4, 44, 98, 0.18), 0 6px 16px -3px rgba(0,0,0,0.08);
+  --ch-radius-sm: 8px;
+  --ch-radius-md: 12px;
+  --ch-radius-lg: 16px;
+  --ch-radius-full: 9999px;
+  --ch-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Ana Kapsayıcı & Layout
+   -------------------------------------------------------------------------- */
+.content-hub-page {
+  background-color: var(--ch-bg-primary);
+  min-height: 100vh;
+  color: var(--ch-text-main);
+  font-family: 'Poppins', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+.content-hub-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Başlık & İstatistik Bandı
+   -------------------------------------------------------------------------- */
+.ch-hero {
+  position: relative;
+  background: linear-gradient(135deg, #021a3b 0%, #042C62 45%, #0f3d7c 100%);
+  color: #ffffff;
+  padding: 8.5rem 1.5rem 3.5rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(4, 44, 98, 0.15);
+}
+
+.ch-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(14, 165, 233, 0.18) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+  pointer-events: none;
+}
+
+.ch-hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ch-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #93c5fd;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 0.4rem 1rem;
+  border-radius: var(--ch-radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.25rem;
+}
+
+.ch-hero-badge i {
+  color: #38bdf8;
+}
+
+.ch-hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.ch-hero-title span {
+  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ch-hero-description {
+  max-width: 720px;
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+/* İstatistik Çubukları */
+.ch-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 960px;
+  margin-top: 0.5rem;
+}
+
+.ch-stat-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--ch-radius-md);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  transition: var(--ch-transition);
+}
+
+.ch-stat-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.ch-stat-val {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.ch-stat-val i {
+  font-size: 1.15rem;
+  color: #38bdf8;
+}
+
+.ch-stat-lbl {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   Gezinti Sekmeleri (Sayfalar Arası Hızlı Geçiş Barı)
+   -------------------------------------------------------------------------- */
+.ch-type-nav-wrapper {
+  background: var(--ch-bg-surface);
+  border-radius: var(--ch-radius-lg);
+  padding: 0.5rem;
+  box-shadow: var(--ch-shadow-md);
+  border: 1px solid var(--ch-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ch-type-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ch-type-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--ch-radius-md);
+  color: var(--ch-text-muted);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: var(--ch-transition);
+  border: 1px solid transparent;
+}
+
+.ch-type-tab:hover {
+  color: var(--ch-brand-dark);
+  background-color: var(--ch-bg-subtle);
+}
+
+.ch-type-tab.is-active {
+  background: #042C62;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(4, 44, 98, 0.25);
+}
+
+.ch-type-tab.is-active i {
+  color: #38bdf8;
+}
+
+/* Görünüm Değiştirici (Grid / List) */
+.ch-view-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--ch-bg-subtle);
+  padding: 0.3rem;
+  border-radius: var(--ch-radius-md);
+}
+
+.ch-view-btn {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ch-radius-sm);
+  color: var(--ch-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--ch-transition);
+}
+
+.ch-view-btn:hover {
+  color: var(--ch-text-main);
+}
+
+.ch-view-btn.is-active {
+  background: var(--ch-bg-surface);
+  color: var(--ch-brand-dark);
+  box-shadow: var(--ch-shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Arama & Departman Filtre Barı (Sticky Toolbar)
+   -------------------------------------------------------------------------- */
+.ch-toolbar {
+  background: var(--ch-bg-surface);
+  border-radius: var(--ch-radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--ch-shadow-sm);
+  border: 1px solid var(--ch-border);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ch-search-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.ch-search-box {
+  position: relative;
+  flex: 1;
+}
+
+.ch-search-box i.fa-magnifying-glass {
+  position: absolute;
+  left: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ch-text-light);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.ch-search-input {
+  width: 100%;
+  padding: 0.85rem 2.8rem 0.85rem 3rem;
+  background: var(--ch-bg-subtle);
+  border: 1.5px solid transparent;
+  border-radius: var(--ch-radius-md);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--ch-text-main);
+  transition: var(--ch-transition);
+  box-sizing: border-box;
+}
+
+.ch-search-input:focus {
+  outline: none;
+  background: var(--ch-bg-surface);
+  border-color: var(--ch-border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.ch-search-clear {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--ch-text-light);
+  cursor: pointer;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+  display: none;
+}
+
+.ch-search-clear.is-visible {
+  display: block;
+}
+
+.ch-item-counter {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ch-text-muted);
+  white-space: nowrap;
+  padding: 0.5rem 0.9rem;
+  background: var(--ch-bg-subtle);
+  border-radius: var(--ch-radius-md);
+}
+
+/* Departman Filtre Butonları (Pills) */
+.ch-category-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.ch-category-pills::-webkit-scrollbar {
+  height: 4px;
+}
+.ch-category-pills::-webkit-scrollbar-thumb {
+  background: var(--ch-border);
+  border-radius: 4px;
+}
+
+.ch-pill-btn {
+  background: var(--ch-bg-subtle);
+  border: 1px solid var(--ch-border);
+  color: var(--ch-text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: var(--ch-radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  transition: var(--ch-transition);
+}
+
+.ch-pill-btn:hover {
+  background: #e2e8f0;
+  color: var(--ch-text-main);
+}
+
+.ch-pill-btn.is-active {
+  background: var(--ch-brand-dark);
+  color: #ffffff;
+  border-color: var(--ch-brand-dark);
+  box-shadow: 0 2px 8px rgba(4, 44, 98, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Öne Çıkan Kart (Featured Hero Card)
+   -------------------------------------------------------------------------- */
+.ch-featured-section {
+  margin-bottom: 2.5rem;
+}
+
+.ch-featured-card {
+  background: linear-gradient(135deg, #042C62 0%, #0f3d7c 60%, #1e40af 100%);
+  border-radius: var(--ch-radius-lg);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  box-shadow: var(--ch-shadow-lg);
+  color: #ffffff;
+  position: relative;
+  transition: var(--ch-transition);
+}
+
+.ch-featured-card:hover {
+  box-shadow: var(--ch-shadow-hover);
+  transform: translateY(-3px);
+}
+
+.ch-featured-content {
+  padding: 2.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+}
+
+.ch-featured-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.ch-tag-featured {
+  background: #f59e0b;
+  color: #000000;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--ch-radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ch-tag-cat {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--ch-radius-full);
+}
+
+.ch-featured-title {
+  font-size: 1.95rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.ch-featured-excerpt {
+  color: #e2e8f0;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.ch-featured-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  color: #93c5fd;
+}
+
+.ch-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ch-featured-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ch-btn-primary {
+  background: #ffffff;
+  color: #042C62;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--ch-radius-md);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: var(--ch-transition);
+}
+
+.ch-btn-primary:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.ch-btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--ch-radius-md);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: var(--ch-transition);
+}
+
+.ch-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.ch-featured-image-wrap {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.ch-featured-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.ch-featured-card:hover .ch-featured-image {
+  transform: scale(1.04);
+}
+
+/* --------------------------------------------------------------------------
+   İçerik Kartları Izgarası (Content Grid & Cards)
+   -------------------------------------------------------------------------- */
+.ch-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--ch-border);
+}
+
+.ch-section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ch-text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.ch-section-title i {
+  color: var(--ch-brand-accent);
+}
+
+.ch-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 3.5rem;
+}
+
+/* List Modu */
+.ch-cards-grid.is-list-view {
+  grid-template-columns: 1fr;
+}
+
+.ch-card {
+  background: var(--ch-bg-surface);
+  border-radius: var(--ch-radius-lg);
+  border: 1px solid var(--ch-border);
+  overflow: hidden;
+  box-shadow: var(--ch-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: var(--ch-transition);
+  position: relative;
+}
+
+.ch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ch-shadow-hover);
+  border-color: #cbd5e1;
+}
+
+.ch-cards-grid.is-list-view .ch-card {
+  flex-direction: row;
+  min-height: 200px;
+}
+
+/* Kart Görseli & Rozetleri */
+.ch-card-header {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.ch-cards-grid.is-list-view .ch-card-header {
+  width: 280px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.ch-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.ch-card:hover .ch-card-img {
+  transform: scale(1.06);
+}
+
+.ch-card-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.1) 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.ch-card-badges {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.ch-badge-dept {
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--ch-radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Departman Renk Kodları */
+.dept-mekanik { background: #2563eb; }
+.dept-yazilim { background: #059669; }
+.dept-pr { background: #e11d48; }
+.dept-tasarim { background: #7c3aed; }
+.dept-elektronik { background: #d97706; }
+.dept-frc { background: #0284c7; }
+.dept-fyf { background: #4f46e5; }
+.dept-genel { background: #475569; }
+
+.ch-badge-time {
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--ch-radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Kart Gövdesi */
+.ch-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ch-cards-grid.is-list-view .ch-card-body {
+  padding: 1.5rem 2rem;
+}
+
+.ch-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ch-text-main);
+  margin-bottom: 0.75rem;
+  transition: color 0.2s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ch-card:hover .ch-card-title {
+  color: var(--ch-brand-accent);
+}
+
+.ch-card-excerpt {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ch-text-muted);
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.ch-cards-grid.is-list-view .ch-card-excerpt {
+  -webkit-line-clamp: 2;
+}
+
+/* Kart Altı & Butonlar */
+.ch-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ch-border);
+  margin-top: auto;
+  gap: 0.75rem;
+}
+
+.ch-author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ch-author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ch-radius-full);
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #042C62;
+  border: 1px solid var(--ch-border);
+  overflow: hidden;
+}
+
+.ch-author-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ch-author-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.ch-author-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ch-text-main);
+}
+
+.ch-card-date {
+  font-size: 0.75rem;
+  color: var(--ch-text-light);
+}
+
+.ch-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ch-btn-action {
+  background: var(--ch-brand-light);
+  color: var(--ch-brand-accent);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--ch-radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid #bfdbfe;
+  cursor: pointer;
+  transition: var(--ch-transition);
+}
+
+.ch-btn-action:hover {
+  background: var(--ch-brand-accent);
+  color: #ffffff;
+  border-color: var(--ch-brand-accent);
+}
+
+.ch-btn-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--ch-radius-sm);
+  background: var(--ch-bg-subtle);
+  border: 1px solid var(--ch-border);
+  color: var(--ch-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--ch-transition);
+  text-decoration: none;
+}
+
+.ch-btn-icon:hover {
+  background: #e2e8f0;
+  color: var(--ch-text-main);
+}
+
+/* --------------------------------------------------------------------------
+   Boş Durum (Empty Search State)
+   -------------------------------------------------------------------------- */
+.ch-empty-state {
+  display: none;
+  background: var(--ch-bg-surface);
+  border-radius: var(--ch-radius-lg);
+  border: 2px dashed var(--ch-border);
+  padding: 4rem 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.ch-empty-state.is-visible {
+  display: block;
+}
+
+.ch-empty-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--ch-radius-full);
+  background: var(--ch-brand-light);
+  color: var(--ch-brand-accent);
+  font-size: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.ch-empty-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ch-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.ch-empty-desc {
+  font-size: 0.95rem;
+  color: var(--ch-text-muted);
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Detaylı Okuma & İnceleme Modalı (Full Reader Modal)
+   -------------------------------------------------------------------------- */
+.ch-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.ch-modal-overlay.is-active {
+  display: flex;
+  animation: chFadeIn 0.25s ease;
+}
+
+@keyframes chFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ch-modal-window {
+  background: var(--ch-bg-surface);
+  border-radius: var(--ch-radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ch-border);
+  animation: chSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes chSlideUp {
+  from { transform: translateY(20px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.ch-modal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid var(--ch-border);
+  background: #f8fafc;
+}
+
+.ch-modal-top-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ch-modal-close-btn {
+  background: var(--ch-bg-surface);
+  border: 1px solid var(--ch-border);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ch-radius-full);
+  color: var(--ch-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: var(--ch-transition);
+}
+
+.ch-modal-close-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.ch-modal-content-scroll {
+  padding: 2.25rem 2.25rem 3rem;
+  overflow-y: auto;
+  line-height: 1.8;
+  color: #334155;
+  font-size: 1.05rem;
+}
+
+.ch-modal-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--ch-text-main);
+  margin-bottom: 1rem;
+}
+
+.ch-modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--ch-border);
+  margin-bottom: 1.75rem;
+  font-size: 0.88rem;
+  color: var(--ch-text-muted);
+}
+
+.ch-modal-body-text {
+  font-size: 1.02rem;
+}
+
+.ch-modal-body-text h2, 
+.ch-modal-body-text h3 {
+  color: var(--ch-text-main);
+  margin: 1.75rem 0 0.75rem;
+  font-weight: 700;
+}
+
+.ch-modal-body-text p {
+  margin-bottom: 1.2rem;
+}
+
+.ch-modal-body-text ul,
+.ch-modal-body-text ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.ch-modal-body-text li {
+  margin-bottom: 0.5rem;
+}
+
+.ch-callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 var(--ch-radius-md) var(--ch-radius-md) 0;
+  margin: 1.5rem 0;
+  color: #166534;
+}
+
+.ch-callout-box strong {
+  color: #14532d;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.ch-modal-actions-bar {
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid var(--ch-border);
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   Mobil & Tablet Responsive İyileştirmeleri
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .ch-hero-title {
+    font-size: 2.2rem;
+  }
+  .ch-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ch-featured-card {
+    grid-template-columns: 1fr;
+  }
+  .ch-featured-content {
+    padding: 2rem;
+  }
+  .ch-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ch-hero {
+    padding: 6.5rem 1rem 2.5rem;
+  }
+  .ch-hero-title {
+    font-size: 1.75rem;
+  }
+  .ch-hero-description {
+    font-size: 0.95rem;
+  }
+  .ch-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .ch-toolbar {
+    padding: 1rem;
+  }
+  .ch-search-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ch-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .ch-cards-grid.is-list-view .ch-card {
+    flex-direction: column;
+  }
+  .ch-cards-grid.is-list-view .ch-card-header {
+    width: 100%;
+    height: 180px;
+  }
+  .ch-modal-window {
+    max-height: 95vh;
+  }
+  .ch-modal-content-scroll {
+    padding: 1.5rem;
+  }
+}

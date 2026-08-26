@@ -4,242 +4,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Makaleler</title>
+    <title>The Nest | Mühendislik & FRC Makaleleri</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/content-hub.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <!-- Navbar -->
+<body class="content-hub-page" data-cms-type="makale">
+
+    <!-- Global Header / Navbar -->
     <div id="app-header" data-component="header"></div>
 
-    <section>
-        <div id="nav-bar">
-            <input id="nav-toggle" type="checkbox" />
-            <div id="nav-header">
-                <a id="nav-title" href="#a1">Makaleler</a>
-                <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
-                <hr />
+    <!-- Hero Bölümü -->
+    <header class="ch-hero">
+        <div class="ch-hero-inner">
+            <div class="ch-hero-badge">
+                <i class="fa-solid fa-book-bookmark"></i> Açık Kaynak STEAM Bilgi Bankası
             </div>
-            <div id="nav-content">
-                <div class="nav-button"><a href="#a1"><i class="fas fa-solid fa-gear"></i><span id="l1">Mekanik</span></a></div>
-                <div class="nav-button"><a href="#a2"><i class="fas fa-solid fa-laptop"></i><span id="l2">Yazılım</span></a></div>
-                <div class="nav-button"><a href="#a3"><i class="fas fa-solid fa-person-chalkboard"></i><span id="l3">PR & İletişim</span></a></div>
-                <div class="nav-button"><a href="#a4"><i class="fas fa-solid fa-brush"></i><span id="l4">Tasarım</span></a></div>
-                <div class="nav-button"><a href="#a6"><i class="fas fa-solid fa-bolt"></i><span id="l5">Elektronik</span></a></div>
-                <div class="nav-button"><a href="#a7"><i class="fas fa-solid fa-wrench"></i><span id="l6">FRC</span></a></div>
-                <div class="nav-button"><a href="#a8"><i class="fas fa-solid fa-hammer"></i><span id="l7">FYF</span></a></div>
-                <div id="nav-content-highlight"></div>
-            </div>
-            <input id="nav-footer-toggle" type="checkbox" />
-        </div>
-    </section>
+            <h1 class="ch-hero-title">Mühendislik & Robotik <span>Makaleleri</span></h1>
+            <p class="ch-hero-description">
+                FRC takımları, mentörler ve genç mühendisler için mekanik analizler, modern kontrol yazılımları, elektronik sorun giderme ve takım yönetimi rehberleri.
+            </p>
 
-    <section>
-        <!-- Makale Öğretici Kısımlar -->
-        <div class="mother-1-1" data-content-type="makale">
-            <div class="mother-1-2">
-
-                <!-- MEKANİK MAKALELERİ -->
-                <div class="wrapper" id="a1">
-                    <h1><i class="fa-solid fa-gear" style="color: #60a5fa; margin-right: 8px;"></i> Mekanik Makaleleri</h1>
-                    <div class="cols">
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/1.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Makale #1</span>
-                                        <p>Mekanik Sistem Optimizasyonu Nasıl Yapılmalı?</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Özet</span>
-                                        <p>Sürtünme kayıplarını en aza indirme, ağırlık dengesi ve malzeme toleransları.</p>
-                                        <a href="assets/pdf/makale1.pdf" target="_blank" class="card-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-file-pdf"></i> PDF Oku</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/2.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Makale #2</span>
-                                        <p>Robotik Mekanizmalarda Malzeme Seçim Kriterleri</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Özet</span>
-                                        <p>7075 vs 6061 Alüminyum, Karbon Fiber ve 3D Baskı filamentlerinin dayanım karşılaştırması.</p>
-                                        <a href="assets/pdf/makale2.pdf" target="_blank" class="card-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-file-pdf"></i> PDF Oku</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/3.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Makale #3</span>
-                                        <p>Tırmanma ve Kaldırma Mekanizmalarında Güvenlik Faktörü</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Özet</span>
-                                        <p>Ratcheting (tek yönlü kilit) sistemleri ve ip tamburu gerilme hesapları.</p>
-                                        <a href="assets/pdf/makale3.pdf" target="_blank" class="card-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-file-pdf"></i> PDF Oku</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Accordion Detayları -->
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-newspaper"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Mekanik Tasarım Sürecinde Karşılaşılan En Yaygın 5 Hata</h3>
-                                        <span class="accordion-category-badge">Mekanik Analiz • Emir Samet Güzel</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Robot yarışmalarında sahada yaşanan mekanik kırılmaların %70'i tasarım aşamasında gözden kaçan detaylardan kaynaklanır:</p>
-                                    <ol>
-                                        <li><strong>Yetersiz Rulman Desteği (Cantilevered Shafts):</strong> Milin tek taraftan yataklanması eğilme ve dişli atlamalarına neden olur.</li>
-                                        <li><strong>Kayış ve Zincir Gerginliğinin Ayarlanamaması:</strong> Merkez mesafelerinin toleranssız çizilmesi veya gergi mekanizması bırakılmaması.</li>
-                                        <li><strong>Aşırı Ağırlık ve Yüksek Ağırlık Merkezi:</strong> Robotun ani hızlanma ve frenlemelerde devrilme riskini artırır.</li>
-                                        <li><strong>Bakım Erişilebilirliğinin Unutulması:</strong> Arıza durumunda 2 dakikalık pit molasında ulaşılamayan motorlar veya vidalar.</li>
-                                        <li><strong>Yanlış Vida ve Bağlantı Elemanı Seçimi:</strong> Loctite (vida sabitleyici) veya Nyloc kilitli somun kullanılmaması sonucu titreşimle gevşeyen parçalar.</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- İstatistik Kartları -->
+            <div class="ch-stats-grid">
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-file-lines"></i> 25+</div>
+                    <div class="ch-stat-lbl">Teknik Makale</div>
                 </div>
-
-                <!-- YAZILIM MAKALELERİ -->
-                <div class="wrapper" id="a2">
-                    <h1><i class="fa-solid fa-laptop" style="color: #60a5fa; margin-right: 8px;"></i> Yazılım Makaleleri</h1>
-                    <div class="cols">
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/4.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Makale #4</span>
-                                        <p>Robot Kontrol Sistemlerinde PID ve Feedforward Matematiği</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Özet</span>
-                                        <p>Proportional, Integral, Derivative kazançlarının adım adım osiloskop ve telemetry ile ayarlanması.</p>
-                                        <a href="assets/pdf/makale4.pdf" target="_blank" class="card-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-file-pdf"></i> PDF Oku</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" ontouchstart="this.classList.toggle('flipped');" onclick="this.classList.toggle('flipped');">
-                            <div class="container">
-                                <div class="front" style="background-image: url('images/mk/5.jpg');">
-                                    <div class="inner">
-                                        <span class="card-badge">Makale #5</span>
-                                        <p>Otonom Döneminde Trajectory Takibi ve PathPlanner</p>
-                                    </div>
-                                </div>
-                                <div class="back">
-                                    <div class="inner">
-                                        <span class="card-badge">Özet</span>
-                                        <p>Holonomic sürüşte bezier eğrileri ile pürüzsüz hız profili ve olay tetikleme (Event Triggers).</p>
-                                        <a href="assets/pdf/makale5.pdf" target="_blank" class="card-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-file-pdf"></i> PDF Oku</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-layer-group"></i> 7</div>
+                    <div class="ch-stat-lbl">Uzmanlık Alanı</div>
                 </div>
-
-                <!-- PR & İLETİŞİM MAKALELERİ -->
-                <div class="wrapper" id="a3">
-                    <h1><i class="fa-solid fa-person-chalkboard" style="color: #60a5fa; margin-right: 8px;"></i> PR & İletişim Makaleleri</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-bullhorn"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">Sosyal Medya Yönetimi ve Marka Kimliği Oluşturma</h3>
-                                        <span class="accordion-category-badge">PR • Topluluk Yönetimi</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Bir robotik takımının kurumsal kimliğini inşa etmesi, düzenli içerik üretimi ve uluslararası takım ağlarıyla etkileşim rehberi.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-file-pdf"></i> %100</div>
+                    <div class="ch-stat-lbl">Açık & İndirilebilir</div>
                 </div>
-
-                <!-- ELEKTRONİK MAKALELERİ -->
-                <div class="wrapper" id="a6">
-                    <h1><i class="fa-solid fa-bolt" style="color: #60a5fa; margin-right: 8px;"></i> Elektronik Makaleleri</h1>
-                    <div class="accordion-wrapper">
-                        <div class="accordion-item">
-                            <button class="accordion-header" type="button">
-                                <div class="accordion-title-group">
-                                    <div class="accordion-icon"><i class="fa-solid fa-microchip"></i></div>
-                                    <div class="accordion-title-text">
-                                        <h3 class="accordion-title">CAN Bus Veriyolu Sorun Giderme ve 120 Ohm Sonlandırma</h3>
-                                        <span class="accordion-category-badge">Elektronik • Debug Rehberi</span>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down accordion-chevron"></i>
-                            </button>
-                            <div class="accordion-body">
-                                <div class="accordion-content">
-                                    <p>Paket kayıplarını, CAN hatası sarı yanıp sönmelerini ve multimetre ile empedans ölçümlerini adım adım çözen pratik rehber.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ch-stat-card">
+                    <div class="ch-stat-val"><i class="fa-solid fa-users"></i> 7611</div>
+                    <div class="ch-stat-lbl">AmalHawks & Topluluk</div>
                 </div>
-
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Footer -->
+    <!-- Ana İçerik Konteyneri -->
+    <main class="content-hub-container">
+
+        <!-- Sayfalar Arası Hızlı Geçiş Menüsü -->
+        <nav class="ch-type-nav-wrapper" aria-label="İçerik Türleri">
+            <div class="ch-type-nav-tabs">
+                <a href="makaleler.html" class="ch-type-tab is-active">
+                    <i class="fa-solid fa-newspaper"></i> Makaleler
+                </a>
+                <a href="dersler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-graduation-cap"></i> Eğitimler & Kurslar
+                </a>
+                <a href="sunumlar.html" class="ch-type-tab">
+                    <i class="fa-solid fa-person-chalkboard"></i> Sunumlar
+                </a>
+                <a href="objeler.html" class="ch-type-tab">
+                    <i class="fa-solid fa-cube"></i> 3D CAD Tasarımları
+                </a>
+                <a href="news.html" class="ch-type-tab">
+                    <i class="fa-solid fa-bullhorn"></i> Haberler & Duyurular
+                </a>
+            </div>
+
+            <!-- Görünüm Seçici -->
+            <div class="ch-view-switch">
+                <button type="button" class="ch-view-btn is-active" id="ch-view-grid" title="Izgara Görünümü">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button type="button" class="ch-view-btn" id="ch-view-list" title="Liste Görünümü">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Öne Çıkan Makale (Spotlight) -->
+        <section class="ch-featured-section">
+            <div class="ch-featured-card" data-item-id="featured-1">
+                <div class="ch-featured-content">
+                    <div class="ch-featured-tags">
+                        <span class="ch-tag-featured"><i class="fa-solid fa-star"></i> Editörün Seçimi</span>
+                        <span class="ch-tag-cat">Mekanik & Tasarım</span>
+                    </div>
+                    <h2 class="ch-featured-title">Mekanik Tasarım Sürecinde Karşılaşılan En Yaygın 5 Hata</h2>
+                    <p class="ch-featured-excerpt">
+                        Robot yarışmalarında sahada yaşanan mekanik kırılmaların %70'i tasarım aşamasında gözden kaçan detaylardan kaynaklanır. Cantilevered miller, gergi toleransları ve pit bakım erişilebilirliği üzerine derinlemesine analiz.
+                    </p>
+                    <div class="ch-featured-meta">
+                        <span class="ch-meta-item"><i class="fa-solid fa-user-pen"></i> Emir Samet Güzel</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-clock"></i> 7 dk okuma</span>
+                        <span class="ch-meta-item"><i class="fa-solid fa-calendar-day"></i> FRC Kılavuzu</span>
+                    </div>
+                    <div class="ch-featured-actions">
+                        <button type="button" class="ch-btn-primary" data-action="read-modal">
+                            <i class="fa-solid fa-book-open"></i> Makaleyi Tam Ekran Oku
+                        </button>
+                        <a href="assets/pdf/makale1.pdf" target="_blank" class="ch-btn-secondary">
+                            <i class="fa-solid fa-file-pdf"></i> PDF Olarak İndir
+                        </a>
+                    </div>
+                </div>
+                <div class="ch-featured-image-wrap">
+                    <img src="images/mk/1.jpg" alt="Mekanik Tasarım Hataları" class="ch-featured-image">
+                </div>
+                <!-- Makale Tam Metni (Modal İçin) -->
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Önemli Kural:</strong> Robot şasisi ve manipülatör tasarımında yapılan her 1 saatlik CAD optimizasyonu, yarışma pit alanında 10 saatlik tamir süresini kurtarır.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>1. Yetersiz Rulman Desteği (Cantilevered Shafts)</h3>
+                        <p>Millerin yalnızca tek taraftan yataklanması yüksek tork altında bükülmeye, dişli atlamalarına ve aşırı sürtünmeye yol açar. Ağır mekanizmalarda her zaman çift taraflı rulman yataklaması (Double-supported shaft) kullanılmalıdır.</p>
+                        
+                        <h3>2. Kayış ve Zincir Gerginliğinin Ayarlanamaması</h3>
+                        <p>CAD modellerinde nominal merkez mesafesi yerine imalat toleransları (+0.05mm - +0.1mm) ve eksantrik gerdirme blokları tasarlanmalıdır. Zamanla gevşeyen zincirler redüktör dişlilerini parçalayabilir.</p>
+
+                        <h3>3. Aşırı Ağırlık ve Yüksek Ağırlık Merkezi (CoG)</h3>
+                        <p>Robotun ani ivmelenmelerde devrilmesini önlemek için akü, ana şanzıman ve ağır motorlar mümkün olduğunca yere yakın (şasi tabanına) konumlandırılmalıdır.</p>
+
+                        <h3>4. Bakım ve Hızlı Müdahale Erişilebilirliği</h3>
+                        <p>2 dakikalık acil pit molasında ulaşılamayan bir motor vidası veya CAN konnektörü tüm maçı kaybettirebilir. Modüler vida girişleri ve sökülebilir koruma panelleri tasarlayın.</p>
+
+                        <h3>5. Titreşim Güvenliği (Loctite ve Nyloc Somunlar)</h3>
+                        <p>Robotik darbeleri vidaların gevşemesine sebep olur. Metal metale bağlantılarda mavi Loctite 242, serbest somunlarda ise fiberli Nyloc somun zorunlu standart olmalıdır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Arama ve Departman Filtre Araç Çubuğu -->
+        <section class="ch-toolbar">
+            <div class="ch-search-row">
+                <div class="ch-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="ch-search-input" class="ch-search-input" placeholder="Makale başlığı, yazar veya teknik anahtar kelime ara (Örn: PID, şasi, CAN Bus)..." autocomplete="off">
+                    <button type="button" id="ch-search-clear" class="ch-search-clear" title="Aramayı Temizle">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="ch-item-counter" class="ch-item-counter">Yükleniyor...</div>
+            </div>
+
+            <!-- Departman Filtre Butonları -->
+            <div class="ch-category-pills" role="tablist">
+                <button type="button" class="ch-pill-btn is-active" data-filter="all">
+                    <i class="fa-solid fa-border-all"></i> Tümü
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="mekanik">
+                    <i class="fa-solid fa-gears"></i> Mekanik
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="yazilim">
+                    <i class="fa-solid fa-code"></i> Yazılım & Kontrol
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="elektronik">
+                    <i class="fa-solid fa-microchip"></i> Elektronik & CAN
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="pr">
+                    <i class="fa-solid fa-bullhorn"></i> PR & Sponsorluk
+                </button>
+                <button type="button" class="ch-pill-btn" data-filter="frc">
+                    <i class="fa-solid fa-robot"></i> FRC Strateji
+                </button>
+            </div>
+        </section>
+
+        <!-- Makale Kartları Izgarası -->
+        <section class="ch-cards-grid" id="ch-cards-grid">
+
+            <!-- KART 1: Mekanik 1 -->
+            <article class="ch-card" data-item-id="mk-1" data-category="mekanik" data-type="makale" data-file-url="assets/pdf/makale1.pdf">
+                <div class="ch-card-header">
+                    <img src="images/mk/1.jpg" alt="Mekanik Şasi Mukavemeti" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 6 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Mekanik Tasarım Sürecinde Karşılaşılan En Yaygın 5 Hata</h3>
+                    <p class="ch-card-excerpt">Şasi rijitliği, rulman yerleşim toleransları ve zincir esnemelerinin maç performansına etkileri üzerine detaylı vaka analizleri.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-wrench"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Emir Samet Güzel</span>
+                                <span class="ch-card-date">Mekanik Departmanı</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                            <a href="assets/pdf/makale1.pdf" target="_blank" class="ch-btn-icon" title="PDF Oku" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Mekanik Özet:</strong> Şasi ve manipülatör tasarımında yapılan optimizasyonlar yarışma performansının omurgasını oluşturur.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <p>Robotik mekanizmalarında doğru toleranslar ve malzeme seçimi (6061-T6 Alüminyum, Polikarbonat) şasinin darbe emme kapasitesini belirler.</p>
+                        <ul>
+                            <li>Millerde çift taraflı rulman yataklaması (Double-supported shafts).</li>
+                            <li>Zincir ve kayış gerdirme mekanizmalarının eklenmesi.</li>
+                            <li>Ağırlık merkezinin yere yakın tutulması.</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 2: Mekanik 2 -->
+            <article class="ch-card" data-item-id="mk-2" data-category="mekanik" data-type="makale" data-file-url="assets/pdf/makale2.pdf">
+                <div class="ch-card-header">
+                    <img src="images/mk/2.jpg" alt="Pnömatik Devreler" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 5 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Pnömatik Devre Tasarımı ve Debi-Kuvvet Hesaplamaları</h3>
+                    <p class="ch-card-excerpt">60 PSI çalışma basıncında çift etkili silindirlerin itme-çekme kuvvet formülleri, hava tankı kapasitesi ve regülatör seçimi.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-wind"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Mekanik</span>
+                                <span class="ch-card-date">Pnömatik Kılavuzu</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                            <a href="assets/pdf/makale2.pdf" target="_blank" class="ch-btn-icon" title="PDF Oku" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Pnömatik Formülü:</strong> Kuvvet (F) = Basınç (P) x Piston Alanı (A). 60 PSI çalışma basıncında 1.5 inç çaplı silindir yaklaşık 47 kg itme gücü üretir.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Pnömatik Sistem Güvenlik Kuralları</h3>
+                        <p>1. Kompresör çıkışında 120 PSI tahliye emniyet valfi (Pressure Relief Valve) mutlaka yer almalıdır.</p>
+                        <p>2. Çalışma regülatörü basıncı 60 PSI'ın üzerine çıkarılmamalıdır.</p>
+                        <p>3. Pnömatik boru bağlantılarında boruların dik açıyla kesilmesi hava sızıntılarını %90 engeller.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 3: Mekanik 3 -->
+            <article class="ch-card" data-item-id="mk-3" data-category="mekanik" data-type="makale" data-file-url="assets/pdf/makale3.pdf">
+                <div class="ch-card-header">
+                    <img src="images/mk/3.jpg" alt="Tırmanma Mekanizmaları" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-mekanik">Mekanik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 8 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Tırmanma Mekanizmalarında Kilit Sistemleri ve Redüktör Seçimi</h3>
+                    <p class="ch-card-excerpt">Ratcheting (tek yönlü mekanik mandal) sistemleri, motor freni modları (Brake vs Coast) ve ip tamburu gerilme hesapları.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-gear"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Mekanik</span>
+                                <span class="ch-card-date">Tasarım Serisi</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                            <a href="assets/pdf/makale3.pdf" target="_blank" class="ch-btn-icon" title="PDF Oku" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Kritik Bilgi:</strong> Maç bittiğinde robotun askıda kalabilmesi için motor gücü kesildiğinde mekanik kilit devrede olmalıdır.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Tırmanma Tasarım Prensipleri</h3>
+                        <p>1. Dyneema / Sentetik halat tamburlarında en az 3 tam tur emniyet sarımı bırakılmalıdır.</p>
+                        <p>2. Planet redüktörlerde (Planetary Gearbox) ters tork altında dişli kırılmalarını önlemek için mekanik cırcır mandalı redüktör giriş miline uygulanmalıdır.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 4: Yazılım 1 -->
+            <article class="ch-card" data-item-id="mk-4" data-category="yazilim" data-type="makale" data-file-url="assets/pdf/makale4.pdf">
+                <div class="ch-card-header">
+                    <img src="images/mk/4.jpg" alt="PID ve Feedforward" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-yazilim">Yazılım</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 9 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Robot Kontrol Sistemlerinde PID ve Feedforward Matematiği</h3>
+                    <p class="ch-card-excerpt">Proportional, Integral, Derivative kazançlarının adım adım WPILib SysId ve gerçek zamanlı Glass telemetry ile ayarlanması.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-code"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Yazılım</span>
+                                <span class="ch-card-date">Kontrol Teorisi</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                            <a href="assets/pdf/makale4.pdf" target="_blank" class="ch-btn-icon" title="PDF Oku" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Feedforward vs Feedback:</strong> Feedforward (kS, kV, kA) sistemin fiziksel modeline göre gereken voltajı önceden tahmin eder; PID ise kalan hata payını kapatır.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>PID Ayarlama Adımları:</h3>
+                        <ol>
+                            <li>Önce kS (statik sürtünme eşiği) ve kV (hız sabiti) feedforward parametrelerini belirleyin.</li>
+                            <li>kP kazancını sistem hafifçe salınım yapana kadar artırın.</li>
+                            <li>kD kazancı ile aşımı (overshoot) sönümleyin.</li>
+                            <li>Statik pozisyon hatası varsa kI değerini çok düşük bir oranda ekleyin.</li>
+                        </ol>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 5: Yazılım 2 -->
+            <article class="ch-card" data-item-id="mk-5" data-category="yazilim" data-type="makale" data-file-url="assets/pdf/makale5.pdf">
+                <div class="ch-card-header">
+                    <img src="images/mk/5.jpg" alt="Otonom PathPlanner" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-yazilim">Yazılım</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 6 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Otonom Döneminde Trajectory Takibi ve PathPlanner</h3>
+                    <p class="ch-card-excerpt">Holonomic Swerve sürüşte bezier eğrileri, pürüzsüz hız profilleri (Trapezoid Profile) ve otonom rota olay tetikleyicileri (Event Markers).</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-route"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest Yazılım</span>
+                                <span class="ch-card-date">Otonom Geliştirme</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                            <a href="assets/pdf/makale5.pdf" target="_blank" class="ch-btn-icon" title="PDF Oku" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>PathPlanner 2025:</strong> Robotun otonomda skor yaparken eş zamanlı olarak intake çalıştırması Event Markers ve NamedCommands yapısıyla sağlanır.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Otonom Başarı Faktörleri</h3>
+                        <p>1. Tekerlek çapı aşınmasını düzenli ölçüp Odometry katsayılarını güncelleyin.</p>
+                        <p>2. Limelight veya PhotonVision AprilTag verileriyle pose estimator tahminini birleştirin (Kalman Filter Pose Fusion).</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 6: Elektronik -->
+            <article class="ch-card" data-item-id="mk-6" data-category="elektronik" data-type="makale">
+                <div class="ch-card-header">
+                    <img src="images/frc-comp.jpg" alt="CAN Bus Elektronik" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-elektronik">Elektronik</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 7 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">CAN Bus Veriyolu Sorun Giderme ve 120 Ohm Sonlandırma</h3>
+                    <p class="ch-card-excerpt">Paket kayıplarını, sarı/kırmızı yanıp sönen motor sürücü hatalarını ve multimetre ile 60 Ohm empedans ölçümlerini çözen rehber.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">Elektronik Takımı</span>
+                                <span class="ch-card-date">Kablo & Güç Mimarisi</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>CAN Bus Altın Kuralı:</strong> CAN H ve CAN L hatları her iki uçta (roboRIO ve PDP/PDH) 120 Ohm dirençle sonlandırılır. Devre kapalıyken iki kablo arası tam 60 Ohm ölçülmelidir.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Sık Karşılaşılan CAN Sorunları:</h3>
+                        <p>• <strong>120 Ohm Direnç:</strong> Ölçülen değer 120 Ohm ise bir uçtaki sonlandırma kopmuştur.</p>
+                        <p>• <strong>0 Ohm / Kısa Devre:</strong> Yeşil ve sarı kablolar birbiriyle temas etmektedir.</p>
+                        <p>• <strong>Lever Nut / Wago Konnektör:</strong> Titreşime karşı konnektörler elektrik bandı veya 3D baskılı kilitlerle sabitlenmelidir.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KART 7: PR & Sponsorluk -->
+            <article class="ch-card" data-item-id="mk-7" data-category="pr" data-type="makale">
+                <div class="ch-card-header">
+                    <img src="images/kurum.jpg" alt="PR ve Sponsorluk" class="ch-card-img" loading="lazy">
+                    <div class="ch-card-overlay"></div>
+                    <div class="ch-card-badges">
+                        <span class="ch-badge-dept dept-pr">PR & İletişim</span>
+                        <span class="ch-badge-time"><i class="fa-solid fa-clock"></i> 5 dk</span>
+                    </div>
+                </div>
+                <div class="ch-card-body">
+                    <h3 class="ch-card-title">Kurumsal Sponsorluk Dosyası Hazırlama ve Bütçe Yönetimi</h3>
+                    <p class="ch-card-excerpt">Şirketlere sunulacak profesyonel sponsorluk teklifleri, sosyal sorumluluk projeleri (Outreach) ve takım kimliği oluşturma stratejisi.</p>
+                    <div class="ch-card-footer">
+                        <div class="ch-author-info">
+                            <div class="ch-author-avatar"><i class="fa-solid fa-bullhorn"></i></div>
+                            <div class="ch-author-text">
+                                <span class="ch-author-name">The Nest PR</span>
+                                <span class="ch-card-date">Takım Yönetimi</span>
+                            </div>
+                        </div>
+                        <div class="ch-card-actions">
+                            <button type="button" class="ch-btn-action" data-action="read-modal">
+                                <i class="fa-solid fa-book-open"></i> Oku
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ch-full-content-source" style="display:none;">
+                    <div class="ch-callout-box">
+                        <strong>Sponsorluk İpucu:</strong> Şirketler logolarının tişörte basılmasından ziyade gençlere yapılan mühendislik yatırımının somut metriklerini (ulaşılan öğrenci sayısı, STEM atölyeleri) görmek ister.
+                    </div>
+                    <div class="ch-modal-body-text">
+                        <h3>Başarılı Dosya İçeriği:</h3>
+                        <p>1. Takımın geçmiş başarıları ve vizyonu.</p>
+                        <p>2. Detaylı ve şeffaf harcama planı (Robot parçaları, kayıt ücretleri, seyahat).</p>
+                        <p>3. Sosyal etki projeleri ve medya görünürlük raporları.</p>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Arama Sonucu Bulunamadı Durumu -->
+        <div class="ch-empty-state" id="ch-empty-state">
+            <div class="ch-empty-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <h3 class="ch-empty-title">Aramanızla Eşleşen Makale Bulunamadı</h3>
+            <p class="ch-empty-desc">Arama teriminizi değiştirebilir veya departman filtrelerini sıfırlayarak tüm makaleleri görüntüleyebilirsiniz.</p>
+            <button type="button" class="ch-btn-primary" id="ch-reset-filters">
+                <i class="fa-solid fa-rotate-left"></i> Filtreleri Sıfırla
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Detaylı Okuma & İnceleme Modalı (Full Reader Modal) -->
+    <div class="ch-modal-overlay" id="ch-reader-modal" role="dialog" aria-modal="true" aria-labelledby="ch-modal-title">
+        <div class="ch-modal-window">
+            <div class="ch-modal-topbar">
+                <div class="ch-modal-top-tags">
+                    <span id="ch-modal-category" class="ch-badge-dept dept-mekanik">Mekanik</span>
+                    <span id="ch-modal-time" class="ch-badge-time"><i class="fa-solid fa-clock"></i> 5 dk okuma</span>
+                </div>
+                <button type="button" class="ch-modal-close-btn" id="ch-modal-close" title="Kapat (ESC)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ch-modal-content-scroll">
+                <h2 class="ch-modal-title" id="ch-modal-title">Makale Başlığı</h2>
+                <div class="ch-modal-meta">
+                    <span><i class="fa-solid fa-user-pen"></i> <strong id="ch-modal-author">Yazar</strong></span>
+                    <span><i class="fa-solid fa-calendar-day"></i> <span id="ch-modal-date">Tarih</span></span>
+                </div>
+                <div id="ch-modal-body" class="ch-modal-body-text">
+                    <!-- Dinamik İçerik Buraya Aktarılır -->
+                </div>
+            </div>
+            <div class="ch-modal-actions-bar">
+                <button type="button" class="ch-btn-secondary" id="ch-modal-share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> Paylaş
+                </button>
+                <a href="#" id="ch-modal-file-btn" target="_blank" class="ch-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-file-pdf"></i> Ekli PDF'i İndir
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/content-hub.js"></script>
 </body>
 
 </html>
