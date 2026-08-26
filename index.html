@@ -4,17 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>The Nest</title>
-    <meta name="keywords" content="Amal, Amal Hawks, 7611, FRC, FIRST Robotics Competition, STEM, STEAM">
-    <meta name="description" content="7611 AmalHawks Açık Kaynak STEAM ve Robotik Platformu.">
-    <meta name="author" content="AmalHawks 7611">
-=======
     <title>The Nest | Anasayfa</title>
     <meta name="keywords" content="Amal, Amal Hawks, frc, FRC, programming course">
     <meta name="description" content="Amal Hawks Ana Sayfa">
     <meta name="author" content="Mehmet Efe Öçal">
->>>>>>> parent of c225a7c (tasarimi yeniledik)
     <link rel="icon" type="image/png" href="images/favicon.png">
 
     <!-- CSS -->
@@ -24,8 +17,6 @@
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
-    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
@@ -35,85 +26,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
-    <!-- Navbar Component -->
-    <div id="app-header" data-component="header"></div>
-
-    <!-- Main Content Container -->
-    <div class="joinery">
-        <h1 id="h1">The Nest</h1>
-        <p id="metin1" data-i18n="index.intro">
-            The Nest, STEAM ile ilgili tüm toplulukları ve bireyleri hedefleyen çok amaçlı bir web sitesidir. STEAM tutkunları arasındaki iletişimi ve bağları artırmayı hedeflerken aynı zamanda kaynaklar ve eğitim sunan bir platform oluşturmayı amaçlar.
-        </p>
-
-        <div class="forum-btn-wrap">
-            <a href="forum.html"><button id="forum_button" type="button" data-i18n="index.forumButton">Forum</button></a>
-        </div>
-
-        <div class="pt1">
-            <img class="img-pt1" src="images/kurum.jpg" alt="Kurucu Takım">
-            <div class="j">
-                <h3 id="hed2" data-i18n="index.founderTitle">Kurucu Takım</h3>
-                <p id="me2" data-i18n="index.founderText">
-                    7611#AmalHawks takımının kurduğu The Nest Projesi, FRC topluluğunun herkesin faydalanabileceği bir kaynak olmasını hedefler. Bu proje, gençlerden mentorlara kadar herkesin ihtiyaç duyduğu bilgiye erişimini kolaylaştırır ve topluluk arasında işbirliğini teşvik eder. Amacı, FRC'nin erişilebilirliğini ve sürdürülebilirliğini artırmak, böylece daha fazla genç, STEM becerilerini geliştirme fırsatı bulabilir.
-                </p>
-            </div>
-        </div>
-
-        <div class="pt2">
-            <img class="img-pt1" src="images/fy-logo.png" alt="Fikret Yüksel Vakfı">
-            <div class="j">
-                <h3 id="hed3" data-i18n="index.fyTitle">Fikret Yüksel Vakfı</h3>
-                <p id="me3" data-i18n="index.fyText">
-                    Fikret Yüksel Vakfı, FRC'ye (FIRST Robotics Competition) önemli katkılarda bulunarak gençlerin bilim, teknoloji, mühendislik ve matematik (STEM) alanlarında gelişimine destek olmaktadır. Vakıf, gençlerin STEM becerilerini geliştirmelerine ve yaratıcılıklarını ortaya koymalarına yardımcı olmak amacıyla FRC takımlarına maddi ve manevi destek sağlamaktadır.
-                </p>
-            </div>
-        </div>
-
-        <!-- Takım Başvuru Formu -->
-        <form id="team-application-form" class="modern-form" action="team_application.html" method="POST">
-            <h2 id="hed1" data-i18n="form.title">Takım Başvuru Formu</h2>
-
-            <label for="name" data-i18n="form.name.label">Ad Soyad*:</label>
-            <input type="text" id="name" name="name" data-i18n-placeholder="form.name.placeholder" placeholder="Adınızı ve Soyadınızı Girin" required>
-
-            <label for="class" data-i18n="form.class.label">Sınıf*:</label>
-            <input type="text" id="class" name="class" data-i18n-placeholder="form.class.placeholder" placeholder="Sınıfınızı Girin" required>
-
-            <label for="email" data-i18n="form.email.label">Email*:</label>
-            <input type="email" id="email" name="email" data-i18n-placeholder="form.email.placeholder" placeholder="Email Adresinizi Girin" required>
-
-            <label for="phone" data-i18n="form.phone.label">Telefon Numarası*:</label>
-            <input type="tel" id="phone" name="phone" data-i18n-placeholder="form.phone.placeholder" placeholder="Telefon Numaranızı Girin" required>
-
-            <label for="department" data-i18n="form.department.label">Katılmak İstediğiniz Departman*:</label>
-            <select id="department" name="department" required>
-                <option value="" disabled selected data-i18n="form.department.placeholder">Departman Seçiniz</option>
-                <option value="Yazılım" data-i18n="form.department.software">Yazılım</option>
-                <option value="Mekanik" data-i18n="form.department.mechanic">Mekanik</option>
-                <option value="Elektronik" data-i18n="form.department.electronic">Elektronik</option>
-                <option value="Tasarım" data-i18n="form.department.design">Tasarım</option>
-                <option value="PR" data-i18n="form.department.pr">PR</option>
-            </select>
-
-            <label for="experience" data-i18n="form.experience.label">Önceki Deneyimleriniz:</label>
-            <textarea id="experience" name="experience" data-i18n-placeholder="form.experience.placeholder" placeholder="Önceki deneyimlerinizi tarif ediniz"></textarea>
-
-            <label for="tools" data-i18n="form.tools.label">Kullandığınız CAD Programları veya Yazılım Dilleri:</label>
-            <input type="text" id="tools" name="tools" data-i18n-placeholder="form.tools.placeholder" placeholder="Örn: SolidWorks, Java"></input>
-
-            <label for="motivation" data-i18n="form.motivation.label">Katılım Motivasyon Mektubu*:</label>
-            <textarea id="motivation" name="motivation" data-i18n-placeholder="form.motivation.placeholder" placeholder="Neden katılmak istediğinizi açıklayın" required></textarea>
-
-            <input type="text" id="honeypot" name="honeypot" class="honeypot" tabindex="-1" autocomplete="off">
-
-            <button type="submit" id="submit-button" data-i18n="form.submit">Gönder</button>
-            <div id="form-feedback" class="form-feedback"></div>
-        </form>
-    </div>
-
-    <!-- Başvuru Afişi Modal -->
-=======
     <div id="app-header" data-component="header"></div>
 
     <section class="img-sct-01">
@@ -180,28 +92,16 @@
         </div>
     </section>
 
->>>>>>> parent of c225a7c (tasarimi yeniledik)
     <div id="modal" class="modal">
         <div class="modal-content">
             <span id="close-modal" class="close">&times;</span>
             <img src="images/placeholders/apply-poster-placeholder.svg" alt="Takım Başvuru Afişi">
-<<<<<<< HEAD
-            <button class="modal-button" type="button" data-i18n="modal.applyButton" onclick="document.getElementById('modal').style.display='none';document.getElementById('team-application-form').scrollIntoView({behavior: 'smooth'});">Başvuru Yap</button>
-        </div>
-    </div>
-
-    <!-- Footer Component -->
-    <div id="app-footer" data-component="footer"></div>
-
-    <!-- Scripts -->
-=======
             <button class="modal-button" onclick="document.getElementById('modal').style.display='none';document.getElementById('application-form-section').scrollIntoView({behavior: 'smooth'});">Başvuru Formuna Git</button>
         </div>
     </div>
 
     <div id="app-footer" data-component="footer"></div>
 
->>>>>>> parent of c225a7c (tasarimi yeniledik)
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
