@@ -1465,6 +1465,53 @@
 }
 
 /* =============================================================================
+   8.5. YEDEKLEME & RESTORE ÖZEL STİLLERİ
+   ============================================================================= */
+.saas-restore-hero-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.saas-score-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--saas-radius-md);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.saas-score-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.saas-btn--glow {
+    box-shadow: 0 0 16px var(--saas-primary-glow);
+    transition: all 0.25s ease;
+}
+
+.saas-btn--glow:hover {
+    box-shadow: 0 0 24px rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+}
+
+.bg-blue-subtle { background: rgba(56, 189, 248, 0.12); }
+.bg-green-subtle { background: rgba(16, 185, 129, 0.12); }
+.bg-rose-subtle { background: rgba(244, 63, 94, 0.12); }
+.text-cyan { color: #06b6d4; }
+.text-rose { color: #f43f5e; }
+
+/* =============================================================================
    9. RESPONSIVE VE MOBİL UYUMLULUK
    ============================================================================= */
 @media (max-width: 1024px) {

@@ -161,6 +161,7 @@
         initUserForms();
         initApplicationPanels();
         initSettingsForm();
+        initBackupRestoreEvents();
         initLogoutButton();
     }
 
@@ -292,6 +293,9 @@
                 break;
             case 'settings':
                 loadSettings();
+                break;
+            case 'backups':
+                loadSnapshots();
                 break;
         }
     }
@@ -1123,7 +1127,223 @@
     }
 
     // =============================================================================
-    // 12. ARAMA & FİLTRELEME MANTIĞI
+    // 12. SEKME 7: YEDEKLEME & GERİ YÜKLEME (SNAPSHOT & RESTORE)
+    // =============================================================================
+    async function loadSnapshots() {
+        const { ok, data } = await apiRequest('GET', '/admin/snapshots');
+        const tbody = document.getElementById('snapshots-tbody');
+        const badgeCount = document.getElementById('badge-snapshots-count');
+        const latestDesc = document.getElementById('latest-restore-point-desc');
+
+        if (!ok || !data) {
+            if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="saas-table-loading text-rose">Kurtarma noktaları alınamadı.</td></tr>`;
+            return;
+        }
+
+        const snapshots = Array.isArray(data.snapshots) ? data.snapshots : [];
+        if (badgeCount) badgeCount.textContent = snapshots.length;
+
+        // En son kurtarma noktası açıklaması
+        if (latestDesc) {
+            if (data.latestSnapshot) {
+                const s = data.latestSnapshot;
+                latestDesc.innerHTML = `En son kurtarma noktası: <strong class="text-white">${escapeHtml(s.label || s.id)}</strong> (${timeAgo(s.created_at)} — ${formatDate(s.created_at)}).`;
+            } else {
+                latestDesc.textContent = 'Henüz kayıtlı bir kurtarma noktası bulunmuyor. "Yeni Kurtarma Noktası Al" butonu ile hemen oluşturabilirsiniz.';
+            }
+        }
+
+        if (!tbody) return;
+
+        if (snapshots.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="saas-table-loading">Henüz kayıtlı sistem kurtarma noktası yok.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = snapshots
+            .map((s) => {
+                const c = s.counts || {};
+                const scopeText = `${c.content_items || 0} İçerik, ${c.users || 0} Kullanıcı, ${c.team_applications || 0} Başvuru`;
+                const sizeKb = s.sizeBytes ? `${(s.sizeBytes / 1024).toFixed(1)} KB` : '—';
+
+                return `
+                <tr>
+                    <td>
+                        <div class="font-semibold text-white">${escapeHtml(s.label || s.id)}</div>
+                        <div class="font-mono text-xs text-dim">${escapeHtml(s.id)}</div>
+                    </td>
+                    <td>
+                        <div class="text-white">${formatDate(s.created_at)}</div>
+                        <div class="text-xs text-muted">${timeAgo(s.created_at)}</div>
+                    </td>
+                    <td class="font-mono text-xs">${sizeKb}</td>
+                    <td><span class="saas-badge-pill saas-badge-pill--blue">${escapeHtml(scopeText)}</span></td>
+                    <td class="text-right">
+                        <button type="button" class="saas-btn saas-btn--xs saas-btn--primary btn-restore-point" data-id="${escapeHtml(s.id)}" data-label="${escapeHtml(s.label || s.id)}">
+                            <i class="fa-solid fa-rotate-left"></i> Geri Yükle
+                        </button>
+                    </td>
+                </tr>
+            `;
+            })
+            .join('');
+
+        // Geri yükle butonları dinleyicisi
+        tbody.querySelectorAll('.btn-restore-point').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const snapId = btn.getAttribute('data-id');
+                const snapLabel = btn.getAttribute('data-label');
+                if (!confirm(`Sistemi "${snapLabel}" kurtarma noktasına geri yüklemek istediğinize emin misiniz?\n(Mevcut veritabanı bu kurtarma noktasındaki haline dönecektir.)`)) {
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...`;
+
+                const res = await apiRequest('POST', `/admin/restore/${encodeURIComponent(snapId)}`);
+                if (res.ok) {
+                    showBannerFeedback(`Sistem "${snapLabel}" kurtarma noktasına başarıyla geri yüklendi.`);
+                    loadSnapshots();
+                    loadOverviewStats();
+                } else {
+                    showBannerFeedback(res.data?.error || 'Kurtarma noktası geri yüklenemedi.', true);
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-rotate-left"></i> Geri Yükle`;
+                }
+            });
+        });
+    }
+
+    function initBackupRestoreEvents() {
+        // 1. En Son Yedeğe Geri Yükle (Son Restore)
+        const btnRestoreLast = document.getElementById('btn-quick-restore-last');
+        if (btnRestoreLast) {
+            btnRestoreLast.addEventListener('click', async () => {
+                if (!confirm('Sistem en son alınan kurtarma noktasına geri yüklenecektir. Devam etmek istiyor musunuz?')) {
+                    return;
+                }
+
+                btnRestoreLast.disabled = true;
+                btnRestoreLast.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Geri Yükleniyor...`;
+
+                const { ok, data } = await apiRequest('POST', '/admin/restore-last');
+                btnRestoreLast.disabled = false;
+                btnRestoreLast.innerHTML = `<i class="fa-solid fa-rotate-left"></i> Son Yedeğe Geri Yükle`;
+
+                if (ok) {
+                    showBannerFeedback('Sistem en son kurtarma noktasına (Son Restore) başarıyla geri yüklendi.');
+                    loadSnapshots();
+                    loadOverviewStats();
+                    loadContentItems();
+                } else {
+                    showBannerFeedback(data?.error || 'En son yedeğe geri yüklenemedi.', true);
+                }
+            });
+        }
+
+        // 2. Yeni Kurtarma Noktası Al (Snapshot Oluştur)
+        const btnCreateSnap = document.getElementById('btn-create-snapshot');
+        if (btnCreateSnap) {
+            btnCreateSnap.addEventListener('click', async () => {
+                const label = prompt('Kurtarma noktası için bir açıklama/etiket girin:', `Yedek - ${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}`);
+                if (label === null) return;
+
+                btnCreateSnap.disabled = true;
+                btnCreateSnap.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Alınıyor...`;
+
+                const { ok, data } = await apiRequest('POST', '/admin/snapshot', { label: label.trim() || 'Manuel Kurtarma Noktası' });
+                btnCreateSnap.disabled = false;
+                btnCreateSnap.innerHTML = `<i class="fa-solid fa-camera-retro"></i> Yeni Kurtarma Noktası Al`;
+
+                if (ok) {
+                    showBannerFeedback('Yeni sistem kurtarma noktası başarıyla kaydedildi.');
+                    loadSnapshots();
+                } else {
+                    showBannerFeedback(data?.error || 'Kurtarma noktası oluşturulamadı.', true);
+                }
+            });
+        }
+
+        // 3. Dosyadan JSON Yedek Geri Yükleme
+        const btnTriggerUpload = document.getElementById('btn-trigger-file-upload');
+        const fileInput = document.getElementById('backup-file-input');
+
+        if (btnTriggerUpload && fileInput) {
+            btnTriggerUpload.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+
+                try {
+                    const text = await file.text();
+                    const json = JSON.parse(text);
+
+                    if (!json || !json.tables) {
+                        alert('Geçersiz yedek dosyası: JSON içinde "tables" alanı bulunmalıdır.');
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    if (!confirm(`"${file.name}" dosyasındaki yedek veritabanına geri yüklenecektir. Bu işlem mevcut verileri değiştirecektir. Onaylıyor musunuz?`)) {
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    const { ok, data } = await apiRequest('POST', '/admin/backup/import', json);
+                    fileInput.value = '';
+
+                    if (ok) {
+                        showBannerFeedback('Yedek dosyası başarıyla yüklendi ve sistem güncellendi.');
+                        loadSnapshots();
+                        loadOverviewStats();
+                        loadContentItems();
+                    } else {
+                        showBannerFeedback(data?.error || 'Yedek geri yüklenemedi.', true);
+                    }
+                } catch (err) {
+                    alert('Dosya okuma veya JSON ayrıştırma hatası: ' + err.message);
+                    fileInput.value = '';
+                }
+            });
+        }
+
+        // 4. Fabrika Ayarlarına Sıfırla (Factory Reset)
+        const btnFactoryReset = document.getElementById('btn-factory-restore');
+        if (btnFactoryReset) {
+            btnFactoryReset.addEventListener('click', async () => {
+                if (!confirm('DİKKAT: Sistem başlangıç tohum verilerine ve fabrika ayarlarına sıfırlanacaktır.\n(Mevcut durum öncesinde otomatik olarak kurtarma noktasına yedeklenecektir.)\n\nDevam etmek istiyor musunuz?')) {
+                    return;
+                }
+
+                btnFactoryReset.disabled = true;
+                btnFactoryReset.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sıfırlanıyor...`;
+
+                const { ok, data } = await apiRequest('POST', '/admin/restore/factory');
+                btnFactoryReset.disabled = false;
+                btnFactoryReset.innerHTML = `<i class="fa-solid fa-power-off"></i> Fabrika Durumuna Sıfırla`;
+
+                if (ok) {
+                    showBannerFeedback('Sistem başarıyla fabrika başlangıç durumuna sıfırlandı.');
+                    loadSnapshots();
+                    loadOverviewStats();
+                    loadContentItems();
+                    loadSettings();
+                } else {
+                    showBannerFeedback(data?.error || 'Fabrika durumuna sıfırlanamadı.', true);
+                }
+            });
+        }
+
+        // 5. Yenile Butonu
+        const btnRefreshSnapshots = document.getElementById('btn-refresh-snapshots');
+        if (btnRefreshSnapshots) {
+            btnRefreshSnapshots.addEventListener('click', loadSnapshots);
+        }
+    }
+
+    // =============================================================================
+    // 13. ARAMA & FİLTRELEME MANTIĞI
     // =============================================================================
     function initSearchAndFilters() {
         // Global Arama

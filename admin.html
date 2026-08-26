@@ -99,6 +99,11 @@
                         <span class="saas-nav-label">Güvenlik & Denetim</span>
                         <span class="saas-nav-indicator saas-indicator--green"></span>
                     </button>
+                    <button type="button" class="saas-nav-item" data-tab="backups" id="nav-tab-backups">
+                        <i class="fa-solid fa-clock-rotate-left saas-nav-icon"></i>
+                        <span class="saas-nav-label">Yedekleme & Restore</span>
+                        <span id="badge-snapshots-count" class="saas-nav-badge">0</span>
+                    </button>
                     <button type="button" class="saas-nav-item" data-tab="settings" id="nav-tab-settings">
                         <i class="fa-solid fa-sliders saas-nav-icon"></i>
                         <span class="saas-nav-label">Site Ayarları</span>
@@ -744,6 +749,110 @@
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- SEKME 7: YEDEKLEME & GERİ YÜKLEME (BACKUP & RESTORE) -->
+                    <!-- ========================================================= -->
+                    <section id="tab-backups" class="saas-tab-panel">
+                        <!-- Son Kurtarma Noktası Banner -->
+                        <div class="saas-security-score-card saas-restore-hero-card">
+                            <div class="saas-score-left">
+                                <div class="saas-score-icon-box">
+                                    <i class="fa-solid fa-clock-rotate-left text-cyan"></i>
+                                </div>
+                                <div class="saas-score-text">
+                                    <h2>Sistem Kurtarma Noktaları & Veritabanı Geri Yükleme</h2>
+                                    <p id="latest-restore-point-desc">En son kurtarma noktası taranıyor...</p>
+                                </div>
+                            </div>
+                            <div class="saas-score-actions">
+                                <button type="button" id="btn-quick-restore-last" class="saas-btn saas-btn--primary saas-btn--glow">
+                                    <i class="fa-solid fa-rotate-left"></i> Son Yedeğe Geri Yükle
+                                </button>
+                                <button type="button" id="btn-create-snapshot" class="saas-btn saas-btn--outline">
+                                    <i class="fa-solid fa-camera-retro"></i> Yeni Kurtarma Noktası Al
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hızlı İşlemler Kartı Grid -->
+                        <div class="saas-overview-grid mt-6">
+                            <div class="saas-stat-card">
+                                <div class="saas-stat-header">
+                                    <span class="saas-stat-title">JSON Yedeği İndir</span>
+                                    <div class="saas-stat-icon-wrapper bg-blue-subtle text-blue">
+                                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-muted mt-1">Tüm veritabanı tablolarını JSON formatında cihazınıza indirin.</p>
+                                <div class="mt-4">
+                                    <a href="api/admin/backup/export" download class="saas-btn saas-btn--sm saas-btn--primary w-full text-center">
+                                        <i class="fa-solid fa-download"></i> Tam Yedeği İndir (JSON)
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="saas-stat-card">
+                                <div class="saas-stat-header">
+                                    <span class="saas-stat-title">Yedek Dosyası Geri Yükle</span>
+                                    <div class="saas-stat-icon-wrapper bg-green-subtle text-green">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-muted mt-1">Önceden aldığınız bir JSON yedek dosyasını yükleyip geri yükleyin.</p>
+                                <div class="mt-4">
+                                    <input type="file" id="backup-file-input" accept=".json,application/json" hidden>
+                                    <button type="button" id="btn-trigger-file-upload" class="saas-btn saas-btn--sm saas-btn--outline w-full">
+                                        <i class="fa-solid fa-upload"></i> Yedek Dosyası Seç & Geri Yükle
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="saas-stat-card">
+                                <div class="saas-stat-header">
+                                    <span class="saas-stat-title">Fabrika Ayarlarına Sıfırla</span>
+                                    <div class="saas-stat-icon-wrapper bg-rose-subtle text-rose">
+                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-muted mt-1">Tüm içerik ve ayarları başlangıç tohum verilerine sıfırlar.</p>
+                                <div class="mt-4">
+                                    <button type="button" id="btn-factory-restore" class="saas-btn saas-btn--sm saas-btn--danger w-full">
+                                        <i class="fa-solid fa-power-off"></i> Fabrika Durumuna Sıfırla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kurtarma Noktaları Tablosu -->
+                        <div class="saas-glass-card mt-6">
+                            <div class="saas-glass-card-header">
+                                <div class="saas-card-title-group">
+                                    <i class="fa-solid fa-database text-cyan"></i>
+                                    <h3>Kayıtlı Sistem Kurtarma Noktaları (Snapshots)</h3>
+                                </div>
+                                <button type="button" class="saas-btn saas-btn--xs saas-btn--outline" id="btn-refresh-snapshots">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Listeyi Yenile
+                                </button>
+                            </div>
+                            <div class="saas-table-responsive">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kurtarma Noktası / Etiket</th>
+                                            <th>Oluşturulma Tarihi</th>
+                                            <th>Boyut</th>
+                                            <th>Kapsam (Kayıtlar)</th>
+                                            <th class="text-right">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="snapshots-tbody">
+                                        <tr><td colspan="5" class="saas-table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Kurtarma noktaları yükleniyor...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
 

@@ -30,6 +30,7 @@ let failedTests = 0;
 const testResults = [];
 const appliedFixes = [
     "Veritabanı Katmanı: SQLite (better-sqlite3) ve Firebase Firestore için şema, CRUD ve metrik motoru güçlendirildi.",
+    "Yedekleme & Geri Yükleme: Anlık sistem kurtarma noktaları (Snapshots), Son Restore ve JSON Export/Import motoru entegre edildi.",
     "CSRF Güvenliği: Oturum yenileme (session.regenerate) sırasında CSRF token sürekliliği sağlandı.",
     "Girdi Doğrulama: Şifre sıfırlama (OTP) ve admin yetkilendirme akışları normalize edildi.",
     "Güvenlik Katmanı: XSS filtreleme, parametreli SQL sorguları ve yetkisiz erişim engelleri (RBAC) doğrulandı.",
@@ -481,6 +482,29 @@ async function runAdminSecurityAndRbacTests(guestClient, memberClient, adminClie
         },
     });
     assert(updateSettingsRes.status === 200, "ADMIN: Site Ayarları Kaydetme (PUT /api/admin/settings)");
+
+    // 3.8 Yedekleme & Kurtarma (Snapshot & Son Restore) API Testleri
+    const createSnapRes = await adminClient.request("POST", "/api/admin/snapshot", {
+        label: "Otomatik Sistem Test Kurtarma Noktası",
+    });
+    assert(createSnapRes.status === 201 && createSnapRes.data.snapshot?.id, "ADMIN: Kurtarma Noktası Oluşturma (POST /api/admin/snapshot)");
+
+    const listSnapsRes = await adminClient.request("GET", "/api/admin/snapshots");
+    assert(
+        listSnapsRes.status === 200 && Array.isArray(listSnapsRes.data.snapshots) && listSnapsRes.data.snapshots.length > 0,
+        "ADMIN: Kurtarma Noktalarını Listeleme (GET /api/admin/snapshots)"
+    );
+
+    const exportBackupRes = await adminClient.request("GET", "/api/admin/backup/export");
+    assert(exportBackupRes.status === 200 && exportBackupRes.data?.tables, "ADMIN: Veritabanı Yedeği Dışa Aktarma (GET /api/admin/backup/export)");
+
+    const restoreLastRes = await adminClient.request("POST", "/api/admin/restore-last");
+    assert(restoreLastRes.status === 200 && restoreLastRes.data.result?.success, "ADMIN: En Son Yedeğe Geri Yükleme - Son Restore (POST /api/admin/restore-last)");
+
+    if (exportBackupRes.data) {
+        const importBackupRes = await adminClient.request("POST", "/api/admin/backup/import", exportBackupRes.data);
+        assert(importBackupRes.status === 200 && importBackupRes.data.result?.success, "ADMIN: JSON Yedeği İçe Aktarma & Restore (POST /api/admin/backup/import)");
+    }
 }
 
 async function runInputSecurityAndInjectionTests(client) {

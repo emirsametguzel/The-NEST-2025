@@ -541,4 +541,116 @@ router.put("/settings", verifyCsrfToken, async (req, res) => {
     }
 });
 
+// =============================================================================
+// YEDEKLEME & GERİ YÜKLEME (BACKUP & RESTORE) YÖNETİMİ
+// =============================================================================
+
+// GET /api/admin/snapshots (Tüm kurtarma noktalarını ve en son restore noktasını listele)
+router.get("/snapshots", async (req, res) => {
+    try {
+        const snapshots = await db.listDatabaseSnapshots();
+        const latestSnapshot = await db.getLatestSnapshot();
+        return res.json({ snapshots, latestSnapshot });
+    } catch (err) {
+        console.error("Snapshots list error:", err);
+        return res.status(500).json({ error: "Kurtarma noktaları listelenemedi." });
+    }
+});
+
+// POST /api/admin/snapshot (Yeni bir kurtarma noktası oluştur)
+router.post("/snapshot", verifyCsrfToken, async (req, res) => {
+    try {
+        const label = req.body?.label || "Manuel Sistem Kurtarma Noktası";
+        const snapshot = await db.createDatabaseSnapshot(label);
+        return res.status(201).json({
+            message: "Yeni sistem kurtarma noktası başarıyla oluşturuldu.",
+            snapshot,
+        });
+    } catch (err) {
+        console.error("Create snapshot error:", err);
+        return res.status(500).json({ error: "Kurtarma noktası oluşturulamadı: " + err.message });
+    }
+});
+
+// POST /api/admin/restore-last (En son kurtarma noktasına geri yükle - Son Restore)
+router.post("/restore-last", verifyCsrfToken, async (req, res) => {
+    try {
+        const actorUsername = req.session?.username || "admin";
+        const result = await db.restoreFromLatestSnapshot(actorUsername);
+        return res.json({
+            message: "Sistem en son kurtarma noktasına başarıyla geri yüklendi (Son Restore tamamlandı).",
+            result,
+        });
+    } catch (err) {
+        console.error("Restore last error:", err);
+        return res.status(500).json({ error: "En son yedeğe geri yüklenemedi: " + err.message });
+    }
+});
+
+// POST /api/admin/restore/:id (Belirli bir kurtarma noktasına geri yükle)
+router.post("/restore/:id", verifyCsrfToken, async (req, res) => {
+    const snapshotId = req.params.id;
+    try {
+        const actorUsername = req.session?.username || "admin";
+        const result = await db.restoreFromSnapshot(snapshotId, actorUsername);
+        return res.json({
+            message: `Sistem '${snapshotId}' kurtarma noktasına başarıyla geri yüklendi.`,
+            result,
+        });
+    } catch (err) {
+        console.error("Restore snapshot error:", err);
+        return res.status(500).json({ error: "Kurtarma noktasına geri yüklenemedi: " + err.message });
+    }
+});
+
+// GET /api/admin/backup/export (Tam veritabanı JSON yedeğini indir)
+router.get("/backup/export", async (req, res) => {
+    try {
+        const backupData = await db.exportDatabaseBackup();
+        const dateStr = new Date().toISOString().slice(0, 10);
+        res.setHeader("Content-Disposition", `attachment; filename=the_nest_backup_${dateStr}.json`);
+        res.setHeader("Content-Type", "application/json");
+        return res.send(JSON.stringify(backupData, null, 2));
+    } catch (err) {
+        console.error("Backup export error:", err);
+        return res.status(500).json({ error: "Veritabanı yedeği dışa aktarılamadı." });
+    }
+});
+
+// POST /api/admin/backup/import (JSON yedeğini içeri aktar ve geri yükle)
+router.post("/backup/import", verifyCsrfToken, async (req, res) => {
+    try {
+        const backupData = req.body;
+        if (!backupData || !backupData.tables) {
+            return res.status(400).json({ error: "Geçersiz yedek verisi. 'tables' nesnesi eksik." });
+        }
+        const actorUsername = req.session?.username || "admin";
+        const result = await db.importDatabaseBackup(backupData, actorUsername);
+        return res.json({
+            message: "Yedek dosyası başarıyla geri yüklendi.",
+            result,
+        });
+    } catch (err) {
+        console.error("Backup import error:", err);
+        return res.status(500).json({ error: "Yedek içeri aktarılamadı: " + err.message });
+    }
+});
+
+// POST /api/admin/restore/factory (Başlangıç tohum verilerine sıfırla)
+router.post("/restore/factory", verifyCsrfToken, async (req, res) => {
+    try {
+        const { initDatabase } = require("../../db/init-db");
+        // Önce mevcut durumu kurtarma noktası olarak sakla
+        await db.createDatabaseSnapshot("Fabrika Sıfırlaması Öncesi Otomatik Yedek");
+        // Sıfırlamayı başlat
+        await initDatabase();
+        return res.json({
+            message: "Sistem başlangıç tohum verileri ve fabrika ayarlarına sıfırlandı.",
+        });
+    } catch (err) {
+        console.error("Factory restore error:", err);
+        return res.status(500).json({ error: "Fabrika ayarlarına sıfırlanamadı: " + err.message });
+    }
+});
+
 module.exports = router;

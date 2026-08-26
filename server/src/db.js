@@ -561,6 +561,287 @@ async function getDashboardMetrics() {
     }
 }
 
+// =============================================================================
+// YEDEKLEME & GERİ YÜKLEME (SNAPSHOT & BACKUP / RESTORE) SİSTEMİ
+// =============================================================================
+
+const SNAPSHOTS_DIR = path.join(DB_DIR, "snapshots");
+if (!fs.existsSync(SNAPSHOTS_DIR)) {
+    fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
+}
+
+/**
+ * Tüm veritabanının anlık JSON yedeğini üretir.
+ */
+async function exportDatabaseBackup() {
+    const users = sqlite.prepare("SELECT * FROM users").all();
+    const contentItems = sqlite.prepare("SELECT * FROM content_items").all();
+    const teamApplications = sqlite.prepare("SELECT * FROM team_applications").all();
+    const siteSettings = sqlite.prepare("SELECT * FROM site_settings").all();
+    const auditLogs = sqlite.prepare("SELECT * FROM audit_logs ORDER BY id DESC LIMIT 50").all();
+
+    return {
+        version: "2.0.0",
+        app: "The Nest",
+        created_at: new Date().toISOString(),
+        tables: {
+            users,
+            content_items: contentItems,
+            team_applications: teamApplications,
+            site_settings: siteSettings,
+            audit_logs: auditLogs,
+        },
+        counts: {
+            users: users.length,
+            content_items: contentItems.length,
+            team_applications: teamApplications.length,
+            site_settings: siteSettings.length,
+        },
+    };
+}
+
+/**
+ * Sistemde yeni bir kurtarma noktası (Snapshot) oluşturur.
+ */
+async function createDatabaseSnapshot(label = "Otomatik Sistem Kurtarma Noktası") {
+    const backupData = await exportDatabaseBackup();
+    const timestamp = Date.now();
+    const dateStr = new Date().toISOString().replace(/[:.]/g, "-");
+    const snapshotId = `snapshot_${dateStr}_${timestamp}`;
+    const filename = `${snapshotId}.json`;
+    const filePath = path.join(SNAPSHOTS_DIR, filename);
+
+    const snapshotPayload = {
+        id: snapshotId,
+        label: label || "Manuel Kurtarma Noktası",
+        timestamp,
+        created_at: new Date().toISOString(),
+        ...backupData,
+    };
+
+    fs.writeFileSync(filePath, JSON.stringify(snapshotPayload, null, 2), "utf8");
+
+    await logAuditEvent({
+        actor_username: "system",
+        action: "CREATE_SNAPSHOT",
+        entity_type: "backup",
+        entity_id: snapshotId,
+        details: `Kurtarma noktası oluşturuldu: ${label} (${backupData.counts.content_items} içerik, ${backupData.counts.users} kullanıcı)`,
+    });
+
+    return {
+        id: snapshotId,
+        filename,
+        label: snapshotPayload.label,
+        created_at: snapshotPayload.created_at,
+        counts: snapshotPayload.counts,
+    };
+}
+
+/**
+ * Mevcut tüm kurtarma noktalarını (snapshots) listeler.
+ */
+async function listDatabaseSnapshots() {
+    try {
+        if (!fs.existsSync(SNAPSHOTS_DIR)) return [];
+        const files = fs.readdirSync(SNAPSHOTS_DIR).filter((f) => f.endsWith(".json"));
+
+        const snapshots = [];
+        for (const file of files) {
+            try {
+                const filePath = path.join(SNAPSHOTS_DIR, file);
+                const stats = fs.statSync(filePath);
+                const raw = fs.readFileSync(filePath, "utf8");
+                const parsed = JSON.parse(raw);
+
+                snapshots.push({
+                    id: parsed.id || file.replace(".json", ""),
+                    filename: file,
+                    label: parsed.label || "Kurtarma Noktası",
+                    created_at: parsed.created_at || stats.mtime.toISOString(),
+                    sizeBytes: stats.size,
+                    counts: parsed.counts || {
+                        users: parsed.tables?.users?.length || 0,
+                        content_items: parsed.tables?.content_items?.length || 0,
+                        team_applications: parsed.tables?.team_applications?.length || 0,
+                    },
+                });
+            } catch (_) {}
+        }
+
+        return snapshots.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } catch (_) {
+        return [];
+    }
+}
+
+/**
+ * En son alınan kurtarma noktasını (Son Restore Noktası) döner.
+ */
+async function getLatestSnapshot() {
+    const list = await listDatabaseSnapshots();
+    return list.length > 0 ? list[0] : null;
+}
+
+/**
+ * Verilen yedek verisini veritabanına geri yükler (Restore).
+ */
+async function importDatabaseBackup(backupData, actorUsername = "admin") {
+    if (!backupData || !backupData.tables) {
+        throw new Error("Geçersiz yedek dosyası formatı.");
+    }
+
+    const { users, content_items, team_applications, site_settings } = backupData.tables;
+
+    // İşlemi SQLite Transaction ile güvenle uygula
+    const restoreTransaction = sqlite.transaction(() => {
+        if (Array.isArray(users) && users.length > 0) {
+            sqlite.prepare("DELETE FROM users").run();
+            const insertUser = sqlite.prepare(`
+                INSERT INTO users (id, username, email, password_hash, display_name, bio, avatar_path, role, is_active, created_at, updated_at, last_login_at)
+                VALUES (@id, @username, @email, @password_hash, @display_name, @bio, @avatar_path, @role, @is_active, @created_at, @updated_at, @last_login_at)
+            `);
+            for (const u of users) {
+                insertUser.run({
+                    id: u.id,
+                    username: u.username,
+                    email: u.email,
+                    password_hash: u.password_hash,
+                    display_name: u.display_name || null,
+                    bio: u.bio || null,
+                    avatar_path: u.avatar_path || null,
+                    role: u.role || "member",
+                    is_active: u.is_active !== undefined ? u.is_active : 1,
+                    created_at: u.created_at || new Date().toISOString(),
+                    updated_at: u.updated_at || new Date().toISOString(),
+                    last_login_at: u.last_login_at || null,
+                });
+            }
+        }
+
+        if (Array.isArray(content_items)) {
+            sqlite.prepare("DELETE FROM content_items").run();
+            const insertContent = sqlite.prepare(`
+                INSERT INTO content_items (id, type, category, title, slug, summary, body, image_url, file_url, author_id, author_username, author_display_name, is_published, created_at, updated_at)
+                VALUES (@id, @type, @category, @title, @slug, @summary, @body, @image_url, @file_url, @author_id, @author_username, @author_display_name, @is_published, @created_at, @updated_at)
+            `);
+            for (const c of content_items) {
+                insertContent.run({
+                    id: c.id,
+                    type: c.type,
+                    category: c.category || "Genel",
+                    title: c.title,
+                    slug: c.slug,
+                    summary: c.summary || null,
+                    body: c.body || null,
+                    image_url: c.image_url || null,
+                    file_url: c.file_url || null,
+                    author_id: c.author_id || null,
+                    author_username: c.author_username || "The Nest",
+                    author_display_name: c.author_display_name || "The Nest Ekibi",
+                    is_published: c.is_published !== undefined ? c.is_published : 1,
+                    created_at: c.created_at || new Date().toISOString(),
+                    updated_at: c.updated_at || new Date().toISOString(),
+                });
+            }
+        }
+
+        if (Array.isArray(team_applications)) {
+            sqlite.prepare("DELETE FROM team_applications").run();
+            const insertApp = sqlite.prepare(`
+                INSERT INTO team_applications (id, name, class_name, email, phone, experience, department, tools, motivation, status, created_at, updated_at)
+                VALUES (@id, @name, @class_name, @email, @phone, @experience, @department, @tools, @motivation, @status, @created_at, @updated_at)
+            `);
+            for (const a of team_applications) {
+                insertApp.run({
+                    id: a.id,
+                    name: a.name,
+                    class_name: a.class_name,
+                    email: a.email,
+                    phone: a.phone,
+                    experience: a.experience || null,
+                    department: a.department,
+                    tools: a.tools || null,
+                    motivation: a.motivation,
+                    status: a.status || "pending",
+                    created_at: a.created_at || new Date().toISOString(),
+                    updated_at: a.updated_at || null,
+                });
+            }
+        }
+
+        if (Array.isArray(site_settings)) {
+            sqlite.prepare("DELETE FROM site_settings").run();
+            const insertSetting = sqlite.prepare(`
+                INSERT INTO site_settings (key, value, updated_at)
+                VALUES (@key, @value, @updated_at)
+            `);
+            for (const s of site_settings) {
+                insertSetting.run({
+                    key: s.key,
+                    value: String(s.value),
+                    updated_at: s.updated_at || new Date().toISOString(),
+                });
+            }
+        }
+    });
+
+    restoreTransaction();
+
+    await logAuditEvent({
+        actor_username: actorUsername,
+        action: "RESTORE_DATABASE",
+        entity_type: "backup",
+        entity_id: backupData.id || "manual_upload",
+        details: `Veritabanı yedeği başarıyla geri yüklendi (${content_items?.length || 0} içerik, ${users?.length || 0} kullanıcı)`,
+    });
+
+    return {
+        success: true,
+        restored_at: new Date().toISOString(),
+        counts: {
+            users: users?.length || 0,
+            content_items: content_items?.length || 0,
+            team_applications: team_applications?.length || 0,
+            site_settings: site_settings?.length || 0,
+        },
+    };
+}
+
+/**
+ * Belirli bir Snapshot dosyasından geri yükleme yapar.
+ */
+async function restoreFromSnapshot(snapshotId, actorUsername = "admin") {
+    if (!snapshotId) throw new Error("Kurtarma noktası ID belirtilmedi.");
+    const safeId = path.basename(snapshotId).replace(".json", "");
+    const filePath = path.join(SNAPSHOTS_DIR, `${safeId}.json`);
+
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Kurtarma noktası dosyası bulunamadı: ${safeId}`);
+    }
+
+    const raw = fs.readFileSync(filePath, "utf8");
+    const snapshotData = JSON.parse(raw);
+    return await importDatabaseBackup(snapshotData, actorUsername);
+}
+
+/**
+ * En son alınan kurtarma noktasına geri yükler (Son Restore).
+ */
+async function restoreFromLatestSnapshot(actorUsername = "admin") {
+    const latest = await getLatestSnapshot();
+    if (!latest) {
+        // Eğer henüz bir snapshot yoksa, önce mevcut verilerden anlık snapshot alıp geri döndür
+        await createDatabaseSnapshot("Sistem Başlangıç Kurtarma Noktası");
+        const freshLatest = await getLatestSnapshot();
+        if (!freshLatest) {
+            throw new Error("Sistemde kayıtlı herhangi bir kurtarma noktası (snapshot) bulunamadı.");
+        }
+        return await restoreFromSnapshot(freshLatest.id, actorUsername);
+    }
+    return await restoreFromSnapshot(latest.id, actorUsername);
+}
+
 module.exports = {
     sqlite,
     firestore,
@@ -595,4 +876,12 @@ module.exports = {
     getRecentAuditLogs,
     getRecentLoginAttempts,
     getDashboardMetrics,
+    // Yedekleme & Kurtarma (Restore) Metotları
+    exportDatabaseBackup,
+    createDatabaseSnapshot,
+    listDatabaseSnapshots,
+    getLatestSnapshot,
+    importDatabaseBackup,
+    restoreFromSnapshot,
+    restoreFromLatestSnapshot,
 };

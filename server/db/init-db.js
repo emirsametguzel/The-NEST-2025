@@ -232,6 +232,13 @@ async function initDatabase() {
             console.log(`✅ ${initialContent.length} adet başlangıç içeriği veritabanına eklendi.`);
         }
 
+        // 4. Sistem Başlangıç Kurtarma Noktası (Snapshot) Kontrolü
+        const existingSnapshots = await db.listDatabaseSnapshots();
+        if (!existingSnapshots || existingSnapshots.length === 0) {
+            await db.createDatabaseSnapshot("Sistem Kurulum & Başlangıç Kurtarma Noktası");
+            console.log("💾 Sistem başlangıç kurtarma noktası (Snapshot) otomatik olarak oluşturuldu.");
+        }
+
         console.log("🎉 Veritabanı ve Başlangıç Verileri Hazır!");
     } catch (err) {
         console.error("Veritabanı Başlatma / Tohumlama Hatası:", err.message);
