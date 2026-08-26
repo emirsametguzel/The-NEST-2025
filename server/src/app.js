@@ -30,13 +30,13 @@ app.use(
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "'unsafe-inline'", "https://apis.google.com"],
+                scriptSrc: ["'self'", "https://apis.google.com"],
                 styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
                 imgSrc: ["'self'", "data:", "https:"],
                 connectSrc: ["'self'", "https://*.firebaseio.com", "https://identitytoolkit.googleapis.com"],
                 fontSrc: ["'self'", "https://fonts.gstatic.com"],
                 objectSrc: ["'none'"],
-                frameAncestors: ["'none'"],
+                scriptSrcAttr: ["'none'"],
                 upgradeInsecureRequests: [],
             },
         },
