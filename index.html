@@ -4,104 +4,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Anasayfa</title>
-    <meta name="keywords" content="Amal, Amal Hawks, frc, FRC, programming course">
-    <meta name="description" content="Amal Hawks Ana Sayfa">
-    <meta name="author" content="Mehmet Efe Öçal">
+    <title>The Nest | Açık Kaynak STEAM & Robotik Ekosistemi</title>
+    <meta name="keywords" content="Amal, Amal Hawks, 7611, FRC, FIRST Robotics Competition, STEM, STEAM, Robotik, WPILib, CAD">
+    <meta name="description" content="7611 AmalHawks Açık Kaynak STEAM ve Robotik Platformu. Lise ve üniversite mühendislik eğitimleri, 3D CAD kütüphanesi, teknik makaleler ve FRC içerikleri.">
+    <meta name="author" content="AmalHawks 7611">
     <link rel="icon" type="image/png" href="images/favicon.png">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
-    <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
-    <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
     <link rel="stylesheet" href="css/components.css">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bevan&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <!-- Modüler Dinamik Header -->
     <div id="app-header" data-component="header"></div>
 
-    <section class="img-sct-01">
-        <div class="img-cont-01">
-            <div class="img-up-01">
-                <div class="img-up-02">
-                    <h2 id="h1" class="txt-img-01" data-i18n="index.title">The Nest</h2>
-                    <p id="metin1" class="txt-img-02" data-i18n="index.intro">
-                        The Nest, STEAM ile ilgili tüm toplulukları ve bireyleri hedefleyen çok amaçlı bir web
-                        sitesidir. STEAM tutkunları arasındaki iletişimi ve bağları artırmayı hedeflerken aynı zamanda
-                        kaynaklar ve eğitim sunan bir platform oluşturmayı amaçlar.</p>
-                    <a href="#"><button id="forum_button" data-i18n="index.forumButton">Forum</button></a>
+    <main>
+        <!-- Modern Hero Bölümü -->
+        <section class="nest-hero-section">
+            <div class="hero-glow-orb"></div>
+            <div class="hero-container">
+                <div class="hero-badge-wrap">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                    <span data-i18n="index.heroBadge">7611 AmalHawks Açık Kaynak STEAM İnisiyatifi</span>
+                </div>
+
+                <h1 class="hero-title" id="h1">
+                    Geleceğin Mühendisleri İçin <br>
+                    <span class="title-accent" data-i18n="index.heroTitle">Açık Kaynak STEAM Ekosistemi</span>
+                </h1>
+
+                <p class="hero-description" id="metin1" data-i18n="index.heroDesc">
+                    7611 AmalHawks ekibi tarafından hayata geçirilen The Nest; robotik, WPILib Java programlama, 3D CAD tasarımı, mekanik mimari ve FRC yarışma tecrübesini tek bir modern çatı altında sunar.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="dersler.html" class="btn-hero-primary" data-i18n="index.exploreCourses">
+                        <i class="fa-solid fa-graduation-cap"></i> Eğitimleri Keşfet
+                    </a>
+                    <a href="#application-form-section" class="btn-hero-secondary" data-i18n="index.applyTeam">
+                        <i class="fa-solid fa-paper-plane"></i> Takıma Başvur
+                    </a>
+                    <a href="makaleler.html" class="btn-hero-tertiary" data-i18n="index.readArticles">
+                        <i class="fa-solid fa-book-open"></i> Teknik Makaleler
+                    </a>
+                </div>
+
+                <!-- Canlı İstatistikler / Metrikler -->
+                <div class="hero-stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-num" data-i18n="index.stat1.num">18+</div>
+                        <div class="stat-label" data-i18n="index.stat1.label">Müfredat & Kurs Modülü</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-i18n="index.stat2.num">30+</div>
+                        <div class="stat-label" data-i18n="index.stat2.label">3D CAD & STEP Tasarımı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-i18n="index.stat3.num">100%</div>
+                        <div class="stat-label" data-i18n="index.stat3.label">Ücretsiz & Açık Erişim</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-i18n="index.stat4.num">7611</div>
+                        <div class="stat-label" data-i18n="index.stat4.label">AmalHawks Ekosistemi</div>
+                    </div>
                 </div>
             </div>
         </section>
-    <section>
-        <div class="pt1">
-            <img class="img-pt1" src="images/kurum.jpg" alt="Kurucu Takım">
-            <div class="j">
-                <h3 id="hed2" data-i18n="index.founderTitle">Kurucu Takım</h3>
-                <p id="me2" data-i18n="index.founderText">7611#AmalHawks takımının kurduğu The Nest Projesi, FRC topluluğunun herkesin faydalanabileceği bir kaynak olmasını hedefler. Bu proje, gençlerden mentorlara kadar herkesin ihtiyaç duyduğu bilgiye erişimini kolaylaştırır ve topluluk arasında işbirliğini teşvik eder. Amacı, FRC'nin erişilebilirliğini ve sürdürülebilirliğini artırmak, böylece daha fazla genç, STEM becerilerini geliştirme fırsatı bulabilir.</p>
-            </div>
-        </div>
-        <div class="pt2">
-            <img class="img-pt1" src="images/fy-logo.png" alt="Fikret Yüksel Vakfı">
-            <div class="j">
-                <h3 id="hed3" data-i18n="index.fyTitle">Fikret Yüksel Vakfı</h3>
-                <p id="me3" data-i18n="index.fyText">Fikret Yüksel Vakfı, FRC'ye (FIRST Robotics Competition) önemli katkılarda bulunarak gençlerin bilim, teknoloji, mühendislik ve matematik (STEM) alanlarında gelişimine destek olmaktadır. Vakıf, gençlerin STEM becerilerini geliştirmelerine ve yaratıcılıklarını ortaya koymalarına yardımcı olmak amacıyla FRC takımlarına maddi ve manevi destek sağlamaktadır. Bu destek, ekip mentörlüğü, ekip eğitimi, malzeme temini ve yarışma katılım masraflarını kapsamaktadır. Fikret Yüksel Vakfı'nın FRC'ye katkısı, gençlerin gelecekteki kariyerlerine yönelik sağlam bir temel oluşturmalarına ve STEM alanında başarılı olmalarına yardımcı olmaktadır.</p>
-            </div>
-        </div>
-        <div class="container">
-            <div class="joinery" id="application-form-section">
-                <h1 id="hed1" data-i18n="form.title">Takım Başvuru Formu</h1>
-                <form id="team-application-form" class="modern-form" action="team_application.html" method="POST">
-                    <label data-i18n="form.name.label" for="name">Ad Soyad*:</label>
-                    <input type="text" id="name" name="name" data-i18n-placeholder="form.name.placeholder" placeholder="Adınızı ve Soyadınızı Girin" required>
-                    <label data-i18n="form.class.label" for="class">Sınıf*:</label>
-                    <input type="text" id="class" name="class" data-i18n-placeholder="form.class.placeholder" placeholder="Sınıfınızı Girin (örn. 10-A)" required>
-                    <label data-i18n="form.email.label" for="email">Email*:</label>
-                    <input type="email" id="email" name="email" data-i18n-placeholder="form.email.placeholder" placeholder="Email Adresinizi Girin" required>
-                    <label data-i18n="form.phone.label" for="phone">Telefon Numarası*:</label>
-                    <input type="tel" id="phone" name="phone" data-i18n-placeholder="form.phone.placeholder" placeholder="Telefon Numaranızı Girin" required>
-                    <label data-i18n="form.experience.label" for="experience">Önceki Deneyimleriniz:</label>
-                    <textarea id="experience" name="experience" data-i18n-placeholder="form.experience.placeholder" placeholder="Önceki deneyimlerinizi tarif ediniz. (örn. robot yarışması, teknofest vb.)" rows="4"></textarea>
-                    <label data-i18n="form.department.label" for="department">Katılmak İstediğiniz Departman:*</label>
-                    <select id="department" name="department" required>
-                        <option value="" disabled selected data-i18n="form.department.placeholder">Departman Seçiniz</option>
-                        <option value="Mekanik">Mekanik (Geçmiş Olsun)</option>
-                        <option value="Elektronik">Elektronik</option>
-                        <option value="Yazılım">Yazılım (En İyisi)</option>
-                        <option value="PR">PR</option>
-                        <option value="Tasarım">Tasarım</option>
-                    </select>
-                    <label data-i18n="form.tools.label" for="tools">Kullandığınız CAD Programları veya Yazılım Dilleri:</label>
-                    <input type="text" id="tools" name="tools" data-i18n-placeholder="form.tools.placeholder" placeholder="Örn: SolidWorks, Python, C++">
-                    <label data-i18n="form.motivation.label" for="motivation">Katılım Motivasyon Mektubu*:</label>
-                    <textarea id="motivation" name="motivation" data-i18n-placeholder="form.motivation.placeholder" placeholder="Neden takıma katılmak istediğinizi açıklayın" rows="6" required></textarea>
-                    <input type="text" id="honeypot" name="honeypot" class="honeypot">
-                    <button type="submit" id="submit-button" data-i18n="form.submit">Başvur</button>
-                <label data-i18n="form.required">*: Zorunlu</label>
-                    <div id="form-feedback" class="form-feedback"></div>
-                </form>
-            </div>
-        </div>
-    </section>
 
+        <!-- İçerik Merkezleri Vitrini (Hubs Showcase) -->
+        <section class="nest-section">
+            <div class="nest-container">
+                <div class="section-head">
+                    <span class="section-tag" data-i18n="nav.content">İçerikler</span>
+                    <h2 class="section-title" data-i18n="index.hubsTitle">Temel İçerik Merkezleri</h2>
+                    <p class="section-subtitle" data-i18n="index.hubsSubtitle">Robotik mühendisliğinden jüri sunumlarına kadar ihtiyacınız olan tüm açık kaynak kütüphane.</p>
+                </div>
+
+                <div class="hubs-grid">
+                    <!-- Hub 1: Dersler -->
+                    <a href="dersler.html" class="hub-card">
+                        <div class="hub-icon-wrap">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3 class="hub-card-title" data-i18n="index.hubCoursesTitle">Eğitimler & Kurslar</h3>
+                        <p class="hub-card-desc" data-i18n="index.hubCoursesDesc">WPILib Java, Subsystem mimarisi, Swerve kinematiği ve PID kontrol algoritmaları.</p>
+                        <span class="hub-card-action">
+                            <span>Modülleri İncele</span> <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </a>
+
+                    <!-- Hub 2: Makaleler -->
+                    <a href="makaleler.html" class="hub-card">
+                        <div class="hub-icon-wrap">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                        <h3 class="hub-card-title" data-i18n="index.hubArticlesTitle">Teknik Makaleler</h3>
+                        <p class="hub-card-desc" data-i18n="index.hubArticlesDesc">Akü empedansı, CAN bus topolojisi, dişli redüksiyon ve güç dağıtım analizleri.</p>
+                        <span class="hub-card-action">
+                            <span>Makaleleri Oku</span> <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </a>
+
+                    <!-- Hub 3: 3D CAD Tasarımlar -->
+                    <a href="objeler.html" class="hub-card">
+                        <div class="hub-icon-wrap">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <h3 class="hub-card-title" data-i18n="index.hubDesignsTitle">3D CAD Tasarımlar</h3>
+                        <p class="hub-card-desc" data-i18n="index.hubDesignsDesc">STEP & STL formatında 3D baskıya hazır robot bileşenleri ve sensör muhafazaları.</p>
+                        <span class="hub-card-action">
+                            <span>Modelleri İndir</span> <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </a>
+
+                    <!-- Hub 4: Sunumlar -->
+                    <a href="sunumlar.html" class="hub-card">
+                        <div class="hub-icon-wrap">
+                            <i class="fa-solid fa-file-powerpoint"></i>
+                        </div>
+                        <h3 class="hub-card-title" data-i18n="index.hubPresentationsTitle">Sunumlar & Dokümanlar</h3>
+                        <p class="hub-card-desc" data-i18n="index.hubPresentationsDesc">FIRST Impact ödülü şablonları, pit mülakat kılavuzları ve sponsorluk dosyaları.</p>
+                        <span class="hub-card-action">
+                            <span>Sunumları Gör</span> <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bento Grid: Kurucu Takım & Fikret Yüksel Vakfı Ekosistemi -->
+        <section class="nest-section" style="padding-top: 2rem;">
+            <div class="nest-container">
+                <div class="section-head">
+                    <span class="section-tag" data-i18n="index.bentoTitle">Ekosistem & Ortaklar</span>
+                    <h2 class="section-title">Güçlü Topluluk, Güçlü Gelecek</h2>
+                    <p class="section-subtitle" data-i18n="index.bentoSubtitle">Bilgiyi paylaşarak büyüyen bir robotik ve mühendislik topluluğu.</p>
+                </div>
+
+                <div class="bento-grid">
+                    <!-- Bento Kart 1: Kurucu Takım 7611 -->
+                    <div class="bento-card">
+                        <div>
+                            <div class="bento-header">
+                                <img class="bento-img-avatar" src="images/kurum.jpg" alt="7611 AmalHawks">
+                                <div class="bento-header-text">
+                                    <h3 id="hed2" data-i18n="index.founderTitle">Kurucu Takım</h3>
+                                    <span>7611 AmalHawks Robotics</span>
+                                </div>
+                            </div>
+                            <div class="bento-body">
+                                <p id="me2" data-i18n="index.founderText">
+                                    7611#AmalHawks takımının kurduğu The Nest Projesi, FRC topluluğunun herkesin faydalanabileceği bir kaynak olmasını hedefler. Bu proje, gençlerden mentorlara kadar herkesin ihtiyaç duyduğu bilgiye erişimini kolaylaştırır ve topluluk arasında işbirliğini teşvik eder. Amacı, FRC'nin erişilebilirliğini ve sürdürülebilirliğini artırmak, böylece daha fazla genç, STEM becerilerini geliştirme fırsatı bulabilir.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bento-tags">
+                            <span class="bento-tag"><i class="fa-solid fa-code"></i> WPILib Java</span>
+                            <span class="bento-tag"><i class="fa-solid fa-gear"></i> Swerve Drive</span>
+                            <span class="bento-tag"><i class="fa-solid fa-users"></i> Açık Mentorluk</span>
+                            <span class="bento-tag"><i class="fa-solid fa-trophy"></i> FRC Topluluğu</span>
+                        </div>
+                    </div>
+
+                    <!-- Bento Kart 2: Fikret Yüksel Vakfı -->
+                    <div class="bento-card">
+                        <div>
+                            <div class="bento-header">
+                                <img class="bento-img-avatar" src="images/fy-logo.png" alt="Fikret Yüksel Vakfı" style="object-fit: contain; padding: 4px; background: #ffffff;">
+                                <div class="bento-header-text">
+                                    <h3 id="hed3" data-i18n="index.fyTitle">Fikret Yüksel Vakfı</h3>
+                                    <span>FIRST Robotics Competition Türkiye</span>
+                                </div>
+                            </div>
+                            <div class="bento-body">
+                                <p id="me3" data-i18n="index.fyText">
+                                    Fikret Yüksel Vakfı, FRC'ye (FIRST Robotics Competition) önemli katkılarda bulunarak gençlerin bilim, teknoloji, mühendislik ve matematik (STEM) alanlarında gelişimine destek olmaktadır. Vakıf, gençlerin STEM becerilerini geliştirmelerine ve yaratıcılıklarını ortaya koymalarına yardımcı olmak amacıyla FRC takımlarına maddi ve manevi destek sağlamaktadır.
+                                </p>
+                                <p data-i18n="index.fyDetail">
+                                    Ekip mentörlüğü, ekip eğitimi, malzeme temini ve yarışma katılım masraflarını kapsayan desteklerle gençlerin geleceğe sağlam adımlarla yürümesini sağlar.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bento-tags">
+                            <span class="bento-tag"><i class="fa-solid fa-award"></i> FIRST Inspires</span>
+                            <span class="bento-tag"><i class="fa-solid fa-graduation-cap"></i> STEM Bursları</span>
+                            <span class="bento-tag"><i class="fa-solid fa-globe"></i> Küresel Vizyon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yenilenmiş Takım Başvuru Formu Bölümü -->
+        <section class="nest-section" id="application-form-section">
+            <div class="nest-container application-section-wrapper">
+                <div class="application-card">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <span class="form-header-badge" data-i18n="form.badge">
+                            <i class="fa-solid fa-user-plus"></i> 7611 AmalHawks Ailesine Katıl
+                        </span>
+                        <h2 id="hed1" data-i18n="form.title">Takım Başvuru Formu</h2>
+                        <p class="form-intro">
+                            Mühendislik, yazılım, mekanik veya iletişim alanlarında kendini geliştirmek istiyorsan aramıza katıl!
+                        </p>
+                    </div>
+
+                    <form id="team-application-form" class="modern-form" action="team_application.html" method="POST">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="name"><span data-i18n="form.name.label">Ad Soyad</span> <span class="req">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control" data-i18n-placeholder="form.name.placeholder" placeholder="Adınızı ve Soyadınızı Girin" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="class"><span data-i18n="form.class.label">Sınıf</span> <span class="req">*</span></label>
+                                <input type="text" id="class" name="class" class="form-control" data-i18n-placeholder="form.class.placeholder" placeholder="Sınıfınızı Girin (örn. 10-A)" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="email"><span data-i18n="form.email.label">Email</span> <span class="req">*</span></label>
+                                <input type="email" id="email" name="email" class="form-control" data-i18n-placeholder="form.email.placeholder" placeholder="Email Adresinizi Girin" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone"><span data-i18n="form.phone.label">Telefon Numarası</span> <span class="req">*</span></label>
+                                <input type="tel" id="phone" name="phone" class="form-control" data-i18n-placeholder="form.phone.placeholder" placeholder="Telefon Numaranızı Girin" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="department"><span data-i18n="form.department.label">Katılmak İstediğiniz Departman:</span> <span class="req">*</span></label>
+                            <select id="department" name="department" class="form-control" required>
+                                <option value="" disabled selected data-i18n="form.department.placeholder">Departman Seçiniz</option>
+                                <option value="Yazılım">💻 Yazılım & Otonom (WPILib Java / Vision)</option>
+                                <option value="Mekanik">⚙️ Mekanik & Şasi Mimarisi</option>
+                                <option value="Elektronik">⚡ Elektronik & Güç Dağıtımı (CAN / PDH)</option>
+                                <option value="Tasarım">🎨 3D CAD & Parça Modelleme</option>
+                                <option value="PR">📣 PR, Medya & Sponsorluk</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience" data-i18n="form.experience.label">Önceki Deneyimleriniz:</label>
+                            <textarea id="experience" name="experience" class="form-control" data-i18n-placeholder="form.experience.placeholder" placeholder="Önceki deneyimlerinizi tarif ediniz (örn. robot yarışması, Teknofest, okul projeleri vb.)" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tools" data-i18n="form.tools.label">Kullandığınız CAD Programları veya Yazılım Dilleri:</label>
+                            <input type="text" id="tools" name="tools" class="form-control" data-i18n-placeholder="form.tools.placeholder" placeholder="Örn: SolidWorks, Onshape, Java, Python, C++">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motivation"><span data-i18n="form.motivation.label">Katılım Motivasyon Mektubu</span> <span class="req">*</span></label>
+                            <textarea id="motivation" name="motivation" class="form-control" data-i18n-placeholder="form.motivation.placeholder" placeholder="Neden 7611 AmalHawks takımına katılmak istiyorsunuz? Kendinizden ve hedeflerinizden bahsedin." rows="4" required></textarea>
+                        </div>
+
+                        <!-- Bot Tuzağı (Honeypot) & Gizli Alanlar -->
+                        <input type="text" id="honeypot" name="honeypot" class="honeypot" tabindex="-1" autocomplete="off">
+
+                        <button type="submit" id="submit-button" class="form-submit-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span data-i18n="form.submit">Başvuruyu Gönder</span>
+                        </button>
+
+                        <div id="form-feedback" class="form-feedback"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modern Başvuru Afişi Modal Penceresi -->
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span id="close-modal" class="close">&times;</span>
+            <span id="close-modal" class="close" title="Kapat">&times;</span>
             <img src="images/placeholders/apply-poster-placeholder.svg" alt="Takım Başvuru Afişi">
-            <button class="modal-button" onclick="document.getElementById('modal').style.display='none';document.getElementById('application-form-section').scrollIntoView({behavior: 'smooth'});">Başvuru Formuna Git</button>
+            <button class="modal-button" type="button" onclick="document.getElementById('modal').style.display='none';document.getElementById('application-form-section').scrollIntoView({behavior: 'smooth'});">
+                <i class="fa-solid fa-pen-to-square"></i> Başvuru Formuna Git
+            </button>
         </div>
     </div>
 
+    <!-- Modüler Dinamik Footer -->
     <div id="app-footer" data-component="footer"></div>
 
+    <!-- Scriptler -->
     <script src="js/components.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>

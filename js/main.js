@@ -2,6 +2,57 @@
 // The Nest — main.js
 // ==========================================================================
 
+// --- Tema Yönetimi (Dark / Light Mode) ---
+(function () {
+    const STORAGE_KEY = 'nest-theme';
+    const savedTheme = localStorage.getItem(STORAGE_KEY) || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    function updateThemeUI(theme) {
+        const btn = document.getElementById('theme-toggle-btn');
+        if (!btn) return;
+        if (theme === 'dark') {
+            btn.setAttribute('title', 'Aydınlık Moda Geç');
+            btn.setAttribute('aria-label', 'Aydınlık moda geç');
+        } else {
+            btn.setAttribute('title', 'Karanlık Moda Geç');
+            btn.setAttribute('aria-label', 'Karanlık moda geç');
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem(STORAGE_KEY, next);
+        updateThemeUI(next);
+    }
+
+    window.NestTheme = {
+        get: () => document.documentElement.getAttribute('data-theme') || 'light',
+        set: (t) => {
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem(STORAGE_KEY, t);
+            updateThemeUI(t);
+        },
+        toggle: toggleTheme
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateThemeUI(document.documentElement.getAttribute('data-theme') || 'light');
+    });
+
+    document.addEventListener('nest:partials-loaded', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        updateThemeUI(current);
+        const btn = document.getElementById('theme-toggle-btn');
+        if (btn && !btn.dataset.themeBound) {
+            btn.dataset.themeBound = 'true';
+            btn.addEventListener('click', toggleTheme);
+        }
+    });
+})();
+
 // --- Giriş durumu kontrolü (Node.js/Express oturumu, /api/auth/me) ---
 document.addEventListener('nest:partials-loaded', function () {
     const loginLink = document.getElementById('login-link');

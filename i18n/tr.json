@@ -23,11 +23,43 @@
     "index.intro": "The Nest, STEAM ile ilgili tüm toplulukları ve bireyleri hedefleyen çok amaçlı bir web sitesidir. STEAM tutkunları arasındaki iletişimi ve bağları artırmayı hedeflerken aynı zamanda kaynaklar ve eğitim sunan bir platform oluşturmayı amaçlar.",
     "index.forumButton": "Forum",
 
+    "index.heroBadge": "7611 AmalHawks Açık Kaynak STEAM İnisiyatifi",
+    "index.heroTitle": "Geleceğin Mühendisleri İçin Açık Kaynak STEAM Ekosistemi",
+    "index.heroDesc": "7611 AmalHawks ekibi tarafından hayata geçirilen The Nest; robotik, WPILib Java programlama, 3D CAD tasarımı, mekanik mimari ve FRC yarışma tecrübesini tek bir modern çatı altında sunar.",
+    "index.exploreCourses": "Eğitimleri Keşfet",
+    "index.applyTeam": "Takıma Başvur",
+    "index.readArticles": "Teknik Makaleler",
+
+    "index.stat1.num": "18+",
+    "index.stat1.label": "Müfredat & Kurs Modülü",
+    "index.stat2.num": "30+",
+    "index.stat2.label": "3D CAD & STEP Tasarımı",
+    "index.stat3.num": "100%",
+    "index.stat3.label": "Ücretsiz & Açık Erişim",
+    "index.stat4.num": "7611",
+    "index.stat4.label": "AmalHawks Ekosistemi",
+
+    "index.hubsTitle": "Temel İçerik Merkezleri",
+    "index.hubsSubtitle": "Robotik mühendisliğinden jüri sunumlarına kadar ihtiyacınız olan tüm açık kaynak kütüphane.",
+    "index.hubCoursesTitle": "Eğitimler & Kurslar",
+    "index.hubCoursesDesc": "WPILib Java, Subsystem mimarisi, Swerve kinematiği ve PID kontrol algoritmaları.",
+    "index.hubArticlesTitle": "Teknik Makaleler",
+    "index.hubArticlesDesc": "Akü empedansı, CAN bus topolojisi, dişli redüksiyon ve güç dağıtım analizleri.",
+    "index.hubDesignsTitle": "3D CAD Tasarımlar",
+    "index.hubDesignsDesc": "STEP & STL formatında 3D baskıya hazır robot bileşenleri ve sensör muhafazaları.",
+    "index.hubPresentationsTitle": "Sunumlar & Dokümanlar",
+    "index.hubPresentationsDesc": "FIRST Impact ödülü şablonları, pit mülakat kılavuzları ve sponsorluk dosyaları.",
+
+    "index.bentoTitle": "Ekosistem & Ortaklar",
+    "index.bentoSubtitle": "Bilgiyi paylaşarak büyüyen bir robotik ve mühendislik topluluğu.",
     "index.founderTitle": "Kurucu Takım",
     "index.founderText": "7611#AmalHawks takımının kurduğu The Nest Projesi, FRC topluluğunun herkesin faydalanabileceği bir kaynak olmasını hedefler. Bu proje, gençlerden mentorlara kadar herkesin ihtiyaç duyduğu bilgiye erişimini kolaylaştırır ve topluluk arasında işbirliğini teşvik eder. Amacı, FRC'nin erişilebilirliğini ve sürdürülebilirliğini artırmak, böylece daha fazla genç, STEM becerilerini geliştirme fırsatı bulabilir.",
 
     "index.fyTitle": "Fikret Yüksel Vakfı",
     "index.fyText": "Fikret Yüksel Vakfı, FRC'ye (FIRST Robotics Competition) önemli katkılarda bulunarak gençlerin bilim, teknoloji, mühendislik ve matematik (STEM) alanlarında gelişimine destek olmaktadır. Vakıf, gençlerin STEM becerilerini geliştirmelerine ve yaratıcılıklarını ortaya koymalarına yardımcı olmak amacıyla FRC takımlarına maddi ve manevi destek sağlamaktadır.",
+    "index.fyDetail": "Ekip mentörlüğü, ekip eğitimi, malzeme temini ve yarışma katılım masraflarını kapsayan desteklerle gençlerin geleceğe sağlam adımlarla yürümesini sağlar.",
+
+    "form.badge": "7611 AmalHawks Ailesine Katıl",
 
     "form.title": "Takım Başvuru Formu",
     "form.name.label": "Ad Soyad*:",
