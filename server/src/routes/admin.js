@@ -45,6 +45,9 @@ router.get("/me", async (req, res) => {
     return res.status(401).json({ authenticated: false, error: "Yetkili yönetici oturumu bulunamadı." });
 });
 
+// Aşağıdaki TÜM /api/admin/* rotaları requireAdmin gerektirir.
+router.use(requireAdmin);
+
 // GET /api/admin/system-health (Anlık Sistem & DB Bağlantı Durumu)
 router.get("/system-health", async (req, res) => {
     try {
@@ -200,9 +203,6 @@ router.get("/activity-logs", async (req, res) => {
         return res.status(500).json({ error: "Loglar getirilemedi." });
     }
 });
-
-// Aşağıdaki TÜM rotalar requireAdmin gerektirir.
-router.use(requireAdmin);
 
 // -----------------------------------------------------------------------------
 // Yardımcı: slug üretici

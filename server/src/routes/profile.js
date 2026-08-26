@@ -51,6 +51,9 @@ router.patch("/", verifyCsrfToken, requireAuth, profileUpdateValidationRules, as
         if (bio !== undefined) updates.bio = bio;
 
         const updatedUser = await db.updateUser(req.userId, updates);
+        if (!updatedUser) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı veya hesap silinmiş." });
+        }
 
         return res.json({
             message: "Profil güncellendi.",

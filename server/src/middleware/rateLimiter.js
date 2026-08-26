@@ -10,7 +10,10 @@
 
 const rateLimit = require("express-rate-limit");
 
-const isTest = () => process.env.NODE_ENV === "test";
+const isTest = () => {
+    if (process.env.ENABLE_RATE_LIMIT_TEST === "true") return false;
+    return process.env.NODE_ENV === "test";
+};
 
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -23,16 +26,23 @@ const generalLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 20,
+    max: 30,
     standardHeaders: true,
     legacyHeaders: false,
     skip: isTest,
     message: { error: "Çok fazla kayıt denemesi. Lütfen daha sonra tekrar deneyin." },
 });
 
-// Şifre sıfırlama OTP isteği: burada amaç "hatalı şifrede kilitleme" değil,
-// e-posta gönderim servisinin spam/kötüye kullanım amaçlı bombalanmasını
-// önlemek (farklı bir güvenlik kaygısı, madde 1'deki login kilidiyle ilgisi yok).
+const loginLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 20, // 1 dakikada en fazla 20 istek
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: isTest,
+    message: { error: "Çok fazla başarısız veya hızlı giriş denemesi. Lütfen 1 dakika bekleyin.", code: "TOO_MANY_REQUESTS" },
+});
+
+// Şifre sıfırlama OTP isteği limiter
 const forgotPasswordLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 15,
@@ -42,4 +52,5 @@ const forgotPasswordLimiter = rateLimit({
     message: { error: "Çok fazla şifre sıfırlama isteği. Lütfen birkaç dakika sonra tekrar deneyin." },
 });
 
-module.exports = { generalLimiter, registerLimiter, forgotPasswordLimiter };
+module.exports = { generalLimiter, registerLimiter, loginLimiter, forgotPasswordLimiter };
+

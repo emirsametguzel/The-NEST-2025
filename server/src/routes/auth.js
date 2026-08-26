@@ -9,7 +9,7 @@ const { validationResult } = require("express-validator");
 
 const db = require("../db");
 const { issueCsrfToken, verifyCsrfToken } = require("../middleware/csrf");
-const { registerLimiter } = require("../middleware/rateLimiter");
+const { registerLimiter, loginLimiter } = require("../middleware/rateLimiter");
 const { requireAuth } = require("../middleware/requireAuth");
 const { registerValidationRules, loginValidationRules } = require("../utils/validators");
 
@@ -79,7 +79,7 @@ router.post("/register", registerLimiter, verifyCsrfToken, registerValidationRul
 // -----------------------------------------------------------------------------
 // POST /api/auth/login
 // -----------------------------------------------------------------------------
-router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) => {
+router.post("/login", loginLimiter, verifyCsrfToken, loginValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: "Girdi doğrulama hatası", details: errors.array() });
