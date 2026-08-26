@@ -1080,12 +1080,16 @@
         const s = data.settings;
         const form = document.getElementById('settings-form');
         if (form) {
-            form.elements['site_title'].value = s.site_title || '';
-            form.elements['announcement_banner'].value = s.announcement_banner || '';
-            form.elements['announcement_active'].checked = s.announcement_active === 1 || s.announcement_active === true;
-            form.elements['contact_email'].value = s.contact_email || '';
-            form.elements['applications_open'].checked = s.applications_open === 1 || s.applications_open === true;
-            form.elements['footer_text'].value = s.footer_text || '';
+            if (form.elements['site_title']) form.elements['site_title'].value = s.site_title || '';
+            if (form.elements['announcement_banner']) form.elements['announcement_banner'].value = s.announcement_banner || '';
+            if (form.elements['announcement_active']) {
+                form.elements['announcement_active'].checked = s.announcement_active === '1' || s.announcement_active === 1 || s.announcement_active === true || s.announcement_active === 'true';
+            }
+            if (form.elements['contact_email']) form.elements['contact_email'].value = s.contact_email || '';
+            if (form.elements['applications_open']) {
+                form.elements['applications_open'].checked = s.applications_open === '1' || s.applications_open === 1 || s.applications_open === true || s.applications_open === 'true';
+            }
+            if (form.elements['footer_text']) form.elements['footer_text'].value = s.footer_text || '';
         }
     }
 
@@ -1097,18 +1101,21 @@
             e.preventDefault();
             const feedbackEl = document.getElementById('settings-feedback');
 
-            const payload = {
-                site_title: form.elements['site_title'].value.trim(),
-                announcement_banner: form.elements['announcement_banner'].value.trim(),
-                announcement_active: form.elements['announcement_active'].checked,
-                contact_email: form.elements['contact_email'].value.trim(),
-                applications_open: form.elements['applications_open'].checked,
-                footer_text: form.elements['footer_text'].value.trim(),
+            const settingsData = {
+                site_title: form.elements['site_title'] ? form.elements['site_title'].value.trim() : '',
+                announcement_banner: form.elements['announcement_banner'] ? form.elements['announcement_banner'].value.trim() : '',
+                announcement_active: form.elements['announcement_active'] && form.elements['announcement_active'].checked ? '1' : '0',
+                contact_email: form.elements['contact_email'] ? form.elements['contact_email'].value.trim() : '',
+                applications_open: form.elements['applications_open'] && form.elements['applications_open'].checked ? '1' : '0',
+                footer_text: form.elements['footer_text'] ? form.elements['footer_text'].value.trim() : '',
             };
+
+            const payload = { settings: settingsData };
 
             const { ok, data } = await apiRequest('PUT', '/admin/settings', payload);
             if (ok) {
                 showInlineFeedback(feedbackEl, 'Sistem ayarları başarıyla kaydedildi!');
+                showBannerFeedback('Site ayarları güncellendi.');
             } else {
                 showInlineFeedback(feedbackEl, data.error || 'Ayarlar kaydedilemedi.', true);
             }

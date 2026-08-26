@@ -527,8 +527,8 @@ router.get("/settings", async (req, res) => {
 
 // PUT /api/admin/settings
 router.put("/settings", verifyCsrfToken, async (req, res) => {
-    const { settings } = req.body;
-    if (!settings || typeof settings !== "object") {
+    const settings = (req.body && req.body.settings && typeof req.body.settings === "object") ? req.body.settings : req.body;
+    if (!settings || typeof settings !== "object" || Object.keys(settings).length === 0) {
         return res.status(400).json({ error: "Geçersiz ayar verisi." });
     }
 
