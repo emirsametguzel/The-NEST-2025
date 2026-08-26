@@ -1,26 +1,135 @@
 // =============================================================================
 // server/src/db.js
-// Firebase Firestore Veritabanı Katmanı & Yönetici Fonksiyonları (Admin v14+)
+// Birleşik Veritabanı Katmanı (SQLite / better-sqlite3 & Firebase Firestore)
 // =============================================================================
 
-const { initializeApp, getApps, cert } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+const fs = require("fs");
+const path = require("path");
+const Database = require("better-sqlite3");
 
-// Firebase Admin SDK Başlatma
-if (!getApps().length) {
-    try {
+// SQLite Veritabanı Dosyası
+const DB_DIR = path.join(__dirname, "..", "db");
+const DB_PATH = path.join(DB_DIR, "the_nest.db");
+
+if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+}
+
+const sqlite = new Database(DB_PATH);
+sqlite.pragma("journal_mode = WAL");
+sqlite.pragma("foreign_keys = ON");
+
+// SQLite Tablolarını Oluştur
+sqlite.exec(`
+CREATE TABLE IF NOT EXISTS users (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    username        TEXT NOT NULL UNIQUE,
+    email           TEXT NOT NULL UNIQUE,
+    password_hash   TEXT NOT NULL,
+    display_name    TEXT,
+    bio             TEXT,
+    avatar_path     TEXT,
+    role            TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('member', 'admin')),
+    is_active       INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+    created_at      TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at      TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    last_login_at   TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
+CREATE INDEX IF NOT EXISTS idx_users_email    ON users (email);
+
+CREATE TABLE IF NOT EXISTS content_items (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    type         TEXT NOT NULL CHECK (type IN ('makale', 'ders', 'duyuru', 'sunum', 'obje', 'haber')),
+    category     TEXT DEFAULT 'Mekanik',
+    title        TEXT NOT NULL,
+    slug         TEXT NOT NULL UNIQUE,
+    summary      TEXT,
+    body         TEXT,
+    image_url    TEXT,
+    file_url     TEXT,
+    author_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    author_username TEXT DEFAULT 'The Nest Ekibi',
+    author_display_name TEXT DEFAULT 'The Nest',
+    is_published INTEGER NOT NULL DEFAULT 1 CHECK (is_published IN (0, 1)),
+    created_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_content_type ON content_items (type, created_at);
+CREATE INDEX IF NOT EXISTS idx_content_slug ON content_items (slug);
+
+CREATE TABLE IF NOT EXISTS team_applications (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    name         TEXT NOT NULL,
+    class_name   TEXT NOT NULL,
+    email        TEXT NOT NULL,
+    phone        TEXT NOT NULL,
+    experience   TEXT,
+    department   TEXT NOT NULL,
+    tools        TEXT,
+    motivation   TEXT NOT NULL,
+    status       TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    created_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at   TEXT
+);
+
+CREATE TABLE IF NOT EXISTS site_settings (
+    key          TEXT PRIMARY KEY,
+    value        TEXT NOT NULL,
+    updated_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    identifier   TEXT,
+    ip_address   TEXT NOT NULL,
+    success      INTEGER NOT NULL DEFAULT 0 CHECK (success IN (0, 1)),
+    user_agent   TEXT,
+    created_at   TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    email       TEXT NOT NULL,
+    ip_address  TEXT NOT NULL,
+    success     INTEGER NOT NULL DEFAULT 0 CHECK (success IN (0, 1)),
+    created_at  TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    actor_username  TEXT,
+    action          TEXT NOT NULL,
+    entity_type     TEXT DEFAULT 'general',
+    entity_id       TEXT,
+    details         TEXT,
+    ip_address      TEXT,
+    created_at      TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+`);
+
+// Firebase Admin (Opsiyonel Bulut Entegrasyonu)
+let firestore = null;
+try {
+    const { initializeApp, getApps, cert } = require("firebase-admin/app");
+    const { getFirestore } = require("firebase-admin/firestore");
+
+    if (!getApps().length) {
         if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
             let serviceAccount;
             try {
                 serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-            } catch (pErr) {
+            } catch (_) {
                 serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON.replace(/\\n/g, "\n"));
             }
             initializeApp({
                 credential: cert(serviceAccount),
                 projectId: serviceAccount.project_id || process.env.FIREBASE_PROJECT_ID || "the-nest-c38fc",
             });
-            console.log("🔥 Firebase Admin (Service Account ile) başlatıldı.");
+            firestore = getFirestore();
+            firestore.settings({ ignoreUndefinedProperties: true });
         } else if (process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
             initializeApp({
                 credential: cert({
@@ -30,37 +139,13 @@ if (!getApps().length) {
                 }),
                 projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-c38fc",
             });
-            console.log("🔥 Firebase Admin (Env Credentials ile) başlatıldı.");
-        } else {
-            // Standart Proje ID ile başlat
-            initializeApp({
-                projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-c38fc",
-            });
-            console.log("🔥 Firebase Admin (Project ID ile) başlatıldı.");
+            firestore = getFirestore();
+            firestore.settings({ ignoreUndefinedProperties: true });
         }
-    } catch (initErr) {
-        console.error("Firebase Admin başlatma uyarısı:", initErr.message);
-        try {
-            initializeApp({
-                projectId: process.env.FIREBASE_PROJECT_ID || "the-nest-c38fc",
-            });
-        } catch (_) {}
+    } else {
+        firestore = getFirestore();
     }
-}
-
-const firestore = getFirestore();
-try {
-    firestore.settings({ ignoreUndefinedProperties: true });
 } catch (_) {}
-
-// Koleksiyon Referansları
-const usersCol = firestore.collection("users");
-const contentCol = firestore.collection("content_items");
-const settingsCol = firestore.collection("site_settings");
-const applicationsCol = firestore.collection("team_applications");
-const loginAttemptsCol = firestore.collection("login_attempts");
-const passwordResetsCol = firestore.collection("password_resets");
-const auditLogsCol = firestore.collection("audit_logs");
 
 // =============================================================================
 // KULLANICI İŞLEMLERİ (USERS)
@@ -68,97 +153,90 @@ const auditLogsCol = firestore.collection("audit_logs");
 
 async function getUserByEmail(email) {
     if (!email) return null;
-    try {
-        const snap = await usersCol.where("email", "==", email.toLowerCase().trim()).limit(1).get();
-        if (snap.empty) return null;
-        const doc = snap.docs[0];
-        return { id: doc.id, ...doc.data() };
-    } catch (err) {
-        console.error("getUserByEmail hatası:", err.message);
-        return null;
-    }
+    const clean = email.toLowerCase().trim();
+    const row = sqlite.prepare("SELECT * FROM users WHERE LOWER(email) = ?").get(clean);
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function getUserByUsername(username) {
     if (!username) return null;
-    try {
-        const snap = await usersCol.where("username", "==", username.toLowerCase().trim()).limit(1).get();
-        if (snap.empty) return null;
-        const doc = snap.docs[0];
-        return { id: doc.id, ...doc.data() };
-    } catch (err) {
-        console.error("getUserByUsername hatası:", err.message);
-        return null;
-    }
+    const clean = username.toLowerCase().trim();
+    const row = sqlite.prepare("SELECT * FROM users WHERE LOWER(username) = ?").get(clean);
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function getUserByUsernameOrEmail(identifier) {
     if (!identifier) return null;
     const clean = identifier.toLowerCase().trim();
-    let user = await getUserByEmail(clean);
-    if (!user) {
-        user = await getUserByUsername(clean);
-    }
-    return user;
+    const row = sqlite.prepare("SELECT * FROM users WHERE LOWER(email) = ? OR LOWER(username) = ?").get(clean, clean);
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function getUserById(id) {
     if (!id) return null;
-    try {
-        const doc = await usersCol.doc(String(id)).get();
-        if (!doc.exists) return null;
-        return { id: doc.id, ...doc.data() };
-    } catch (err) {
-        console.error("getUserById hatası:", err.message);
-        return null;
-    }
+    const row = sqlite.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function createUser(userData) {
     const now = new Date().toISOString();
-    const docRef = usersCol.doc();
-    const newUser = {
-        id: docRef.id,
-        username: (userData.username || "").toLowerCase().trim(),
-        email: (userData.email || "").toLowerCase().trim(),
-        password_hash: userData.password_hash || "",
-        display_name: userData.display_name || userData.username || "",
-        bio: userData.bio || "",
-        avatar_path: userData.avatar_path || null,
-        role: userData.role || "member",
-        is_active: userData.is_active !== undefined ? (userData.is_active ? 1 : 0) : 1,
-        created_at: now,
-        updated_at: now,
-        last_login_at: null,
-    };
-    await docRef.set(newUser);
-    return newUser;
+    const stmt = sqlite.prepare(`
+        INSERT INTO users (username, email, password_hash, display_name, bio, avatar_path, role, is_active, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const info = stmt.run(
+        (userData.username || "").toLowerCase().trim(),
+        (userData.email || "").toLowerCase().trim(),
+        userData.password_hash || "",
+        userData.display_name || userData.username || "",
+        userData.bio || "",
+        userData.avatar_path || null,
+        userData.role || "member",
+        userData.is_active !== undefined ? (userData.is_active ? 1 : 0) : 1,
+        now,
+        now
+    );
+
+    return await getUserById(info.lastInsertRowid);
 }
 
 async function updateUser(id, updates) {
     if (!id) return null;
-    const cleanUpdates = { ...updates, updated_at: new Date().toISOString() };
-    delete cleanUpdates.id;
-    await usersCol.doc(String(id)).set(cleanUpdates, { merge: true });
-    return await getUserById(id);
+    const cleanId = String(id);
+    const existing = await getUserById(cleanId);
+    if (!existing) return null;
+
+    const fields = [];
+    const values = [];
+
+    for (const [key, val] of Object.entries(updates)) {
+        if (key === "id") continue;
+        fields.push(`${key} = ?`);
+        values.push(val);
+    }
+
+    if (fields.length === 0) return existing;
+
+    fields.push("updated_at = ?");
+    values.push(new Date().toISOString());
+    values.push(cleanId);
+
+    const query = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+    sqlite.prepare(query).run(...values);
+
+    return await getUserById(cleanId);
 }
 
 async function deleteUser(id) {
     if (!id) return false;
-    await usersCol.doc(String(id)).delete();
-    return true;
+    const info = sqlite.prepare("DELETE FROM users WHERE id = ?").run(id);
+    return info.changes > 0;
 }
 
 async function getAllUsers() {
-    try {
-        const snap = await usersCol.get();
-        let users = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        users.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        return users;
-    } catch (err) {
-        console.error("getAllUsers hatası:", err.message);
-        return [];
-    }
+    const rows = sqlite.prepare("SELECT * FROM users ORDER BY created_at DESC").all();
+    return rows.map((r) => ({ ...r, id: String(r.id) }));
 }
 
 // =============================================================================
@@ -166,93 +244,103 @@ async function getAllUsers() {
 // =============================================================================
 
 async function getContentItems({ type, category, onlyPublished = false } = {}) {
-    try {
-        let query = contentCol;
-        if (onlyPublished) {
-            query = query.where("is_published", "==", 1);
-        }
-        if (type) {
-            query = query.where("type", "==", type);
-        }
-        if (category) {
-            query = query.where("category", "==", category);
-        }
+    let query = "SELECT * FROM content_items WHERE 1=1";
+    const params = [];
 
-        const snap = await query.get();
-        let items = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        items.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        return items;
-    } catch (err) {
-        console.error("getContentItems hatası:", err.message);
-        return [];
+    if (onlyPublished) {
+        query += " AND is_published = 1";
     }
+    if (type) {
+        query += " AND type = ?";
+        params.push(type);
+    }
+    if (category) {
+        query += " AND category = ?";
+        params.push(category);
+    }
+
+    query += " ORDER BY created_at DESC";
+    const rows = sqlite.prepare(query).all(...params);
+    return rows.map((r) => ({ ...r, id: String(r.id) }));
 }
 
 async function getContentItemBySlugOrId(slugOrId) {
     if (!slugOrId) return null;
-    try {
-        const doc = await contentCol.doc(String(slugOrId)).get();
-        if (doc.exists) {
-            return { id: doc.id, ...doc.data() };
-        }
-        const snap = await contentCol.where("slug", "==", String(slugOrId)).limit(1).get();
-        if (!snap.empty) {
-            const itemDoc = snap.docs[0];
-            return { id: itemDoc.id, ...itemDoc.data() };
-        }
-    } catch (err) {
-        console.error("getContentItemBySlugOrId hatası:", err.message);
-    }
-    return null;
+    const row = sqlite.prepare("SELECT * FROM content_items WHERE slug = ? OR id = ?").get(String(slugOrId), String(slugOrId));
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function slugExists(slug, excludeId = null) {
-    try {
-        const snap = await contentCol.where("slug", "==", slug).limit(2).get();
-        if (snap.empty) return false;
-        if (!excludeId) return true;
-        return snap.docs.some((d) => d.id !== String(excludeId));
-    } catch (err) {
-        return false;
+    if (!slug) return false;
+    if (excludeId) {
+        const row = sqlite.prepare("SELECT id FROM content_items WHERE slug = ? AND id != ?").get(slug, excludeId);
+        return !!row;
     }
+    const row = sqlite.prepare("SELECT id FROM content_items WHERE slug = ?").get(slug);
+    return !!row;
 }
 
 async function createContentItem(itemData) {
     const now = new Date().toISOString();
-    const docRef = contentCol.doc();
-    const newItem = {
-        id: docRef.id,
-        type: itemData.type || "makale",
-        category: itemData.category || "Mekanik",
-        title: itemData.title || "",
-        slug: itemData.slug || docRef.id,
-        summary: itemData.summary || "",
-        body: itemData.body || "",
-        image_url: itemData.image_url || null,
-        file_url: itemData.file_url || null,
-        author_id: itemData.author_id || null,
-        author_username: itemData.author_username || "The Nest Ekibi",
-        author_display_name: itemData.author_display_name || "The Nest",
-        is_published: itemData.is_published !== undefined ? (itemData.is_published ? 1 : 0) : 1,
-        created_at: now,
-        updated_at: now,
-    };
-    await docRef.set(newItem);
-    return newItem;
+    const stmt = sqlite.prepare(`
+        INSERT INTO content_items (
+            type, category, title, slug, summary, body, image_url, file_url,
+            author_id, author_username, author_display_name, is_published, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const info = stmt.run(
+        itemData.type || "makale",
+        itemData.category || "Mekanik",
+        itemData.title || "",
+        itemData.slug || `item-${Date.now()}`,
+        itemData.summary || "",
+        itemData.body || "",
+        itemData.image_url || null,
+        itemData.file_url || null,
+        itemData.author_id || null,
+        itemData.author_username || "The Nest Ekibi",
+        itemData.author_display_name || "The Nest",
+        itemData.is_published !== undefined ? (itemData.is_published ? 1 : 0) : 1,
+        now,
+        now
+    );
+
+    return await getContentItemBySlugOrId(info.lastInsertRowid);
 }
 
 async function updateContentItem(id, updates) {
     if (!id) return null;
-    const cleanUpdates = { ...updates, updated_at: new Date().toISOString() };
-    delete cleanUpdates.id;
-    await contentCol.doc(String(id)).set(cleanUpdates, { merge: true });
-    return await getContentItemBySlugOrId(id);
+    const existing = await getContentItemBySlugOrId(id);
+    if (!existing) return null;
+
+    const fields = [];
+    const values = [];
+
+    for (const [key, val] of Object.entries(updates)) {
+        if (key === "id") continue;
+        fields.push(`${key} = ?`);
+        values.push(val);
+    }
+
+    if (fields.length === 0) return existing;
+
+    fields.push("updated_at = ?");
+    values.push(new Date().toISOString());
+    values.push(existing.id);
+
+    const query = `UPDATE content_items SET ${fields.join(", ")} WHERE id = ?`;
+    sqlite.prepare(query).run(...values);
+
+    return await getContentItemBySlugOrId(existing.id);
 }
 
 async function deleteContentItem(id) {
     if (!id) return false;
-    await contentCol.doc(String(id)).delete();
-    return true;
+    const existing = await getContentItemBySlugOrId(id);
+    if (!existing) return false;
+    const info = sqlite.prepare("DELETE FROM content_items WHERE id = ?").run(existing.id);
+    return info.changes > 0;
 }
 
 // =============================================================================
@@ -260,28 +348,29 @@ async function deleteContentItem(id) {
 // =============================================================================
 
 async function getSiteSettings() {
-    try {
-        const snap = await settingsCol.get();
-        const settings = {};
-        snap.docs.forEach((doc) => {
-            const data = doc.data();
-            settings[doc.id] = data.value !== undefined ? data.value : data;
-        });
-        return settings;
-    } catch (err) {
-        console.error("getSiteSettings hatası:", err.message);
-        return {};
-    }
+    const rows = sqlite.prepare("SELECT key, value FROM site_settings").all();
+    const settings = {};
+    rows.forEach((r) => {
+        settings[r.key] = r.value;
+    });
+    return settings;
 }
 
 async function updateSiteSettings(settingsObj) {
     const now = new Date().toISOString();
-    const batch = firestore.batch();
-    for (const [key, value] of Object.entries(settingsObj)) {
-        const ref = settingsCol.doc(key);
-        batch.set(ref, { key, value: String(value), updated_at: now }, { merge: true });
-    }
-    await batch.commit();
+    const stmt = sqlite.prepare(`
+        INSERT INTO site_settings (key, value, updated_at)
+        VALUES (?, ?, ?)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+    `);
+
+    const updateMany = sqlite.transaction((entries) => {
+        for (const [k, v] of entries) {
+            stmt.run(k, String(v), now);
+        }
+    });
+
+    updateMany(Object.entries(settingsObj));
     return await getSiteSettings();
 }
 
@@ -291,46 +380,48 @@ async function updateSiteSettings(settingsObj) {
 
 async function createTeamApplication(data) {
     const now = new Date().toISOString();
-    const docRef = applicationsCol.doc();
-    const newApp = {
-        id: docRef.id,
-        name: data.name || "Anonim",
-        class_name: data.class_name || "Lise",
-        email: data.email || "",
-        phone: data.phone || "—",
-        experience: data.experience || "—",
-        department: data.department || "Genel",
-        tools: data.tools || "—",
-        motivation: data.motivation || "Takıma katılmak istiyorum.",
-        status: "pending",
-        created_at: now,
-    };
-    await docRef.set(newApp);
-    return newApp;
+    const stmt = sqlite.prepare(`
+        INSERT INTO team_applications (
+            name, class_name, email, phone, experience, department, tools, motivation, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const info = stmt.run(
+        data.name || "Anonim",
+        data.class_name || "Lise",
+        data.email || "",
+        data.phone || "—",
+        data.experience || "—",
+        data.department || "Genel",
+        data.tools || "—",
+        data.motivation || "Takıma katılmak istiyorum.",
+        "pending",
+        now
+    );
+
+    const row = sqlite.prepare("SELECT * FROM team_applications WHERE id = ?").get(info.lastInsertRowid);
+    return row ? { ...row, id: String(row.id) } : null;
 }
 
 async function getTeamApplications() {
-    try {
-        const snap = await applicationsCol.get();
-        let apps = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        apps.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        return apps;
-    } catch (err) {
-        console.error("getTeamApplications hatası:", err.message);
-        return [];
-    }
+    const rows = sqlite.prepare("SELECT * FROM team_applications ORDER BY created_at DESC").all();
+    return rows.map((r) => ({ ...r, id: String(r.id) }));
 }
 
 async function updateTeamApplicationStatus(id, status) {
     if (!id) return false;
-    await applicationsCol.doc(String(id)).set({ status, updated_at: new Date().toISOString() }, { merge: true });
-    return true;
+    const info = sqlite.prepare("UPDATE team_applications SET status = ?, updated_at = ? WHERE id = ?").run(
+        status,
+        new Date().toISOString(),
+        id
+    );
+    return info.changes > 0;
 }
 
 async function deleteTeamApplication(id) {
     if (!id) return false;
-    await applicationsCol.doc(String(id)).delete();
-    return true;
+    const info = sqlite.prepare("DELETE FROM team_applications WHERE id = ?").run(id);
+    return info.changes > 0;
 }
 
 // =============================================================================
@@ -339,47 +430,54 @@ async function deleteTeamApplication(id) {
 
 async function logLoginAttempt({ identifier, ip_address, success, user_agent }) {
     try {
-        await loginAttemptsCol.add({
-            identifier: (identifier || "").toLowerCase().trim(),
-            ip_address: ip_address || "",
-            success: success ? 1 : 0,
-            user_agent: user_agent || "",
-            created_at: new Date().toISOString(),
-        });
+        sqlite.prepare(`
+            INSERT INTO login_attempts (identifier, ip_address, success, user_agent, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        `).run(
+            (identifier || "").toLowerCase().trim(),
+            ip_address || "",
+            success ? 1 : 0,
+            user_agent || "",
+            new Date().toISOString()
+        );
     } catch (_) {}
 }
 
 async function logPasswordResetRequest({ email, ip_address, success }) {
     try {
-        await passwordResetsCol.add({
-            email: (email || "").toLowerCase().trim(),
-            ip_address: ip_address || "",
-            success: success ? 1 : 0,
-            created_at: new Date().toISOString(),
-        });
+        sqlite.prepare(`
+            INSERT INTO password_resets (email, ip_address, success, created_at)
+            VALUES (?, ?, ?, ?)
+        `).run(
+            (email || "").toLowerCase().trim(),
+            ip_address || "",
+            success ? 1 : 0,
+            new Date().toISOString()
+        );
     } catch (_) {}
 }
 
 async function logAuditEvent({ actor_username, action, entity_type, entity_id, details, ip_address }) {
     try {
-        await auditLogsCol.add({
-            actor_username: actor_username || "system",
-            action: action || "UNKNOWN",
-            entity_type: entity_type || "general",
-            entity_id: entity_id || "",
-            details: details || "",
-            ip_address: ip_address || "",
-            created_at: new Date().toISOString(),
-        });
+        sqlite.prepare(`
+            INSERT INTO audit_logs (actor_username, action, entity_type, entity_id, details, ip_address, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(
+            actor_username || "system",
+            action || "UNKNOWN",
+            entity_type || "general",
+            String(entity_id || ""),
+            details || "",
+            ip_address || "",
+            new Date().toISOString()
+        );
     } catch (_) {}
 }
 
 async function getRecentAuditLogs(limitCount = 15) {
     try {
-        const snap = await auditLogsCol.get();
-        let logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        logs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        return logs.slice(0, limitCount);
+        const rows = sqlite.prepare("SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT ?").all(limitCount);
+        return rows.map((r) => ({ ...r, id: String(r.id) }));
     } catch (_) {
         return [];
     }
@@ -387,10 +485,8 @@ async function getRecentAuditLogs(limitCount = 15) {
 
 async function getRecentLoginAttempts(limitCount = 10) {
     try {
-        const snap = await loginAttemptsCol.get();
-        let logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        logs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        return logs.slice(0, limitCount);
+        const rows = sqlite.prepare("SELECT * FROM login_attempts ORDER BY created_at DESC LIMIT ?").all(limitCount);
+        return rows.map((r) => ({ ...r, id: String(r.id) }));
     } catch (_) {
         return [];
     }
@@ -398,26 +494,21 @@ async function getRecentLoginAttempts(limitCount = 10) {
 
 async function getDashboardMetrics() {
     try {
-        const [users, items, apps, resetSnaps, loginSnaps] = await Promise.all([
-            getAllUsers(),
-            getContentItems(),
-            getTeamApplications(),
-            passwordResetsCol.get().catch(() => ({ size: 0, docs: [] })),
-            loginAttemptsCol.get().catch(() => ({ size: 0, docs: [] })),
-        ]);
+        const users = await getAllUsers();
+        const items = await getContentItems();
+        const apps = await getTeamApplications();
+        const resetCountRow = sqlite.prepare("SELECT COUNT(*) as count FROM password_resets").get();
+        const totalResets = resetCountRow ? resetCountRow.count : 0;
 
         const totalUsers = users.length;
         const totalItems = items.length;
         const totalApps = apps.length;
         const pendingApps = apps.filter((a) => a.status === "pending").length;
-        const totalResets = resetSnaps.size !== undefined ? resetSnaps.size : (resetSnaps.docs ? resetSnaps.docs.length : 0);
 
-        // Son 7 gündeki yeni kullanıcı sayısı hesabı
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const usersLast7Days = users.filter((u) => new Date(u.created_at || 0) >= sevenDaysAgo).length;
         const userGrowthPercentage = totalUsers > 0 ? Math.round((usersLast7Days / Math.max(1, totalUsers - usersLast7Days)) * 100) : 0;
 
-        // Kategori ve tip kırılımları
         const contentByType = {};
         const contentByCategory = {};
         items.forEach((item) => {
@@ -425,7 +516,6 @@ async function getDashboardMetrics() {
             contentByCategory[item.category] = (contentByCategory[item.category] || 0) + 1;
         });
 
-        // Son girişler / Aktif kullanıcılar
         const recentActiveUsers = users
             .filter((u) => u.last_login_at)
             .sort((a, b) => new Date(b.last_login_at) - new Date(a.last_login_at))
@@ -472,14 +562,8 @@ async function getDashboardMetrics() {
 }
 
 module.exports = {
+    sqlite,
     firestore,
-    usersCol,
-    contentCol,
-    settingsCol,
-    applicationsCol,
-    loginAttemptsCol,
-    passwordResetsCol,
-    auditLogsCol,
     // Kullanıcı Metotları
     getUserByEmail,
     getUserByUsername,

@@ -1,13 +1,13 @@
 // =============================================================================
 // server/db/init-db.js
-// Firebase Firestore Başlangıç Tohumlama (Seed & Initialize)
+// Veritabanı Başlangıç Tohumlama (Seed & Initialize)
 // =============================================================================
 
 const bcrypt = require("bcryptjs");
 const db = require("../src/db");
 
 async function initDatabase() {
-    console.log("🚀 Firestore Veritabanı başlatılıyor ve kontrol ediliyor...");
+    console.log("🚀 Veritabanı başlatılıyor ve kontrol ediliyor...");
 
     try {
         // 1. Admin Kullanıcısını Kontrol Et ve Oluştur/Güncelle
@@ -22,7 +22,7 @@ async function initDatabase() {
                 role: "admin",
                 is_active: 1,
             });
-            console.log("👤 Firestore Admin hesabı güncellendi: emirsametguzel@gmail.com (rol: admin)");
+            console.log("👤 Admin hesabı doğrulandı/güncellendi: emirsametguzel@gmail.com (rol: admin)");
         } else {
             existingAdmin = await db.createUser({
                 username: "emirsametguzel",
@@ -32,7 +32,7 @@ async function initDatabase() {
                 role: "admin",
                 is_active: 1,
             });
-            console.log("👤 Firestore Özel Yönetici hesabı oluşturuldu: emirsametguzel@gmail.com");
+            console.log("👤 Özel Yönetici hesabı oluşturuldu: emirsametguzel@gmail.com");
         }
 
         // 2. Varsayılan Site Ayarlarını Kontrol Et ve Ekle
@@ -54,13 +54,13 @@ async function initDatabase() {
         }
         if (Object.keys(missingSettings).length > 0) {
             await db.updateSiteSettings(missingSettings);
-            console.log("⚙️ Varsayılan site ayarları Firestore'a kaydedildi.");
+            console.log("⚙️ Varsayılan site ayarları veritabanına kaydedildi.");
         }
 
         // 3. Başlangıç İçeriklerini Kontrol Et ve Ekle (Boşsa)
         const items = await db.getContentItems();
         if (!items || items.length === 0) {
-            console.log("📚 Başlangıç eğitimleri ve içerikleri Firestore'a yükleniyor...");
+            console.log("📚 Başlangıç eğitimleri ve içerikleri veritabanına yükleniyor...");
 
             const initialContent = [
                 // EĞİTİMLER (DERSLER)
@@ -229,12 +229,12 @@ async function initDatabase() {
             for (const item of initialContent) {
                 await db.createContentItem(item);
             }
-            console.log(`✅ ${initialContent.length} adet başlangıç içeriği Firestore'a eklendi.`);
+            console.log(`✅ ${initialContent.length} adet başlangıç içeriği veritabanına eklendi.`);
         }
 
-        console.log("🎉 Firestore Veritabanı ve Başlangıç Verileri Hazır!");
+        console.log("🎉 Veritabanı ve Başlangıç Verileri Hazır!");
     } catch (err) {
-        console.error("Firestore Başlatma / Tohumlama Hatası:", err.message);
+        console.error("Veritabanı Başlatma / Tohumlama Hatası:", err.message);
     }
 }
 

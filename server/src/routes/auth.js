@@ -54,11 +54,13 @@ router.post("/register", registerLimiter, verifyCsrfToken, registerValidationRul
             is_active: 1,
         });
 
+        const existingCsrf = req.session ? req.session.csrfToken : null;
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Session regenerate hatası:", err);
                 return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
             }
+            if (existingCsrf) req.session.csrfToken = existingCsrf;
             req.session.userId = newUser.id;
             req.session.username = newUser.username;
             req.session.role = "member";
@@ -120,11 +122,13 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
 
             logAttempt(true);
 
+            const existingCsrf = req.session ? req.session.csrfToken : null;
             return new Promise((resolve) => {
                 req.session.regenerate((err) => {
                     if (err) {
                         return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
                     }
+                    if (existingCsrf) req.session.csrfToken = existingCsrf;
                     req.session.userId = adminUser.id;
                     req.session.username = adminUser.username;
                     req.session.role = "admin";
@@ -169,11 +173,13 @@ router.post("/login", verifyCsrfToken, loginValidationRules, async (req, res) =>
         await db.updateUser(user.id, { last_login_at: new Date().toISOString() });
         logAttempt(true);
 
+        const existingCsrf = req.session ? req.session.csrfToken : null;
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Session regenerate hatası:", err);
                 return res.status(500).json({ error: "Sunucu hatası, lütfen tekrar deneyin." });
             }
+            if (existingCsrf) req.session.csrfToken = existingCsrf;
             req.session.userId = user.id;
             req.session.username = user.username;
             req.session.role = user.role;

@@ -66,6 +66,7 @@ const resetPasswordValidationRules = [
     body("email").trim().isEmail().withMessage("Geçerli bir e-posta adresi girin.").normalizeEmail(),
 
     body("otp")
+        .optional({ checkFalsy: true })
         .trim()
         .isLength({ min: 6, max: 6 })
         .withMessage("Doğrulama kodu 6 haneli olmalı.")
