@@ -264,22 +264,87 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const modal = document.getElementById('modal');
     const closeModal = document.getElementById('close-modal');
+    const modalApplyBtn = document.getElementById('modal-apply-btn') || document.querySelector('.modal-button');
+    const heroApplyBtn = document.getElementById('hero_apply_button');
+    const heroPosterBtn = document.getElementById('hero_poster_button');
     const form = document.getElementById('team-application-form');
     const feedback = document.getElementById('form-feedback');
     const submitButton = document.getElementById('submit-button');
     const department = document.getElementById('department');
 
-    if (modal && closeModal) {
-        modal.style.display = 'block';
-        closeModal.onclick = function () {
+    // Başvuru formuna pürüzsüz kaydırma fonksiyonu
+    function scrollToApplicationForm(e) {
+        if (e && typeof e.preventDefault === 'function') {
+            e.preventDefault();
+        }
+        if (modal) {
             modal.style.display = 'none';
-        };
-        window.onclick = function (event) {
+        }
+
+        const formSection = document.getElementById('application-form-section') || document.getElementById('team-application-form');
+        if (formSection) {
+            const headerOffset = 80;
+            const elementPosition = formSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: Math.max(0, offsetPosition),
+                behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+                const nameInput = document.getElementById('name');
+                if (nameInput) {
+                    nameInput.focus();
+                    nameInput.style.outline = '3px solid #007bff';
+                    setTimeout(() => { nameInput.style.outline = ''; }, 1800);
+                }
+            }, 600);
+        }
+    }
+
+    // Modal açılış ve kapanış kontrolleri
+    if (modal) {
+        modal.style.display = 'block';
+        if (closeModal) {
+            closeModal.onclick = function () {
+                modal.style.display = 'none';
+            };
+        }
+        window.addEventListener('click', function (event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
-        };
+        });
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.style.display !== 'none') {
+                modal.style.display = 'none';
+            }
+        });
     }
+
+    // Modal içi "Başvuru Formuna Git" butonu
+    if (modalApplyBtn) {
+        modalApplyBtn.addEventListener('click', scrollToApplicationForm);
+    }
+
+    // Hero alanı "Başvuru Formuna Git" butonu
+    if (heroApplyBtn) {
+        heroApplyBtn.addEventListener('click', scrollToApplicationForm);
+    }
+
+    // Hero alanı "Afişi Görüntüle" butonu (Modali tekrar açar)
+    if (heroPosterBtn && modal) {
+        heroPosterBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            modal.style.display = 'block';
+        });
+    }
+
+    // [data-action="scroll-apply"] veya href="#application-form-section" bağlantıları
+    document.querySelectorAll('[data-action="scroll-apply"], a[href="#application-form-section"]').forEach(el => {
+        el.addEventListener('click', scrollToApplicationForm);
+    });
 
     if (form) {
         let lastSubmitTime = 0;
@@ -290,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (department && !department.value) {
                 if (feedback) {
-                    feedback.textContent = 'Lütfen bir departman seçin.';
+                    feedback.textContent = typeof NestI18n !== 'undefined' ? NestI18n.t('form.feedback.selectDepartment', 'Lütfen bir departman seçin.') : 'Lütfen bir departman seçin.';
                     feedback.style.color = 'red';
                 }
                 return;
@@ -299,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const currentTime = Date.now();
             if (currentTime - lastSubmitTime < submitCooldown) {
                 if (feedback) {
-                    feedback.textContent = 'Lütfen 15 saniye bekleyin ve tekrar deneyin.';
+                    feedback.textContent = typeof NestI18n !== 'undefined' ? NestI18n.t('form.feedback.cooldown', 'Lütfen 15 saniye bekleyin ve tekrar deneyin.') : 'Lütfen 15 saniye bekleyin ve tekrar deneyin.';
                     feedback.style.color = 'red';
                 }
                 return;

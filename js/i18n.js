@@ -42,11 +42,17 @@ const NestI18n = (() => {
         root.querySelectorAll("[data-i18n]").forEach((el) => {
             const key = el.getAttribute("data-i18n");
             if (dict[key] !== undefined) {
-                // Eğer data-i18n-html varsa innerHTML, yoksa textContent
                 if (el.hasAttribute("data-i18n-html")) {
                     el.innerHTML = dict[key];
                 } else {
-                    el.textContent = dict[key];
+                    // Eğer element içinde ikon (i, svg vb.) varsa, ikonu koru ve yanındaki metni güncelle
+                    const iconEl = el.querySelector("i, svg");
+                    if (iconEl) {
+                        const iconHtml = iconEl.outerHTML;
+                        el.innerHTML = `${iconHtml} <span>${dict[key]}</span>`;
+                    } else {
+                        el.textContent = dict[key];
+                    }
                 }
             }
         });

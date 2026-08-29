@@ -13,6 +13,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
     <link rel="stylesheet" media="(max-width:1024px)" href="css/tablet.css">
     <link rel="stylesheet" media="(max-width:500px)" href="css/mobile.css">
@@ -37,10 +38,23 @@
                         The Nest, STEAM ile ilgili tüm toplulukları ve bireyleri hedefleyen çok amaçlı bir web
                         sitesidir. STEAM tutkunları arasındaki iletişimi ve bağları artırmayı hedeflerken aynı zamanda
                         kaynaklar ve eğitim sunan bir platform oluşturmayı amaçlar.</p>
-                    <a href="#"><button id="forum_button" data-i18n="index.forumButton">Forum</button></a>
+                    <div class="hero-actions">
+                        <button type="button" id="hero_apply_button" class="hero-btn-primary">
+                            <i class="fa-solid fa-file-pen"></i> <span data-i18n="index.applyButton">Başvuru Formuna Git</span>
+                        </button>
+                        <button type="button" id="hero_poster_button" class="hero-btn-secondary">
+                            <i class="fa-solid fa-image"></i> <span data-i18n="index.viewPoster">Afişi Görüntüle</span>
+                        </button>
+                        <a href="#application-form-section" style="text-decoration: none;">
+                            <button type="button" id="forum_button">
+                                <i class="fa-solid fa-comments"></i> <span data-i18n="index.forumButton">Forum</span>
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
     <section>
         <div class="pt1">
             <img class="img-pt1" src="images/kurum.jpg" alt="Kurucu Takım">
@@ -84,8 +98,10 @@
                     <label data-i18n="form.motivation.label" for="motivation">Katılım Motivasyon Mektubu*:</label>
                     <textarea id="motivation" name="motivation" data-i18n-placeholder="form.motivation.placeholder" placeholder="Neden takıma katılmak istediğinizi açıklayın" rows="6" required></textarea>
                     <input type="text" id="honeypot" name="honeypot" class="honeypot">
-                    <button type="submit" id="submit-button" data-i18n="form.submit">Başvur</button>
-                <label data-i18n="form.required">*: Zorunlu</label>
+                    <button type="submit" id="submit-button">
+                        <i class="fa-solid fa-paper-plane"></i> <span data-i18n="form.submit">Başvur</span>
+                    </button>
+                    <label data-i18n="form.required">*: Zorunlu</label>
                     <div id="form-feedback" class="form-feedback"></div>
                 </form>
             </div>
@@ -94,9 +110,11 @@
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span id="close-modal" class="close">&times;</span>
+            <span id="close-modal" class="close" title="Kapat">&times;</span>
             <img src="images/placeholders/apply-poster-placeholder.svg" alt="Takım Başvuru Afişi">
-            <button class="modal-button" data-i18n="index.modalButton" onclick="document.getElementById('modal').style.display='none';document.getElementById('application-form-section').scrollIntoView({behavior: 'smooth'});">Başvuru Formuna Git</button>
+            <button type="button" id="modal-apply-btn" class="modal-button">
+                <i class="fa-solid fa-file-pen"></i> <span data-i18n="index.modalButton">Başvuru Formuna Git</span>
+            </button>
         </div>
     </div>
 

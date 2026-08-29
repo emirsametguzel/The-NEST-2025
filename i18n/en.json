@@ -40,6 +40,8 @@
 
     "index.title": "The Nest",
     "index.intro": "The Nest is a multi-purpose platform designed for all STEAM communities and individuals. It aims to foster communication and stronger bonds among STEAM enthusiasts while providing open-access resources, educational curricula, and engineering guides.",
+    "index.modalButton": "Go to Application Form",
+    "index.applyButton": "Go to Application Form",
     "index.forumButton": "Forum",
     "index.viewPoster": "View Poster",
     "index.founderTitle": "Founding Team",

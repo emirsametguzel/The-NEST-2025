@@ -40,6 +40,8 @@
 
     "index.title": "The Nest",
     "index.intro": "The Nest, STEAM ile ilgili tüm toplulukları ve bireyleri hedefleyen çok amaçlı bir web sitesidir. STEAM tutkunları arasındaki iletişimi ve bağları artırmayı hedeflerken aynı zamanda kaynaklar ve eğitim sunan bir platform oluşturmayı amaçlar.",
+    "index.modalButton": "Başvuru Formuna Git",
+    "index.applyButton": "Başvuru Formuna Git",
     "index.forumButton": "Forum",
     "index.viewPoster": "Afişi Görüntüle",
     "index.founderTitle": "Kurucu Takım",
