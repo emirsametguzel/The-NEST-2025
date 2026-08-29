@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Kayıt Ol</title>
+    <title data-i18n="meta.title.register">The Nest | Kayıt Ol</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
@@ -20,30 +20,30 @@
     <main class="auth-page">
         <div class="auth-card">
             <i class="fa-solid fa-user-plus auth-icon"></i>
-            <h1>Kayıt Ol</h1>
-            <p class="auth-lead">Takım üyeliği için bir hesap oluştur.</p>
+            <h1 data-i18n="auth.register.title">Kayıt Ol</h1>
+            <p class="auth-lead" data-i18n="auth.register.lead">Takım üyeliği için bir hesap oluştur.</p>
 
             <form id="register-form" class="auth-form" novalidate>
-                <label for="username">Kullanıcı Adı</label>
+                <label for="username" data-i18n="auth.register.username">Kullanıcı Adı</label>
                 <input type="text" id="username" name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" required>
-                <p class="auth-hint">3-32 karakter; yalnızca harf, rakam ve alt çizgi (_).</p>
+                <p class="auth-hint" data-i18n="auth.register.usernameHint">3-32 karakter; yalnızca harf, rakam ve alt çizgi (_).</p>
 
-                <label for="displayName">Görünen Ad (opsiyonel)</label>
+                <label for="displayName" data-i18n="auth.register.displayName">Görünen Ad (opsiyonel)</label>
                 <input type="text" id="displayName" name="displayName" autocomplete="name" maxlength="64">
 
-                <label for="email">E-posta</label>
+                <label for="email" data-i18n="auth.register.email">E-posta</label>
                 <input type="email" id="email" name="email" autocomplete="email" required>
 
-                <label for="password">Şifre</label>
+                <label for="password" data-i18n="auth.register.password">Şifre</label>
                 <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" maxlength="128" required>
-                <p class="auth-hint">En az 8 karakter; en az bir büyük harf ve bir rakam içermeli.</p>
+                <p class="auth-hint" data-i18n="auth.register.passwordHint">En az 8 karakter; en az bir büyük harf ve bir rakam içermeli.</p>
 
                 <div id="auth-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
 
-                <button type="submit" id="register-submit">Kayıt Ol</button>
+                <button type="submit" id="register-submit" data-i18n="auth.register.submit">Kayıt Ol</button>
             </form>
 
-            <p class="auth-switch">Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
+            <p class="auth-switch"><span data-i18n="auth.register.hasAccount">Zaten hesabın var mı?</span> <a href="login.html" data-i18n="auth.register.loginLink">Giriş Yap</a></p>
         </div>
     </main>
 

@@ -10,7 +10,7 @@
     let currentSearch = '';
     let currentView = 'grid'; // 'grid' or 'list'
 
-    // DOM Element Referansları
+    // DOM Element References
     let searchInput;
     let clearSearchBtn;
     let categoryPills;
@@ -23,12 +23,19 @@
     let modalWindow;
     let modalCloseBtn;
 
-    // Sayfa Yüklendiğinde Başlat
+    // Start on DOM ready
     document.addEventListener('DOMContentLoaded', function () {
         initDOMElements();
         collectStaticItems();
         setupEventListeners();
         loadCMSContent();
+        refreshTranslations();
+    });
+
+    // Listen for language change events from NestI18n
+    document.addEventListener('nest:lang-changed', function () {
+        refreshTranslations();
+        filterAndRender();
     });
 
     function initDOMElements() {
@@ -44,7 +51,29 @@
         modalCloseBtn = document.getElementById('ch-modal-close');
     }
 
-    // Statik kartları veri dizisine al
+    function getI18nText(key, fallback) {
+        if (window.NestI18n && typeof window.NestI18n.t === 'function') {
+            return window.NestI18n.t(key, fallback);
+        }
+        return fallback;
+    }
+
+    function refreshTranslations() {
+        if (!itemCounter) return;
+        const currentLang = (window.NestI18n && typeof window.NestI18n.getCurrentLang === 'function') ? window.NestI18n.getCurrentLang() : 'tr';
+        
+        // Re-translate card action buttons that might have static text
+        document.querySelectorAll('.ch-btn-action').forEach(btn => {
+            const isRead = btn.getAttribute('data-action') === 'read-modal';
+            const icon = btn.querySelector('i') ? btn.querySelector('i').outerHTML : '<i class="fa-solid fa-book-open"></i>';
+            if (isRead) {
+                const label = getI18nText('hub.btn.read', 'Oku');
+                btn.innerHTML = `${icon} ${label}`;
+            }
+        });
+    }
+
+    // Collect all static cards in DOM into dataset
     function collectStaticItems() {
         const cardElements = document.querySelectorAll('.ch-card[data-item-id]');
         allItems = [];
@@ -83,9 +112,9 @@
         updateCounter(allItems.length);
     }
 
-    // Olay Dinleyicilerini Kur
+    // Setup event listeners
     function setupEventListeners() {
-        // Arama Girişi
+        // Search Input
         if (searchInput) {
             searchInput.addEventListener('input', function () {
                 currentSearch = this.value.trim().toLowerCase();
@@ -96,7 +125,7 @@
             });
         }
 
-        // Aramayı Temizle Butonu
+        // Clear Search Button
         if (clearSearchBtn) {
             clearSearchBtn.addEventListener('click', function () {
                 if (searchInput) {
@@ -109,7 +138,7 @@
             });
         }
 
-        // Boş Durumdaki Sıfırlama Butonu
+        // Empty state reset button
         const resetBtn = document.getElementById('ch-reset-filters');
         if (resetBtn) {
             resetBtn.addEventListener('click', function () {
@@ -126,7 +155,7 @@
             });
         }
 
-        // Departman Filtre Butonları
+        // Category pills
         categoryPills.forEach(pill => {
             pill.addEventListener('click', function () {
                 categoryPills.forEach(p => p.classList.remove('is-active'));
@@ -136,7 +165,7 @@
             });
         });
 
-        // Grid / List Görünüm Değiştirici
+        // Grid / List toggle
         if (gridViewBtn && listViewBtn && cardsGrid) {
             gridViewBtn.addEventListener('click', function () {
                 currentView = 'grid';
@@ -153,9 +182,9 @@
             });
         }
 
-        // Kart Tıklama & Okuma Modalı Açma
+        // Reader Modal trigger delegation
         document.addEventListener('click', function (e) {
-            // İncele / Oku Butonları
+            // Check button click
             const readTrigger = e.target.closest('[data-action="read-modal"]');
             if (readTrigger) {
                 e.preventDefault();
@@ -167,7 +196,7 @@
                 return;
             }
 
-            // Kartın Kendisine Tıklama (Aksiyon linkleri hariç)
+            // Click card body
             const clickedCard = e.target.closest('.ch-card');
             if (clickedCard && !e.target.closest('a') && !e.target.closest('button')) {
                 const itemId = clickedCard.dataset.itemId;
@@ -175,7 +204,7 @@
             }
         });
 
-        // Modal Kapatma
+        // Modal close
         if (modalOverlay) {
             modalOverlay.addEventListener('click', function (e) {
                 if (e.target === modalOverlay) {
@@ -195,7 +224,7 @@
         });
     }
 
-    // Filtreleme ve Sonuçları Gösterme
+    // Filter and Render
     function filterAndRender() {
         let visibleCount = 0;
 
@@ -215,7 +244,7 @@
             if (isVisible) visibleCount++;
         });
 
-        // Boş Durum Gösterimi
+        // Empty state visibility
         if (emptyState) {
             emptyState.classList.toggle('is-visible', visibleCount === 0);
         }
@@ -225,11 +254,12 @@
 
     function updateCounter(count) {
         if (itemCounter) {
-            itemCounter.textContent = `${count} İçerik Listeleniyor`;
+            const template = getI18nText('hub.counter.text', '{count} İçerik Listeleniyor');
+            itemCounter.textContent = template.replace('{count}', count);
         }
     }
 
-    // Detaylı Okuma Modalını Aç
+    // Open detailed reader modal
     function openReaderModal(itemId) {
         const item = allItems.find(i => i.id == itemId);
         if (!item || !modalOverlay) return;
@@ -244,31 +274,45 @@
         const modalShareBtn = document.getElementById('ch-modal-share-btn');
 
         if (modalCategory) {
-            modalCategory.textContent = item.category.toUpperCase();
+            const deptKey = `hub.filter.${item.category}`;
+            modalCategory.textContent = getI18nText(deptKey, item.category).toUpperCase();
             modalCategory.className = `ch-badge-dept dept-${item.category}`;
         }
-        if (modalReadTime) modalReadTime.innerHTML = `<i class="fa-solid fa-clock"></i> ${item.readTime || '4 dk okuma'}`;
+        if (modalReadTime) {
+            const timeText = item.readTime || getI18nText('hub.readTime', '5 dk okuma').replace('{time}', '5');
+            modalReadTime.innerHTML = `<i class="fa-solid fa-clock"></i> ${timeText}`;
+        }
         if (modalTitle) modalTitle.textContent = item.title;
         if (modalAuthor) modalAuthor.textContent = item.author;
-        if (modalDate) modalDate.textContent = item.date || 'The Nest Arşivi';
+        if (modalDate) modalDate.textContent = item.date || getI18nText('hub.archiveDate', 'The Nest Arşivi');
         if (modalBody) modalBody.innerHTML = item.fullContent;
 
         if (modalFileBtn) {
             if (item.fileUrl) {
                 modalFileBtn.href = item.fileUrl;
                 modalFileBtn.style.display = 'inline-flex';
+                let btnText = getI18nText('hub.btn.downloadPdf', 'PDF Olarak İndir');
+                if (item.type === 'objeler' || item.type === 'tasarim') {
+                    btnText = getI18nText('hub.btn.downloadCad', 'STEP / CAD İndir');
+                } else if (item.type === 'dersler' || item.type === 'egitim') {
+                    btnText = getI18nText('hub.btn.downloadCurriculum', 'Müfredatı İndir (PDF)');
+                }
+                modalFileBtn.innerHTML = `<i class="fa-solid fa-download"></i> ${btnText}`;
             } else {
                 modalFileBtn.style.display = 'none';
             }
         }
 
         if (modalShareBtn) {
+            const shareLabel = getI18nText('hub.btn.share', 'Paylaş');
+            const copiedLabel = getI18nText('hub.btn.copied', 'Kopyalandı');
+            modalShareBtn.innerHTML = `<i class="fa-solid fa-share-nodes"></i> ${shareLabel}`;
             modalShareBtn.onclick = function () {
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(window.location.href);
-                    modalShareBtn.innerHTML = '<i class="fa-solid fa-check"></i> Kopyalandı';
+                    modalShareBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${copiedLabel}`;
                     setTimeout(() => {
-                        modalShareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Paylaş';
+                        modalShareBtn.innerHTML = `<i class="fa-solid fa-share-nodes"></i> ${shareLabel}`;
                     }, 2000);
                 }
             };
@@ -284,7 +328,7 @@
         document.body.style.overflow = '';
     }
 
-    // Dinamik CMS İçeriklerini Yükle
+    // Dynamic CMS Content loading
     async function loadCMSContent() {
         const rootContainer = document.querySelector('[data-cms-type]');
         if (!rootContainer || !cardsGrid) return;
@@ -299,8 +343,9 @@
             const items = data.items || [];
             if (items.length === 0) return;
 
+            const readBtnLabel = getI18nText('hub.btn.read', 'Oku');
+
             items.forEach(item => {
-                // Eğer statik olarak zaten varsa atla
                 if (allItems.some(i => i.id == `cms-${item.id}`)) return;
 
                 const deptSlug = (item.category || 'genel').toLowerCase();
@@ -312,7 +357,7 @@
                 cardEl.dataset.fileUrl = item.file_url || '';
 
                 const bgImage = item.image_url || 'images/mk/1.jpg';
-                const authorName = item.author_display_name || item.author_username || 'The Nest Yönetimi';
+                const authorName = item.author_display_name || item.author_username || 'The Nest Team';
                 const publishDate = item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Güncel';
 
                 cardEl.innerHTML = `
@@ -337,7 +382,7 @@
                             </div>
                             <div class="ch-card-actions">
                                 <button type="button" class="ch-btn-action" data-action="read-modal">
-                                    <i class="fa-solid fa-book-open"></i> Oku
+                                    <i class="fa-solid fa-book-open"></i> ${readBtnLabel}
                                 </button>
                                 ${item.file_url ? `
                                     <a href="${escapeHtml(item.file_url)}" target="_blank" class="ch-btn-icon" title="Dosyayı İndir" onclick="event.stopPropagation();">

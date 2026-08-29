@@ -1,20 +1,5 @@
 // =============================================================================
-// js/i18n.js — The Nest Çoklu Dil (i18n) Motoru
-//
-// Eski js/translate.js'in yerini alır. Neden değiştirildi?
-//   - Eski sistem: her metin ID'sini elle bulup innerHTML ile değiştiriyordu,
-//     yalnızca index.html'de çalışıyordu, sayfa değiştirince dil sıfırlanıyordu.
-//   - Yeni sistem: HTML elemanları `data-i18n="anahtar"` ile işaretlenir,
-//     çeviriler i18n/tr.json ve i18n/en.json sözlüklerinden JSON olarak
-//     yüklenir, seçilen dil localStorage'da saklanır (sayfa geçişlerinde
-//     kalıcıdır) ve her sayfada otomatik uygulanır (header/footer dahil,
-//     çünkü partial'lar js/components.js ile enjekte edildikten SONRA
-//     bu script çalışır).
-//
-// Kullanım (HTML tarafında):
-//   <h1 data-i18n="index.title">The Nest</h1>                 -> metin içeriği
-//   <input data-i18n-placeholder="form.name.placeholder">     -> placeholder
-//   <label data-i18n-attr="title" data-i18n="nav.profile">    -> herhangi bir attribute
+// js/i18n.js — The Nest Çoklu Dil (i18n) Gelişmiş Çeviri Motoru
 // =============================================================================
 
 const NestI18n = (() => {
@@ -26,89 +11,135 @@ const NestI18n = (() => {
     let dictionaries = {};
 
     async function loadDictionary(lang) {
-        if (dictionaries[lang]) return dictionaries[lang];
+        if (dictionaries[lang] && Object.keys(dictionaries[lang]).length > 0) {
+            return dictionaries[lang];
+        }
         try {
-            // Sayfa hangi klasör derinliğinde olursa olsun doğru çalışması için
-            // <html data-base-path="..."> üzerinden köke göreli yol alınır
-            // (bkz. js/components.js — partial enjeksiyonunda aynı mekanizma kullanılır).
             const base = document.documentElement.getAttribute("data-base-path") || "";
-            const res = await fetch(`${base}i18n/${lang}.json`);
+            const res = await fetch(`${base}i18n/${lang}.json?v=${Date.now()}`);
             if (!res.ok) throw new Error(`i18n/${lang}.json yüklenemedi (HTTP ${res.status})`);
             dictionaries[lang] = await res.json();
         } catch (err) {
             console.error("[i18n] Sözlük yüklenemedi:", err);
-            dictionaries[lang] = {};
+            dictionaries[lang] = dictionaries[lang] || {};
         }
         return dictionaries[lang];
     }
 
-    function applyTranslations(dict) {
-        // Metin içeriği
-        document.querySelectorAll("[data-i18n]").forEach((el) => {
+    function t(key, fallback = "") {
+        const dict = dictionaries[currentLang] || {};
+        if (dict[key] !== undefined) return dict[key];
+        const trDict = dictionaries["tr"] || {};
+        if (trDict[key] !== undefined) return trDict[key];
+        return fallback || key;
+    }
+
+    function applyTranslations(root = document) {
+        const dict = dictionaries[currentLang] || {};
+        if (!dict || Object.keys(dict).length === 0) return;
+
+        // 1. Düz Metin İçeriği (data-i18n)
+        root.querySelectorAll("[data-i18n]").forEach((el) => {
             const key = el.getAttribute("data-i18n");
             if (dict[key] !== undefined) {
-                el.textContent = dict[key];
+                // Eğer data-i18n-html varsa innerHTML, yoksa textContent
+                if (el.hasAttribute("data-i18n-html")) {
+                    el.innerHTML = dict[key];
+                } else {
+                    el.textContent = dict[key];
+                }
             }
         });
 
-        // Placeholder
-        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+        // 2. HTML İçeriği (data-i18n-html)
+        root.querySelectorAll("[data-i18n-html]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-html") || el.getAttribute("data-i18n");
+            if (key && dict[key] !== undefined) {
+                el.innerHTML = dict[key];
+            }
+        });
+
+        // 3. Placeholder (data-i18n-placeholder)
+        root.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
             const key = el.getAttribute("data-i18n-placeholder");
             if (dict[key] !== undefined) {
                 el.placeholder = dict[key];
             }
         });
 
-        // Genel attribute çevirisi (title, aria-label vb.)
-        document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+        // 4. Genel Attribute Çevirisi (title, aria-label vb.)
+        root.querySelectorAll("[data-i18n-attr]").forEach((el) => {
             const attrName = el.getAttribute("data-i18n-attr");
-            const key = el.getAttribute("data-i18n");
-            if (key && dict[key] !== undefined) {
+            const key = el.getAttribute("data-i18n-attr-key") || el.getAttribute("data-i18n");
+            if (key && dict[key] !== undefined && attrName) {
                 el.setAttribute(attrName, dict[key]);
             }
         });
 
-        document.documentElement.setAttribute("lang", currentLang);
+        // 5. Title Etiketi
+        if (root === document) {
+            const titleEl = document.querySelector("title[data-i18n]");
+            if (titleEl) {
+                const key = titleEl.getAttribute("data-i18n");
+                if (dict[key] !== undefined) document.title = dict[key];
+            }
+            document.documentElement.setAttribute("lang", currentLang);
+        }
     }
 
     async function setLanguage(lang) {
         if (!SUPPORTED.includes(lang)) lang = DEFAULT_LANG;
         currentLang = lang;
         localStorage.setItem(STORAGE_KEY, lang);
-        const dict = await loadDictionary(lang);
-        applyTranslations(dict);
+        
+        await loadDictionary(lang);
+        applyTranslations(document);
 
-        // Dil değiştirme anahtarını (checkbox) mevcut dille senkronize et
+        // Dil değiştirme anahtarını senkronize et
         const switchEl = document.getElementById("switch");
-        if (switchEl) switchEl.checked = lang === "tr";
+        if (switchEl) {
+            switchEl.checked = lang === "tr";
+        }
+
+        // Dil değişti olayını fırlat (diğer modüllerin dinleyebilmesi için)
+        document.dispatchEvent(new CustomEvent("nest:lang-changed", {
+            detail: { lang: currentLang, dict: dictionaries[currentLang] }
+        }));
     }
 
     async function init() {
+        // İki dili de önceden yükle
+        await Promise.all([loadDictionary("tr"), loadDictionary(currentLang)]);
         await setLanguage(currentLang);
 
         const switchEl = document.getElementById("switch");
         if (switchEl) {
             switchEl.checked = currentLang === "tr";
-            switchEl.addEventListener("change", () => {
+            switchEl.onchange = () => {
                 setLanguage(switchEl.checked ? "tr" : "en");
-            });
+            };
         }
     }
 
-    return { init, setLanguage, getCurrentLang: () => currentLang };
+    return {
+        init,
+        setLanguage,
+        getCurrentLang: () => currentLang,
+        t,
+        applyTranslations,
+        loadDictionary
+    };
 })();
 
-// Header/footer partial'ları enjekte edildikten SONRA çalışması gerektiği için
-// başlatma işlemi js/components.js tarafından tetiklenir (bkz. o dosyadaki
-// `document.dispatchEvent(new CustomEvent('nest:partials-loaded'))`).
+// Header/footer partial'ları enjekte edildikten SONRA çalışması için
 document.addEventListener("nest:partials-loaded", () => {
     NestI18n.init();
 });
 
-// Eğer sayfada partial yükleyici yoksa (örn. ileride saf statik bir sayfa
-// eklenirse) yine de DOMContentLoaded'da çalışsın diye yedek tetikleyici:
+// Yedek tetikleyici:
 document.addEventListener("DOMContentLoaded", () => {
     if (!document.querySelector("[data-component]")) {
         NestI18n.init();
     }
 });
+

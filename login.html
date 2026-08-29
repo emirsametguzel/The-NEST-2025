@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Giriş Yap</title>
+    <title data-i18n="meta.title.login">The Nest | Giriş Yap</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
@@ -20,23 +20,23 @@
     <main class="auth-page">
         <div class="auth-card">
             <i class="fa-solid fa-right-to-bracket auth-icon"></i>
-            <h1>Giriş Yap</h1>
-            <p class="auth-lead">Hesabınla giriş yap ve profiline eriş.</p>
+            <h1 data-i18n="auth.login.title">Giriş Yap</h1>
+            <p class="auth-lead" data-i18n="auth.login.lead">Hesabınla giriş yap ve profiline eriş.</p>
 
             <form id="login-form" class="auth-form" novalidate>
-                <label for="identifier">Kullanıcı Adı veya E-posta</label>
+                <label for="identifier" data-i18n="auth.login.identifier">Kullanıcı Adı veya E-posta</label>
                 <input type="text" id="identifier" name="identifier" autocomplete="username" required>
 
-                <label for="password">Şifre</label>
+                <label for="password" data-i18n="auth.login.password">Şifre</label>
                 <input type="password" id="password" name="password" autocomplete="current-password" required>
 
                 <div id="auth-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
 
-                <button type="submit" id="login-submit">Giriş Yap</button>
+                <button type="submit" id="login-submit" data-i18n="auth.login.submit">Giriş Yap</button>
             </form>
 
-            <p class="auth-switch"><a href="forgot-password.html">Şifremi unuttum</a></p>
-            <p class="auth-switch">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></p>
+            <p class="auth-switch"><a href="forgot-password.html" data-i18n="auth.login.forgot">Şifremi unuttum</a></p>
+            <p class="auth-switch"><span data-i18n="auth.login.noAccount">Hesabın yok mu?</span> <a href="register.html" data-i18n="auth.login.registerLink">Kayıt Ol</a></p>
         </div>
     </main>
 

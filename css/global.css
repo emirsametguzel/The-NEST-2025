@@ -2,6 +2,50 @@
    GLOBAL.CSS — Navbar + Global tanımlar + Footer
    ============================================= */
 
+/* Font Awesome Yerel ve CDN Font Tanımları (Boş Kutu / Missing Glyphs Önleme) */
+@font-face {
+    font-family: "Font Awesome 6 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url("../webfonts/fa-solid-900.woff2") format("woff2"),
+         url("/webfonts/fa-solid-900.woff2") format("woff2"),
+         url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/webfonts/fa-solid-900.woff2") format("woff2"),
+         url("../webfonts/fa-solid-900.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Font Awesome 6 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../webfonts/fa-regular-400.woff2") format("woff2"),
+         url("/webfonts/fa-regular-400.woff2") format("woff2"),
+         url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/webfonts/fa-regular-400.woff2") format("woff2"),
+         url("../webfonts/fa-regular-400.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Font Awesome 6 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../webfonts/fa-brands-400.woff2") format("woff2"),
+         url("/webfonts/fa-brands-400.woff2") format("woff2"),
+         url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/webfonts/fa-brands-400.woff2") format("woff2"),
+         url("../webfonts/fa-brands-400.ttf") format("truetype");
+}
+
+/* İkon Temel Stilleri */
+i[class*="fa-"], span[class*="fa-"] {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
 /* --- Navbar.css --- */
 /* navbar css */
 

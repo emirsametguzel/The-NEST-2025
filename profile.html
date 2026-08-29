@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nest | Profil</title>
+    <title data-i18n="meta.title.profile">The Nest | Profil</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
@@ -20,7 +20,7 @@
     <main class="auth-page profile-page">
         <div class="auth-card" id="profile-loading">
             <i class="fa-solid fa-spinner fa-spin auth-icon"></i>
-            <p>Yükleniyor...</p>
+            <p data-i18n="auth.profile.loading">Yükleniyor...</p>
         </div>
 
         <div class="auth-card" id="profile-content" hidden>
@@ -29,7 +29,7 @@
 
             <form id="avatar-form" class="avatar-form" novalidate>
                 <label for="avatar-input" class="avatar-form__label">
-                    <i class="fa-solid fa-camera"></i> Fotoğraf Değiştir
+                    <i class="fa-solid fa-camera"></i> <span data-i18n="auth.profile.changeAvatar">Fotoğraf Değiştir</span>
                 </label>
                 <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/webp" hidden>
                 <div id="avatar-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
@@ -38,21 +38,21 @@
             <h1 id="profile-username">-</h1>
             <p class="auth-lead" id="profile-email">-</p>
 
-            <h2>Profili Düzenle</h2>
+            <h2 data-i18n="auth.profile.editTitle">Profili Düzenle</h2>
             <form id="profile-form" class="auth-form" novalidate>
-                <label for="displayName">Görünen Ad</label>
+                <label for="displayName" data-i18n="auth.profile.displayName">Görünen Ad</label>
                 <input type="text" id="displayName" name="displayName" maxlength="64">
 
-                <label for="bio">Hakkımda</label>
+                <label for="bio" data-i18n="auth.profile.bio">Hakkımda</label>
                 <textarea id="bio" name="bio" maxlength="500" rows="4"></textarea>
 
                 <div id="profile-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
 
-                <button type="submit" id="profile-save">Kaydet</button>
+                <button type="submit" id="profile-save" data-i18n="auth.profile.save">Kaydet</button>
             </form>
 
             <button type="button" id="logout-button" class="auth-secondary-btn">
-                <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="auth.profile.logout">Çıkış Yap</span>
             </button>
         </div>
     </main>
