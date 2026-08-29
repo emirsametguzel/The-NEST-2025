@@ -24,23 +24,24 @@ const isProduction = process.env.NODE_ENV === "production";
 // Ters proxy arkasında (Render / Cloud Run) doğru IP tespiti
 app.set("trust proxy", 1);
 
-// Güvenlik HTTP başlıkları (Mozilla Observatory 100/100 A+ Standardı)
+// Güvenlik HTTP başlıkları (Font Awesome, Google Fonts, CDN ve Firebase desteği)
 app.use(
     helmet({
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "https://apis.google.com"],
-                styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-                imgSrc: ["'self'", "data:", "https:"],
-                connectSrc: ["'self'", "https://*.firebaseio.com", "https://identitytoolkit.googleapis.com"],
-                fontSrc: ["'self'", "https://fonts.gstatic.com"],
+                scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://apis.google.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://www.gstatic.com"],
+                styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+                imgSrc: ["'self'", "data:", "blob:", "https:"],
+                connectSrc: ["'self'", "https://*.firebaseio.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://*.googleapis.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+                fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
                 objectSrc: ["'none'"],
                 scriptSrcAttr: ["'none'"],
                 upgradeInsecureRequests: [],
+                frameAncestors: ["'self'", "*"],
             },
         },
-        xFrameOptions: { action: "deny" },
+        xFrameOptions: false,
         hsts: {
             maxAge: 31536000,
             includeSubDomains: true,
