@@ -5,8 +5,10 @@
 
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const helmet = require("helmet");
 const session = require("express-session");
+const SQLiteStore = require("connect-sqlite3")(session);
 const multer = require("multer");
 
 const db = require("./db");
@@ -20,6 +22,12 @@ const contentRoutes = require("./routes/content");
 const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
+
+// DB dizinini garantiye al (sessions sqlite dosyası için)
+const DB_DIR = path.join(__dirname, "..", "db");
+if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+}
 
 // Ters proxy arkasında (Render / Cloud Run) doğru IP tespiti
 app.set("trust proxy", 1);
@@ -107,9 +115,14 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 
-// Session Yönetimi
+// Session Yönetimi (Kalıcı SQLite Store - Render & Production uyumlu, MemoryStore uyarısını önler)
 app.use(
     session({
+        store: new SQLiteStore({
+            db: "sessions.db",
+            dir: DB_DIR,
+            concurrentDB: true,
+        }),
         name: "nest.sid",
         secret: process.env.SESSION_SECRET || "default_development_session_secret_32_chars_long_key_the_nest",
         resave: false,
@@ -117,7 +130,7 @@ app.use(
         cookie: {
             httpOnly: true,
             sameSite: "lax",
-            secure: false,
+            secure: isProduction,
             maxAge: 1000 * 60 * 60 * 24, // 24 saat
         },
     })
