@@ -4,7 +4,7 @@
     max-width: 560px;
     margin: 100px auto 40px;
     padding: 0 20px 40px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Ubuntu', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 }
 
 .profile-page {

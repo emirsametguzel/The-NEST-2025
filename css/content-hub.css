@@ -33,7 +33,7 @@
   background-color: var(--ch-bg-primary);
   min-height: 100vh;
   color: var(--ch-text-main);
-  font-family: 'Poppins', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Poppins', 'Ubuntu', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   overflow-x: hidden;
 }
 
